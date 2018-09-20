@@ -1,0 +1,20 @@
+{
+  "name": "Unicorn test",
+  "description": "Unicorn test description",
+  "repository": "",
+  "success_url":"/",
+  "addons":[
+    {
+      "plan": "mongolab",
+      "as": "MONGO"
+    }
+  ],
+  "env": {
+      "clientId": {
+          "description": "Client ID provided by Slack"
+      },
+      "clientSecret": {
+          "description": "Client Secret provided by Slack"
+      }
+  }
+}
