@@ -1,3 +1,5 @@
 module.exports = function (webserver, controller) {
-  next();
+  webserver.use(function(req, res, next) {
+    next();
+  });
 }
