@@ -99,12 +99,7 @@ if (!process.env.clientId || !process.env.clientSecret) {
 }else {
 
   webserver.get('/', function (req, res) {
-    res.render('index', {
-      domain: req.get('host'),
-      protocol: req.protocol,
-      glitch_domain: process.env.PROJECT_DOMAIN,
-      layout: 'layouts/default'
-    });
+    res.send("active");
   })
 
   // Set up a simple storage backend for keeping a record of customers
