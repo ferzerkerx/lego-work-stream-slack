@@ -93,11 +93,7 @@ var webserver = require(__dirname + '/components/express_webserver.js')(controll
 if (!process.env.clientId || !process.env.clientSecret) {
 
   webserver.get('/', function(req, res){
-    res.render('installation', {
-      domain: req.get('host'),
-      protocol: req.protocol,
-      layout: 'layouts/default'
-    });
+    res.send("active");
   })
   console.log('WARNING: This application is not fully configured to work with Slack');
 }else {
