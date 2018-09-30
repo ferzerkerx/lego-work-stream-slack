@@ -11,26 +11,26 @@ respond immediately with a single line response.
 
 var wordfilter = require('wordfilter');
 
-module.exports = function(controller) {
+module.exports = controller => {
   /* Collect some very simple runtime stats for use in the uptime/debug command */
-  var stats = {
+  const stats = {
     triggers: 0,
     convos: 0,
   };
 
-  controller.on('heard_trigger', function() {
+  controller.on('heard_trigger', () => {
     stats.triggers++;
   });
 
-  controller.on('conversationStarted', function() {
+  controller.on('conversationStarted', () => {
     stats.convos++;
   });
 
   controller.hears(
     ['^uptime', '^debug'],
     'direct_message,direct_mention',
-    function(bot, message) {
-      bot.createConversation(message, function(err, convo) {
+    (bot, message) => {
+      bot.createConversation(message, (err, convo) => {
         if (!err) {
           convo.setVar('uptime', formatUptime(process.uptime()));
           convo.setVar('convos', stats.convos);
@@ -48,7 +48,7 @@ module.exports = function(controller) {
   controller.hears(
     ['^say (.*)', '^say'],
     'direct_message,direct_mention',
-    function(bot, message) {
+    (bot, message) => {
       if (message.match[1]) {
         if (!wordfilter.blacklisted(message.match[1])) {
           bot.reply(message, message.match[1]);
@@ -69,7 +69,7 @@ module.exports = function(controller) {
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
   /* Utility function to format uptime */
   function formatUptime(uptime) {
-    var unit = 'second';
+    let unit = 'second';
     if (uptime > 60) {
       uptime = uptime / 60;
       unit = 'minute';

@@ -1,12 +1,11 @@
 if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
   usage_tip();
-  // process.exit(1);
+  process.exit(1);
 }
 
-var Botkit = require('botkit');
-var debug = require('debug')('botkit:main');
+const Botkit = require('botkit');
 
-var bot_options: any = {
+const bot_options: any = {
   clientId: process.env.clientId,
   clientSecret: process.env.clientSecret,
   debug: true,
@@ -17,21 +16,20 @@ var bot_options: any = {
 // Use a mongo database if specified, otherwise store in a JSON file local to the app.
 // Mongo is automatically configured when deploying to Heroku
 if (process.env.MONGO_URI) {
-  var mongoStorage = require('botkit-storage-mongo')({
+  bot_options.storage = require('botkit-storage-mongo')({
     mongoUri: process.env.MONGO_URI,
   });
-  bot_options.storage = mongoStorage;
 } else {
   bot_options.json_file_store = __dirname + '/.data/db/'; // store user data in a simple JSON format
 }
 
 // Create the Botkit controller, which controls all instances of the bot.
-var controller = Botkit.slackbot(bot_options);
+const controller = Botkit.slackbot(bot_options);
 
 controller.startTicking();
 
 // Set up an Express-powered webserver to expose oauth and webhook endpoints
-var webserver = require(__dirname + '/components/express_webserver.js')(
+const webserver = require(__dirname + '/components/express_webserver.js')(
   controller
 );
 
@@ -51,7 +49,7 @@ if (!process.env.clientId || !process.env.clientSecret) {
   // who sign up for the app via the oauth
   require(__dirname + '/components/rtm_manager.js')(controller);
 
-  var normalizedPath = require('path').join(__dirname, 'skills');
+  const normalizedPath = require('path').join(__dirname, 'skills');
   require('fs')
     .readdirSync(normalizedPath)
     .forEach(function(file) {

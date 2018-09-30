@@ -18,13 +18,13 @@
 
 */
 
-module.exports = function(controller) {
+module.exports = controller => {
   // listen for someone saying 'tasks' to the bot
   // reply with a list of current tasks loaded from the storage system
   // based on this user's id
-  controller.hears(['tasks', 'todo'], 'direct_message', function(bot, message) {
+  controller.hears(['tasks', 'todo'], 'direct_message', (bot, message) => {
     // load user from storage...
-    controller.storage.users.get(message.user, function(err, user) {
+    controller.storage.users.get(message.user, (err, user) => {
       // user object can contain arbitary keys. we will store tasks in .tasks
       if (!user || !user.tasks || user.tasks.length == 0) {
         bot.reply(
@@ -32,7 +32,7 @@ module.exports = function(controller) {
           'There are no tasks on your list. Say `add _task_` to add something.'
         );
       } else {
-        var text =
+        const text =
           'Here are your current tasks: \n' +
           generateTaskList(user) +
           'Reply with `done _number_` to mark a task completed.';
@@ -47,9 +47,9 @@ module.exports = function(controller) {
   controller.hears(
     ['add (.*)'],
     'direct_message,direct_mention,mention',
-    function(bot, message) {
-      var newtask = message.match[1];
-      controller.storage.users.get(message.user, function(err, user) {
+    (bot, message) => {
+      const newtask = message.match[1];
+      controller.storage.users.get(message.user, (err, user) => {
         if (!user) {
           user = {};
           user.id = message.user;
@@ -58,7 +58,7 @@ module.exports = function(controller) {
 
         user.tasks.push(newtask);
 
-        controller.storage.users.save(user, function(err, saved) {
+        controller.storage.users.save(user, (err, saved) => {
           if (err) {
             bot.reply(
               message,
@@ -77,8 +77,8 @@ module.exports = function(controller) {
   );
 
   // listen for a user saying "done <number>" and mark that item as done.
-  controller.hears(['done (.*)'], 'direct_message', function(bot, message) {
-    var number = message.match[1];
+  controller.hears(['done (.*)'], 'direct_message', (bot, message) => {
+    let number = message.match[1];
 
     if (isNaN(number)) {
       bot.reply(message, 'Please specify a number.');
@@ -86,7 +86,7 @@ module.exports = function(controller) {
       // adjust for 0-based array index
       number = parseInt(number) - 1;
 
-      controller.storage.users.get(message.user, function(err, user) {
+      controller.storage.users.get(message.user, (err, user) => {
         if (!user) {
           user = {};
           user.id = message.user;
@@ -101,7 +101,7 @@ module.exports = function(controller) {
               ' items on your list.'
           );
         } else {
-          var item = user.tasks.splice(number, 1);
+          const item = user.tasks.splice(number, 1);
 
           // reply with a strikethrough message...
           bot.reply(message, '~' + item + '~');
@@ -122,9 +122,9 @@ module.exports = function(controller) {
   // simple function to generate the text of the task list so that
   // it can be used in various places
   function generateTaskList(user) {
-    var text = '';
+    let text = '';
 
-    for (var t = 0; t < user.tasks.length; t++) {
+    for (let t = 0; t < user.tasks.length; t++) {
       text = text + '> `' + (t + 1) + '`) ' + user.tasks[t] + '\n';
     }
 

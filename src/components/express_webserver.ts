@@ -1,14 +1,14 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-var http = require('http');
+const express = require('express');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const http = require('http');
 
-module.exports = function(controller) {
-  var webserver = express();
-  webserver.use(function(req, res, next) {
+module.exports = controller => {
+  const webserver = express();
+  webserver.use((req, res, next) => {
     req.rawBody = '';
 
-    req.on('data', function(chunk) {
+    req.on('data', chunk => {
       req.rawBody += chunk;
     });
 
@@ -19,16 +19,16 @@ module.exports = function(controller) {
   webserver.use(bodyParser.urlencoded({ extended: true }));
 
   // import express middlewares that are present in /components/express_middleware
-  var normalizedPath = require('path').join(__dirname, 'express_middleware');
+  let normalizedPath = require('path').join(__dirname, 'express_middleware');
   require('fs')
     .readdirSync(normalizedPath)
-    .forEach(function(file) {
+    .forEach(file => {
       require('./express_middleware/' + file)(webserver, controller);
     });
 
-  var server = http.createServer(webserver);
+  const server = http.createServer(webserver);
 
-  server.listen(process.env.PORT || 3000, null, function() {
+  server.listen(process.env.PORT || 3000, null, () => {
     console.log(
       'Express webserver configured and listening at http://localhost:' +
         process.env.PORT || 3000
@@ -36,10 +36,10 @@ module.exports = function(controller) {
   });
 
   // import all the pre-defined routes that are present in /components/routes
-  var normalizedPath = require('path').join(__dirname, 'routes');
+  normalizedPath = require('path').join(__dirname, 'routes');
   require('fs')
     .readdirSync(normalizedPath)
-    .forEach(function(file) {
+    .forEach(file => {
       require('./routes/' + file)(webserver, controller);
     });
 
