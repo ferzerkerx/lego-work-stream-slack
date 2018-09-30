@@ -27,15 +27,11 @@ if (process.env.MONGO_URI) {
 // Create the Botkit controller, which controls all instances of the bot.
 const controller = Botkit.slackbot(bot_options);
 
-
-
-
 // Set up an Express-powered webserver to expose oauth and webhook endpoints
 const webserver = require(__dirname + '/components/express_webserver.js')(
   controller
 );
 
-controller.createOauthEndpoints(webserver);
 controller.createWebhookEndpoints(webserver);
 
 controller.startTicking();
