@@ -1,3 +1,4 @@
+
 if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
   usage_tip();
   process.exit(1);
@@ -34,14 +35,14 @@ const webserver = require(__dirname + '/components/express_webserver.js')(
 );
 
 if (!process.env.clientId || !process.env.clientSecret) {
-  webserver.get('/', function(req, res) {
+  webserver.get('/', (req, res) =>{
     res.send('active');
   });
   console.log(
     'WARNING: This application is not fully configured to work with Slack'
   );
 } else {
-  webserver.get('/', function(req, res) {
+  webserver.get('/', (req, res)=> {
     res.send('active');
   });
 

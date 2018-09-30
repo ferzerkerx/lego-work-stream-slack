@@ -9,9 +9,11 @@ respond immediately with a single line response.
 
 */
 
+import {SlackController} from "botkit";
+
 var wordfilter = require('wordfilter');
 
-module.exports = controller => {
+module.exports = (controller:SlackController) => {
   /* Collect some very simple runtime stats for use in the uptime/debug command */
   const stats = {
     triggers: 0,

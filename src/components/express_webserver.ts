@@ -1,9 +1,11 @@
+import {SlackController} from "botkit";
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const http = require('http');
 
-module.exports = controller => {
+module.exports = (controller : SlackController) => {
   const webserver = express();
   webserver.use((req, res, next) => {
     req.rawBody = '';
@@ -42,9 +44,6 @@ module.exports = controller => {
     .forEach(file => {
       require('./routes/' + file)(webserver, controller);
     });
-
-  controller.webserver = webserver;
-  controller.httpserver = server;
 
   return webserver;
 };
