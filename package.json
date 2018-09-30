@@ -10,7 +10,7 @@
     "test": "tsc && mocha dist/**/*.spec.js",
     "tsc": "tsc",
     "prettier": "prettier --write \"src/**/*.ts\"",
-    "postinstall": "npm run build"
+    "postinstall": "yarn compile"
   },
   "prettier": {
     "singleQuote": true,
