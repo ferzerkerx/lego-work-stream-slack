@@ -11,6 +11,7 @@ function slackBotConfiguration() : SlackConfiguration {
     clientId: process.env.clientId,
     clientSecret: process.env.clientSecret,
     debug: true,
+    rtm_receive_messages: false,
     scopes: ['bot', 'incoming-webhook']
   };
 
