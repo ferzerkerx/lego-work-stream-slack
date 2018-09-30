@@ -10,6 +10,6 @@ module.exports = (webserver, controller) => {
 
     // Now, pass the webhook into be processed
     req.type = 'event_callback';
-    controller.handleWebhookPayload(req, res);
+    // controller.handleWebhookPayload(req, res);
   });
 };
