@@ -6,12 +6,12 @@ if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
 
 const Botkit = require('botkit');
 
-function slackBotConfiguration() : SlackConfiguration{
+function slackBotConfiguration() : SlackConfiguration {
   const botConfig: SlackConfiguration = {
     clientId: process.env.clientId,
     clientSecret: process.env.clientSecret,
     debug: true,
-    scopes: ['bot']
+    scopes: ['bot', 'incoming-webhook']
   };
 
 // Use a mongo database if specified, otherwise store in a JSON file local to the app.
@@ -41,10 +41,11 @@ const webserver = require(__dirname + '/components/express_webserver.js')(
   controller
 );
 
-controller.createOauthEndpoints(webserver);
+controller.startTicking();
+
+controller.createOauthEndpoints(webserver, (err, req, res)=>{console.log(`%%%%%%%%%%${err}`)});
 controller.createWebhookEndpoints(webserver);
 
-controller.startTicking();
 
 if (!process.env.clientId || !process.env.clientSecret) {
   webserver.get('/', (req, res) =>{
@@ -65,7 +66,7 @@ if (!process.env.clientId || !process.env.clientSecret) {
   const normalizedPath = require('path').join(__dirname, 'skills');
   require('fs')
     .readdirSync(normalizedPath)
-    .forEach(function(file) {
+    .forEach((file) => {
       require('./skills/' + file)(controller);
     });
 
