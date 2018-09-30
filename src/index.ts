@@ -29,10 +29,14 @@ const controller = Botkit.slackbot(bot_options);
 
 controller.startTicking();
 
+
 // Set up an Express-powered webserver to expose oauth and webhook endpoints
 const webserver = require(__dirname + '/components/express_webserver.js')(
   controller
 );
+
+controller.createOauthEndpoints(webserver);
+controller.createWebhookEndpoints(webserver);
 
 if (!process.env.clientId || !process.env.clientSecret) {
   webserver.get('/', (req, res) =>{
