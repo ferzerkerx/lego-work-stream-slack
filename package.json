@@ -2,9 +2,13 @@
   "name": "unicorn-coach",
   "version": "0.0.1",
   "description": "",
-  "main": "bot.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node bot.js"
+    "start": "node dist/",
+    "compile": "tsc",
+    "dev": "tsc & nodemon dist",
+    "test": "tsc && mocha dist/**/*.spec.js",
+    "tsc": "tsc"
   },
   "dependencies": {
     "body-parser": "^1.15.2",
@@ -19,7 +23,19 @@
     "request": "^2.79.0",
     "wordfilter": "^0.2.6"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/dotenv": "^4.0.3",
+    "@types/express": "^4.16.0",
+    "@types/mocha": "2.2.41",
+    "@types/node": "7.0.22",
+    "mocha": "3.4.2",
+    "nodemon": "1.11.0",
+    "ts-loader": "^5.2.1",
+    "ts-node": "^7.0.1",
+    "tsc": "1.20150623.0",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.1"
+  },
   "author": "ferzerkerx",
   "license": "ISC"
 }
