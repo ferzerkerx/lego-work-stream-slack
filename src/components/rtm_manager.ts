@@ -48,19 +48,6 @@ module.exports = (controller) => {
   controller.on('rtm:start', (config) => {
     const bot = controller.spawn(config);
 
-    bot.api.team.info({}, function(err, response) {
-      if (err) throw new Error(err.stack || JSON.stringify(err));
-      // FIX2 this is a workaround for https://github.com/howdyai/botkit/issues/590
-      response.team.bot = {
-        id: 'boti',
-        name: 'boti'
-      };
-      // END FIX2
-      controller.saveTeam(response.team, function() {
-        // ignore
-      })
-    });
-
     manager.start(bot);
   });
 
