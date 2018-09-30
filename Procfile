@@ -1,1 +1,1 @@
-web: npm install && node tsc && node dist/
+web: node dist/

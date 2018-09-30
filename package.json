@@ -9,7 +9,8 @@
     "dev": "tsc & nodemon dist",
     "test": "tsc && mocha dist/**/*.spec.js",
     "tsc": "tsc",
-    "prettier": "prettier --write \"src/**/*.ts\""
+    "prettier": "prettier --write \"src/**/*.ts\"",
+    "postinstall": "npm run build"
   },
   "prettier": {
     "singleQuote": true,
