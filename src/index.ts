@@ -41,6 +41,7 @@ const webserver = require(__dirname + '/components/express_webserver.js')(
   controller
 );
 
+controller.createOauthEndpoints(webserver);
 controller.createWebhookEndpoints(webserver);
 
 controller.startTicking();
