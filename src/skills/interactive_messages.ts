@@ -9,25 +9,29 @@ module.exports = controller => {
         for (let a = 0; a < reply.attachments.length; a++) {
           reply.attachments[a].actions = null;
         }
-
-        let person = '<@' + message.user + '>';
-        if (message.channel[0] == 'D') {
-          person = 'You';
-        }
-
         if (message.actions) {
           let messageStr = '';
           for (let currentAction of message.actions) {
             for (let selectOption of currentAction.selected_options) {
-              messageStr += `${currentAction} : ${selectOption.value}`
+              messageStr += `${currentAction.name} : ${selectOption.value}`
             }
           }
 
-          reply.attachments.push({
-            text: `${person} said, ${messageStr}`,
-          });
+          console.log(`message: ${messageStr}`);
 
-          bot.replyInteractive(message, reply);
+          if (message.actions.length > 2) {
+            let person = '<@' + message.user + '>';
+            if (message.channel[0] == 'D') {
+              person = 'You';
+            }
+
+            reply.attachments.push({
+              text: `${person} said, ${messageStr}`,
+            });
+
+            bot.replyInteractive(message, reply);
+          }
+
         }
       }
     }

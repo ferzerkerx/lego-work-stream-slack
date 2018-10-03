@@ -144,21 +144,26 @@ function legoMessage() : SlackMessage {
     ]
   };
 }
+//TODO this function needs to be called when the bot starts
+function saveTeamIfNeeded(bot, controller) {
+  let team = {
+    id: bot.team_info.id,
+    name: bot.team_info.name,
+    bot: {
+      user_id: bot.identity.id,
+      name: bot.identity.name
+    }
+  };
+  controller.storage.teams.save(team, function (err) {
+    if (err)
+      console.log(err)
+  });
+}
 
 module.exports = controller => {
   controller.hears('lego', 'direct_mention,direct_message', (bot, message) => {
-    let team = {
-      id: bot.team_info.id,
-      name: bot.team_info.name,
-      bot: {
-        user_id: bot.identity.id,
-        name: bot.identity.name
-      }
-    };
-    controller.storage.teams.save(team, function(err){
-      if (err)
-        console.log(err)
-    });
+
+    saveTeamIfNeeded(bot, controller);
     bot.reply(message, legoMessage());
   });
 };
