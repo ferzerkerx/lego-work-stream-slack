@@ -12,7 +12,7 @@ function legoMessage() : SlackMessage {
         "attachment_type": "default",
         "actions": [
           {
-            "name": "green",
+            "name": "lego-select-option-green",
             "text": "Green",
             "type": "select",
             "options": [
@@ -44,7 +44,7 @@ function legoMessage() : SlackMessage {
             ]
           },
           {
-            "name": "red",
+            "name": "lego-select-option-red",
             "text": "Red",
             "type": "select",
             "options": [
@@ -76,7 +76,7 @@ function legoMessage() : SlackMessage {
             ]
           },
           {
-            "name": "orange",
+            "name": "lego-select-option-orange",
             "text": "Orange",
             "type": "select",
             "options": [
@@ -108,7 +108,7 @@ function legoMessage() : SlackMessage {
             ]
           },
           {
-            "name": "black",
+            "name": "lego-select-option-black",
             "text": "Black",
             "type": "select",
             "options": [
