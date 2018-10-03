@@ -19,7 +19,7 @@ module.exports = controller => {
 
           console.log(`message: ${messageStr}`);
 
-          if (message.actions.length > 2) {
+          // if (message.actions.length > 2) {
             let person = '<@' + message.user + '>';
             if (message.channel[0] == 'D') {
               person = 'You';
@@ -30,7 +30,7 @@ module.exports = controller => {
             });
 
             bot.replyInteractive(message, reply);
-          }
+          // }
 
         }
       }
