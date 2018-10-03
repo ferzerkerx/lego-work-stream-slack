@@ -48,6 +48,7 @@ module.exports = (controller) => {
   controller.on('rtm:start', (config) => {
     const bot = controller.spawn(config);
 
+    console.log(`#### bot  ${JSON.stringify(bot)}`);
     manager.start(bot);
   });
 
