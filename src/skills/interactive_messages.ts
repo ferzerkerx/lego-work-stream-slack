@@ -16,7 +16,7 @@ module.exports = controller => {
         }
 
         reply.attachments.push({
-          text: person + ' said, ' + message.actions[0].value,
+          text: person + ' said, ' + message.actions[0].selected_options[0].value,
         });
 
         bot.replyInteractive(message, reply);
