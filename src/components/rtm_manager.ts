@@ -14,7 +14,6 @@ module.exports = (controller) => {
           } else {
             managed_bots[bot.config.token] = bot.rtm;
             debug('Start RTM: Success');
-            console.log(`#### bot  name:${bot.name}, id:${bot.id}`);
           }
         });
       }
