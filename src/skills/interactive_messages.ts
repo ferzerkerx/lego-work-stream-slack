@@ -6,9 +6,9 @@ module.exports = controller => {
       if (message.actions[0].name.match(/^lego-select-option-/)) {
         const reply = message.original_message;
 
-        for (let a = 0; a < reply.attachments.length; a++) {
-          reply.attachments[a].actions = null;
-        }
+        // for (let a = 0; a < reply.attachments.length; a++) {
+        //   reply.attachments[a].actions = null;
+        // }
         if (message.actions) {
           let messageStr = '';
           for (let currentAction of message.actions) {
