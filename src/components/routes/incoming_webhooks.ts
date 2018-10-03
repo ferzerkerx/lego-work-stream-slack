@@ -12,6 +12,6 @@ module.exports = (webserver, controller) => {
     req.type = 'event_callback';
 
     console.log(JSON.stringify(req.body))
-    // controller.handleWebhookPayload(req, res);
+    controller.handleWebhookPayload(req, res);
   });
 };

@@ -148,7 +148,18 @@ function legoMessage() : SlackMessage {
 module.exports = controller => {
   controller.hears('lego', 'direct_mention,direct_message', (bot, message) => {
     console.log(JSON.stringify(message))
-    controller.storage.teams.save({id: message.team, foo:"bar"}, function(err){
+
+    // team.bot.user_id,
+    //   name: team.bot.name
+
+    let team = {
+      id: message.team,
+      bot: {
+        user_id: message.original_message.bot_id,
+        name: message.original_message.bot_id
+      }
+    };
+    controller.storage.teams.save(team, function(err){
       if (err)
         console.log(err)
     });
