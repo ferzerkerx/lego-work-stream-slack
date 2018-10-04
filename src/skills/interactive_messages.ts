@@ -28,9 +28,9 @@ module.exports = controller => {
           text: `${person} said, ${messageStr}`,
         });
 
-        bot.replyInteractive(message, reply);
-
         reply.attachments = attachmentsToSend;
+
+        bot.replyInteractive(message, reply);
       }
     }
 
