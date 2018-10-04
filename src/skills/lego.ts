@@ -1,8 +1,24 @@
 import {SlackMessage} from "botkit";
 
+function legoOption(name, text, values = 8) {
+  let options = [];
+  for (let i = 0; i < values; i++) {
+    options.push({
+      "text": `${i}`,
+      "value": i
+    })
+  }
+  return {
+    "name": name,
+    "text": text,
+    "type": "select",
+    "options": options
+  };
+}
+
 function legoMessage() : SlackMessage {
   return {
-    "text": "Please Select your legos",
+    "text": "Please select your Legos",
     "attachments": [
       {
         "text": "Choose your legos!",
@@ -11,134 +27,10 @@ function legoMessage() : SlackMessage {
         "color": "#3AA3E3",
         "attachment_type": "default",
         "actions": [
-          {
-            "name": "lego-select-option-green",
-            "text": "Green",
-            "type": "select",
-            "options": [
-              {
-                "text": "1",
-                "value": 1
-              }, {
-                "text": "2",
-                "value": 2
-              }, {
-                "text": "3",
-                "value": 3
-              }, {
-                "text": "4",
-                "value": 4
-              }, {
-                "text": "5",
-                "value": 5
-              }, {
-                "text": "6",
-                "value": 6
-              }, {
-                "text": "7",
-                "value": 7
-              }, {
-                "text": "8",
-                "value": 8
-              }
-            ]
-          },
-          {
-            "name": "lego-select-option-red",
-            "text": "Red",
-            "type": "select",
-            "options": [
-              {
-                "text": "1",
-                "value": 1
-              }, {
-                "text": "2",
-                "value": 2
-              }, {
-                "text": "3",
-                "value": 3
-              }, {
-                "text": "4",
-                "value": 4
-              }, {
-                "text": "5",
-                "value": 5
-              }, {
-                "text": "6",
-                "value": 6
-              }, {
-                "text": "7",
-                "value": 7
-              }, {
-                "text": "8",
-                "value": 8
-              }
-            ]
-          },
-          {
-            "name": "lego-select-option-orange",
-            "text": "Orange",
-            "type": "select",
-            "options": [
-              {
-                "text": "1",
-                "value": 1
-              }, {
-                "text": "2",
-                "value": 2
-              }, {
-                "text": "3",
-                "value": 3
-              }, {
-                "text": "4",
-                "value": 4
-              }, {
-                "text": "5",
-                "value": 5
-              }, {
-                "text": "6",
-                "value": 6
-              }, {
-                "text": "7",
-                "value": 7
-              }, {
-                "text": "8",
-                "value": 8
-              }
-            ]
-          },
-          {
-            "name": "lego-select-option-black",
-            "text": "Black",
-            "type": "select",
-            "options": [
-              {
-                "text": "1",
-                "value": 1
-              }, {
-                "text": "2",
-                "value": 2
-              }, {
-                "text": "3",
-                "value": 3
-              }, {
-                "text": "4",
-                "value": 4
-              }, {
-                "text": "5",
-                "value": 5
-              }, {
-                "text": "6",
-                "value": 6
-              }, {
-                "text": "7",
-                "value": 7
-              }, {
-                "text": "8",
-                "value": 8
-              }
-            ]
-          }
+          legoOption("lego-select-option-green", "Green"),
+          legoOption("lego-select-option-red", "Red"),
+          legoOption("lego-select-option-orange", "Orange"),
+          legoOption("lego-select-option-black", "Black")
         ]
       }
     ]
