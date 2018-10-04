@@ -7,8 +7,12 @@ module.exports = controller => {
         const reply = message.original_message;
 
         let attachmentsToSend: SlackAttachment[] = reply.attachments.filter(
-          attachment => attachment.type === 'select'
+          attachment => attachment.callback_id === 'lego_stats'
         );
+
+        // for (let a = 0; a < reply.attachments.length; a++) {
+          //   reply.attachments[a].actions = null;
+          // }
 
         let messageStr = '';
         for (let currentAction of message.actions) {
