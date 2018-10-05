@@ -1,8 +1,20 @@
-import {SlackAttachment, SlackBot, SlackMessage} from 'botkit';
+import { SlackAttachment, SlackBot, SlackMessage } from 'botkit';
 
 let oldMessages: any = {};
 
-function formatMessage(messageStoredData) :String {
+class MessageRepository {
+
+  //TODO need to consider channel info in the key
+  static findMessage(channel:String, messageId) : any {
+    return oldMessages[messageId];
+  }
+
+  static saveMessage(channel:String, messageId, messageData) : any {
+    oldMessages[messageId] = messageData;
+  }
+}
+
+function formatMessage(messageStoredData): String {
   let messageStr: String = '';
   for (const actionName of Object.keys(messageStoredData)) {
     const actionData = messageStoredData[actionName];
@@ -17,30 +29,29 @@ function formatMessage(messageStoredData) :String {
 }
 
 function createReplyAttachment(message): SlackAttachment {
-  //TODO need to consider channel info in the key
-  let messageStoredData = oldMessages[message.original_message.ts] || {};
-  oldMessages[message.original_message.ts] = messageStoredData;
+  let messageId : String = message.original_message.ts;
+  let messageStoredData = MessageRepository.findMessage(message.channel, messageId) || {};
 
+  let currentAction = message.actions[0];
 
-  for (let currentAction of message.actions) {
-    let statusForAction = messageStoredData[currentAction.name] || {};
-    statusForAction[message.user] = statusForAction[message.user] || {
-      user: message.user,
-      value: 0,
-    };
-    messageStoredData[currentAction.name] = statusForAction;
+  let statusForAction = messageStoredData[currentAction.name] || {};
+  statusForAction[message.user] = statusForAction[message.user] || {
+    user: message.user,
+    value: 0,
+  };
+  statusForAction[message.user].value = currentAction.selected_options[0].value;
 
-    statusForAction[message.user].value = currentAction.selected_options[0].value;
+  messageStoredData[currentAction.name] = statusForAction;
 
-    let messageStr = formatMessage(messageStoredData);
-    console.log(`messageStr: ${messageStr}`);
-    console.log(`oldMessages: ${JSON.stringify(oldMessages)}`);
+  MessageRepository.saveMessage(message.channel, messageId, messageStoredData);
 
-    return {
-      text: `${messageStr}`,
-    };
-  }
-  return {};
+  let messageStr = formatMessage(messageStoredData);
+  console.log(`messageStr: ${messageStr}`);
+  console.log(`oldMessages: ${JSON.stringify(oldMessages)}`);
+
+  return {
+    text: `${messageStr}`,
+  };
 }
 
 function createResponse(message): SlackMessage {
