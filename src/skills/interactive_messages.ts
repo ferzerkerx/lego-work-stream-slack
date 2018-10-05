@@ -24,6 +24,7 @@ function createSummaryMessage(message): SlackAttachment {
         const entryData = actionData[entryKey];
         messageStr += `<@${entryData.user}>:${entryData.value}, `;
       }
+      messageStr += `\n`;
     }
     console.log(`messageStr: ${messageStr}`);
     console.log(`oldMessages: ${JSON.stringify(oldMessages)}`);
