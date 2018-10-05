@@ -17,6 +17,7 @@ function formatMessage(messageStoredData) :String {
 }
 
 function createReplyAttachment(message): SlackAttachment {
+  //TODO need to consider channel info in the key
   let messageStoredData = oldMessages[message.original_message.ts] || {};
   oldMessages[message.original_message.ts] = messageStoredData;
 
