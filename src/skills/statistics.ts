@@ -1,4 +1,4 @@
-import {SlackController} from "botkit";
+import { SlackController } from 'botkit';
 
 function formatUptime(uptime) {
   let unit = 'second';
@@ -16,7 +16,7 @@ function formatUptime(uptime) {
   return `${parseInt(uptime)} ${unit}`;
 }
 
-module.exports = (controller:SlackController) => {
+module.exports = (controller: SlackController) => {
   const stats = {
     triggers: 0,
     convos: 0,
