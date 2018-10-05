@@ -2,7 +2,7 @@ import {SlackMessage} from "botkit";
 
 function legoOption(name, text, values = 8) {
   let options = [];
-  for (let i = 0; i < values; i++) {
+  for (let i = 1; i <= values; i++) {
     options.push({
       "text": `${i}`,
       "value": i
