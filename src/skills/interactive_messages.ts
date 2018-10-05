@@ -1,4 +1,4 @@
-import { SlackAttachment, SlackBot, SlackMessage } from 'botkit';
+import {SlackAttachment, SlackBot, SlackMessage} from 'botkit';
 
 let oldMessages: any = {};
 
@@ -9,22 +9,20 @@ function createSummaryMessage(message): SlackAttachment {
 
   for (let currentAction of message.actions) {
     let statusForAction = messageStoredData[currentAction.name] || {};
-    let entryForUser = statusForAction[message.user] || {
-      user: `<@${message.user}>`,
+    statusForAction[message.user] = statusForAction[message.user] || {
+      user: message.user,
       value: currentAction.selected_options[0].value,
     };
-
-    statusForAction[message.user] = entryForUser;
     messageStoredData[currentAction.name] = statusForAction;
 
 
     let messageStr: String = '';
     for (const actionName of Object.keys(messageStoredData)) {
       const actionData = messageStoredData[actionName];
-      messageStr += `${actionData}: `;
+      messageStr += `${actionName}: `;
       for (const entryKey of Object.keys(actionData)) {
         const entryData = actionData[entryKey];
-        messageStr += `${entryData.user}:${entryData.value}, `;
+        messageStr += `<@${entryData.user}>:${entryData.value}, `;
       }
     }
     console.log(`messageStr: ${messageStr}`);
