@@ -1,9 +1,10 @@
 import { SlackController } from 'botkit';
+import * as path from 'path';
+import * as bodyParser from 'body-parser';
+import * as http from 'http';
+import * as cookieParser from 'cookie-parser';
 
 const express = require('express');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const http = require('http');
 
 module.exports = (controller: SlackController) => {
   const webserver = express();
@@ -20,7 +21,7 @@ module.exports = (controller: SlackController) => {
   webserver.use(bodyParser.json());
   webserver.use(bodyParser.urlencoded({ extended: true }));
 
-  let normalizedPath = require('path').join(__dirname, 'express_middleware');
+  let normalizedPath = path.join(__dirname, 'express_middleware');
   require('fs')
     .readdirSync(normalizedPath)
     .forEach(file => {

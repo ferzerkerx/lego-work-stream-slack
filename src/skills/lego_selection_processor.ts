@@ -21,7 +21,9 @@ function formatMessage(messageStoredData): String {
     messageStr += `${actionName}: `;
     for (const entryKey of Object.keys(actionData)) {
       const entryData = actionData[entryKey];
-      messageStr += `<@${entryData.user}>:${entryData.value}, `;
+      if (entryData.value) {
+        messageStr += `<@${entryData.user}>:${entryData.value}, `;
+      }
     }
     messageStr += `\n`;
   }

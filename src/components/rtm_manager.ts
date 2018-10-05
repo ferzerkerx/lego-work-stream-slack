@@ -1,4 +1,6 @@
-var debug = require('debug')('botkit:rtm_manager');
+import * as debug from 'debug';
+
+const log = debug('botkit:rtm_manager');
 
 module.exports = controller => {
   const managed_bots = {};
@@ -6,14 +8,14 @@ module.exports = controller => {
   const manager = {
     start: bot => {
       if (managed_bots[bot.config.token]) {
-        debug('Start RTM: already online');
+        log('Start RTM: already online');
       } else {
         bot.startRTM((err, bot) => {
           if (err) {
-            debug('Error starting RTM:', err);
+            log('Error starting RTM:', err);
           } else {
             managed_bots[bot.config.token] = bot.rtm;
-            debug('Start RTM: Success');
+            log('Start RTM: Success');
           }
         });
       }
@@ -21,17 +23,17 @@ module.exports = controller => {
     stop: bot => {
       if (managed_bots[bot.config.token]) {
         if (managed_bots[bot.config.token].rtm) {
-          debug('Stop RTM: Stopping bot');
+          log('Stop RTM: Stopping bot');
           managed_bots[bot.config.token].closeRTM();
         }
       }
     },
     remove: bot => {
-      debug('Removing bot from manager');
+      log('Removing bot from manager');
       delete managed_bots[bot.config.token];
     },
     reconnect: () => {
-      debug('Reconnecting all existing bots...');
+      log('Reconnecting all existing bots...');
       controller.storage.teams.all(function(err, list) {
         if (err) {
           throw new Error('Error: Could not load existing bots:' + err);

@@ -1,10 +1,11 @@
+import * as path from 'path';
 import { SlackConfiguration, SlackSpawnConfiguration } from 'botkit';
+import * as fs from 'fs';
+const Botkit = require('botkit');
 
 if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
   process.exit(1);
 }
-
-const Botkit = require('botkit');
 
 function slackBotConfiguration(): SlackConfiguration {
   const botConfig: SlackConfiguration = {
@@ -57,12 +58,10 @@ if (!process.env.clientId || !process.env.clientSecret) {
 
   require(`${__dirname}/components/rtm_manager.js`)(controller);
 
-  const normalizedPath = require('path').join(__dirname, 'skills');
-  require('fs')
-    .readdirSync(normalizedPath)
-    .forEach(file => {
-      require(`./skills/${file}`)(controller);
-    });
+  const normalizedPath = path.join(__dirname, 'skills');
+  fs.readdirSync(normalizedPath).forEach(file => {
+    require(`./skills/${file}`)(controller);
+  });
 
   controller.trigger('rtm:start', [spawnConfig]);
 }
