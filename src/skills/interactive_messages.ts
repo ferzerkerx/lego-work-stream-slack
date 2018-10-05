@@ -9,12 +9,12 @@ function createSummaryMessage(message): SlackAttachment {
 
   for (let currentAction of message.actions) {
     let statusForAction = messageStoredData[currentAction.name] || {};
-    let entryForUser = statusForAction[message.user.id] || {
-      user: message.user,
+    let entryForUser = statusForAction[message.user] || {
+      user: `<@${message.user}>`,
       value: currentAction.selected_options[0].value,
     };
 
-    statusForAction[message.user.id] = entryForUser;
+    statusForAction[message.user] = entryForUser;
     messageStoredData[currentAction.name] = statusForAction;
 
 
@@ -24,9 +24,10 @@ function createSummaryMessage(message): SlackAttachment {
       messageStr += `${actionData}: `;
       for (const entryKey of Object.keys(actionData)) {
         const entryData = actionData[entryKey];
-        messageStr += `<@${entryData.user}>:${entryData.value}, `;
+        messageStr += `${entryData.user}:${entryData.value}, `;
       }
     }
+    console.log(`messageStr: ${messageStr}`);
     console.log(`oldMessages: ${JSON.stringify(oldMessages)}`);
 
     return {
