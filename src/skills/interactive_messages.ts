@@ -2,7 +2,21 @@ import {SlackAttachment, SlackBot, SlackMessage} from 'botkit';
 
 let oldMessages: any = {};
 
-function createSummaryMessage(message): SlackAttachment {
+function formatMessage(messageStoredData) :String {
+  let messageStr: String = '';
+  for (const actionName of Object.keys(messageStoredData)) {
+    const actionData = messageStoredData[actionName];
+    messageStr += `${actionName}: `;
+    for (const entryKey of Object.keys(actionData)) {
+      const entryData = actionData[entryKey];
+      messageStr += `<@${entryData.user}>:${entryData.value}, `;
+    }
+    messageStr += `\n`;
+  }
+  return messageStr;
+}
+
+function createReplyAttachment(message): SlackAttachment {
   let messageStoredData = oldMessages[message.original_message.ts] || {};
   oldMessages[message.original_message.ts] = messageStoredData;
 
@@ -16,16 +30,7 @@ function createSummaryMessage(message): SlackAttachment {
     messageStoredData[currentAction.name] = statusForAction;
 
 
-    let messageStr: String = '';
-    for (const actionName of Object.keys(messageStoredData)) {
-      const actionData = messageStoredData[actionName];
-      messageStr += `${actionName}: `;
-      for (const entryKey of Object.keys(actionData)) {
-        const entryData = actionData[entryKey];
-        messageStr += `<@${entryData.user}>:${entryData.value}, `;
-      }
-      messageStr += `\n`;
-    }
+    let messageStr = formatMessage(messageStoredData);
     console.log(`messageStr: ${messageStr}`);
     console.log(`oldMessages: ${JSON.stringify(oldMessages)}`);
 
@@ -43,8 +48,8 @@ function createResponse(message): SlackMessage {
     attachment => attachment.callback_id === 'lego_stats'
   );
 
-  let replyStatusMessage: SlackAttachment = createSummaryMessage(message);
-  attachmentsToSend.push(replyStatusMessage);
+  let replyStatusAttachment: SlackAttachment = createReplyAttachment(message);
+  attachmentsToSend.push(replyStatusAttachment);
 
   reply.attachments = attachmentsToSend;
   return reply;
