@@ -74,8 +74,6 @@ module.exports = controller => {
   controller.middleware.receive.use((bot: SlackBot, message, next) => {
     if (message.type == 'interactive_message_callback' && message.actions) {
       if (message.actions[0].name.match(/^lego-select-option-/)) {
-        console.log(`tes: ${message.original_message.ts}`);
-
         bot.replyInteractive(message, createResponse(message));
       }
     }
