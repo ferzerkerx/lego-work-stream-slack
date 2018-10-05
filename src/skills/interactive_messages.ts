@@ -25,10 +25,11 @@ function createReplyAttachment(message): SlackAttachment {
     let statusForAction = messageStoredData[currentAction.name] || {};
     statusForAction[message.user] = statusForAction[message.user] || {
       user: message.user,
-      value: currentAction.selected_options[0].value,
+      value: 0,
     };
     messageStoredData[currentAction.name] = statusForAction;
 
+    statusForAction.value = currentAction.selected_options[0].value;
 
     let messageStr = formatMessage(messageStoredData);
     console.log(`messageStr: ${messageStr}`);
