@@ -1,16 +1,16 @@
 import { SlackAttachment, SlackBot, SlackMessage } from 'botkit';
 
-let oldMessages: any = {};
-
 class MessageRepository {
+  static oldMessages: any = {};
 
   //TODO need to consider channel info in the key
-  static findMessage(channel:String, messageId) : any {
-    return oldMessages[messageId];
+  static findMessage(channel: String, messageId): any {
+    return this.oldMessages[messageId];
   }
 
-  static saveMessage(channel:String, messageId, messageData) : any {
-    oldMessages[messageId] = messageData;
+  static saveMessage(channel: String, messageId, messageData): any {
+    this.oldMessages[messageId] = messageData;
+    console.log(`oldMessages: ${JSON.stringify(this.oldMessages)}`);
   }
 }
 
@@ -29,8 +29,9 @@ function formatMessage(messageStoredData): String {
 }
 
 function createReplyAttachment(message): SlackAttachment {
-  let messageId : String = message.original_message.ts;
-  let messageStoredData = MessageRepository.findMessage(message.channel, messageId) || {};
+  let messageId: String = message.original_message.ts;
+  let messageStoredData =
+    MessageRepository.findMessage(message.channel, messageId) || {};
 
   let currentAction = message.actions[0];
 
@@ -45,9 +46,8 @@ function createReplyAttachment(message): SlackAttachment {
 
   MessageRepository.saveMessage(message.channel, messageId, messageStoredData);
 
-  let messageStr = formatMessage(messageStoredData);
+  let messageStr: String = formatMessage(messageStoredData);
   console.log(`messageStr: ${messageStr}`);
-  console.log(`oldMessages: ${JSON.stringify(oldMessages)}`);
 
   return {
     text: `${messageStr}`,
