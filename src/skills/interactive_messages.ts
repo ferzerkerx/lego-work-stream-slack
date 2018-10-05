@@ -18,15 +18,15 @@ function createSummaryMessage(message): SlackAttachment {
 
 
     let messageStr: String = '';
-    for (const dataForAction of messageStoredData) {
-      for (const entries of dataForAction) {
-
+    for (const actionName of Object.keys(messageStoredData)) {
+      const actionData = messageStoredData[actionName];
+      messageStr += `${actionData}: `;
+      for (const entryKey of Object.keys(actionData)) {
+        const entryData = actionData[entryKey];
+        messageStr += `<@${entryKey}>:${entryData.value}, `;
       }
     }
     console.log(`oldMessages: ${JSON.stringify(oldMessages)}`);
-
-
-    let person = `<@${message.user}>`;
 
     return {
       text: `${messageStr}`,
