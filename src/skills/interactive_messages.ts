@@ -3,27 +3,33 @@ import { SlackAttachment, SlackBot, SlackMessage } from 'botkit';
 let oldMessages: any = {};
 
 function createSummaryMessage(message): SlackAttachment {
-  let oldMessage = oldMessages[message.original_message.ts] || {};
-  if (!oldMessage) {
-    oldMessages[message.original_message.ts] = oldMessage;
-  }
+  let messageStoredData = oldMessages[message.original_message.ts] || {};
+  oldMessages[message.original_message.ts] = messageStoredData;
 
-  let messageStr: String = '';
+
   for (let currentAction of message.actions) {
-    let statusForAction = oldMessage[currentAction.name] || {};
+    let statusForAction = messageStoredData[currentAction.name] || {};
     let entryForUser = statusForAction[message.user] || {
       value: currentAction.selected_options[0].value,
     };
 
     statusForAction[message.user] = entryForUser;
-    oldMessage[currentAction.name] = statusForAction;
+    messageStoredData[currentAction.name] = statusForAction;
 
+
+    let messageStr: String = '';
+    for (const dataForAction of messageStoredData) {
+      for (const entries of dataForAction) {
+
+      }
+    }
     console.log(`oldMessages: ${JSON.stringify(oldMessages)}`);
+
 
     let person = `<@${message.user}>`;
 
     return {
-      text: `${person} said, ${messageStr}`,
+      text: `${messageStr}`,
     };
   }
   return {};
