@@ -17,22 +17,6 @@ function formatMessage(messageStoredData): String {
   return messageStr;
 }
 
-function updatedStatusForAction(messageStoredData, message): any {
-  let currentAction = message.actions[0];
-
-  let statusForAction = messageStoredData[currentAction.name] || {};
-  statusForAction[message.user] = statusForAction[message.user] || {
-    user: message.user,
-    value: 0,
-  };
-  statusForAction[message.user].value = currentAction.selected_options[0].value;
-
-  return {
-    actionName: currentAction.name,
-    statusForAction: statusForAction,
-  };
-}
-
 function defaultErrorHandling(err) {
   console.error(err);
 }
@@ -51,15 +35,21 @@ module.exports = controller => {
     return attachmentsToSend;
   }
 
-  function updateMessage(messageData, message) {
-    let messageStoredData = messageData || {};
-    let { actionName, statusForAction } = updatedStatusForAction(
-      messageStoredData,
-      message
-    );
-    messageStoredData[actionName] = statusForAction;
+  function updateSelectedValues(currentSelectedValues, message) {
+    let selectedValues = currentSelectedValues || {};
+    let currentAction = message.actions[0];
 
-    return messageStoredData;
+    let currentSelectedValue = selectedValues[currentAction.name] || {};
+    currentSelectedValue[message.user] = currentSelectedValue[message.user] || {
+      user: message.user,
+      name: message.user.name,
+      value: 0,
+    };
+    currentSelectedValue[message.user].value =
+      currentAction.selected_options[0].value;
+    selectedValues[currentAction] = currentSelectedValue;
+
+    return selectedValues;
   }
 
   controller.middleware.receive.use((bot: SlackBot, message, next) => {
@@ -67,29 +57,28 @@ module.exports = controller => {
       if (message.actions[0].name.match(/^lego-select-option-/)) {
         let fullMessageId = `${message.channel}_${message.original_message.ts}`;
 
-        controller.storage.lego_messages.get(
-          fullMessageId,
-          (err, data) => {
-            if (err) {
-              defaultErrorHandling(err);
-            } else {
-
-              let messageData = data;
-              if (!messageData) {
-                messageData = {};
-              }
-              let messageStoredData = updateMessage(messageData.actions || {}, message);
-              controller.storage.lego_messages.save(
-                { id: fullMessageId, actions:messageStoredData },
-                err => defaultErrorHandling(err)
-              );
-
-              const reply: SlackMessage = message.original_message;
-              reply.attachments = attachmentsToSend(messageStoredData, message);
-              bot.replyInteractive(message, reply);
+        controller.storage.lego_messages.get(fullMessageId, (err, data) => {
+          if (err) {
+            defaultErrorHandling(err);
+          } else {
+            let messageData = data;
+            if (!messageData) {
+              messageData = {};
             }
+            let selectedValues = updateSelectedValues(
+              messageData.selectedValues || {},
+              message
+            );
+            controller.storage.lego_messages.save(
+              { id: fullMessageId, selectedValues: selectedValues },
+              err => defaultErrorHandling(err)
+            );
+
+            const reply: SlackMessage = message.original_message;
+            reply.attachments = attachmentsToSend(selectedValues, message);
+            bot.replyInteractive(message, reply);
           }
-        );
+        });
       }
     }
 
