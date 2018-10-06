@@ -53,8 +53,7 @@ const legoSelectionHandler = (controller): void => {
     return attachmentsToSend;
   }
 
-  function updateLegoMessage(legoMessage: LegoMessage, message, fullMessageId: string) {
-    const storedLegoMessage: LegoMessage = legoMessage || new LegoMessage();
+  function updateLegoMessage(storedLegoMessage: LegoMessage = new LegoMessage(), message, fullMessageId: string) {
     let selectedValues: LegoSelectedValue[] = updateLegoSelectedValues(
       storedLegoMessage.selectedValues || [],
       message
@@ -111,11 +110,11 @@ const legoSelectionHandler = (controller): void => {
 
           controller.storage.lego_messages.get(
             fullMessageId,
-            (err: Error, data: LegoMessage) => {
+            (err: Error, storedLegoMessage: LegoMessage) => {
               if (err) {
                 defaultErrorHandling(err);
               } else {
-                const legoMessage = updateLegoMessage(data, message, fullMessageId);
+                const legoMessage = updateLegoMessage(storedLegoMessage, message, fullMessageId);
 
                 controller.storage.lego_messages.save(legoMessage, err =>
                   defaultErrorHandling(err)
