@@ -16,10 +16,10 @@ function slackBotConfiguration(): SlackConfiguration {
     scopes: ['bot', 'incoming-webhook'],
   };
 
-  if (process.env.MONGO_URI) {
+  if (process.env.MONGODB_URI) {
     console.log("Using MongoDB as storage");
     botConfig.storage = require('botkit-storage-mongo')({
-      mongoUri: process.env.MONGO_URI,
+      mongoUri: process.env.MONGODB_URI,
     });
   } else {
     botConfig.json_file_store = __dirname + '/.data/db/';
