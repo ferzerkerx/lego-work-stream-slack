@@ -1,5 +1,5 @@
-import { SlackAttachment, SlackBot, SlackMessage } from 'botkit';
-import { NextFunction } from 'express';
+import {SlackAttachment, SlackBot, SlackMessage} from 'botkit';
+import {NextFunction} from 'express';
 
 class LegoSelectedValue {
   id: string;
@@ -35,21 +35,6 @@ function defaultErrorHandling(err: Error): void {
   console.error(err);
 }
 
-function updateLegoMessage(data: LegoMessage, message, fullMessageId: string) {
-  const storedLegoMessage: LegoMessage = data || new LegoMessage();
-  let selectedValues: LegoSelectedValue[] = updateLegoSelectedValues(
-    storedLegoMessage.selectedValues || [],
-    message
-  );
-
-  const legoMessage: LegoMessage = {
-    id: fullMessageId,
-    selectedValues: selectedValues,
-    channel: message.channel,
-  };
-  return legoMessage;
-}
-
 const legoSelectionHandler = (controller): void => {
   function attachmentsToSend(
     legoSelectedValues: LegoSelectedValue[],
@@ -68,22 +53,20 @@ const legoSelectionHandler = (controller): void => {
     return attachmentsToSend;
   }
 
-  function updateLegoMessage(
-    storedLegoMessage: LegoMessage = new LegoMessage(),
-    message,
-    fullMessageId: string
-  ): LegoMessage {
-    let updatedLegoSelectedValues: LegoSelectedValue[] = updateLegoSelectedValues(
+  function updateLegoMessage(legoMessage: LegoMessage, message, fullMessageId: string) {
+    const storedLegoMessage: LegoMessage = legoMessage || new LegoMessage();
+    let selectedValues: LegoSelectedValue[] = updateLegoSelectedValues(
       storedLegoMessage.selectedValues || [],
       message
     );
 
     return {
       id: fullMessageId,
-      selectedValues: updatedLegoSelectedValues,
+      selectedValues: selectedValues,
       channel: message.channel,
     };
   }
+
 
   function updateLegoSelectedValues(
     currentSelectedValues: LegoSelectedValue[] = [],
@@ -132,7 +115,7 @@ const legoSelectionHandler = (controller): void => {
               if (err) {
                 defaultErrorHandling(err);
               } else {
-                const legoMessage = updateLegoMessage(data || new LegoMessage(), message, fullMessageId);
+                const legoMessage = updateLegoMessage(data, message, fullMessageId);
 
                 controller.storage.lego_messages.save(legoMessage, err =>
                   defaultErrorHandling(err)
