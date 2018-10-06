@@ -69,11 +69,15 @@ module.exports = controller => {
 
         controller.storage.lego_messages.get(
           fullMessageId,
-          (err, messageData = {actions: {}}) => {
+          (err, data) => {
             if (err) {
               defaultErrorHandling(err);
             } else {
 
+              let messageData = data;
+              if (!messageData) {
+                messageData = {};
+              }
               let messageStoredData = updateMessage(messageData.actions || {}, message);
               controller.storage.lego_messages.save(
                 { id: fullMessageId, actions:messageStoredData },
