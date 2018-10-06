@@ -3,16 +3,19 @@ import * as path from 'path';
 import * as bodyParser from 'body-parser';
 import * as http from 'http';
 import * as cookieParser from 'cookie-parser';
+import * as fs from "fs";
+import * as express from "express";
+import {Server} from "http";
+import {Express, Request} from 'express';
 
-const express = require('express');
 
 module.exports = (controller: SlackController) => {
-  const webserver = express();
-  webserver.use((req, res, next) => {
-    req.rawBody = '';
+  const webserver:Express = express();
+  webserver.use((req:Request, res, next) => {
+    req.body = '';
 
     req.on('data', chunk => {
-      req.rawBody += chunk;
+      req.body += chunk;
     });
 
     next();
@@ -22,13 +25,12 @@ module.exports = (controller: SlackController) => {
   webserver.use(bodyParser.urlencoded({ extended: true }));
 
   let normalizedPath = path.join(__dirname, 'express_middleware');
-  require('fs')
-    .readdirSync(normalizedPath)
+  fs.readdirSync(normalizedPath)
     .forEach(file => {
       require(`./express_middleware/${file}`)(webserver, controller);
     });
 
-  const server = http.createServer(webserver);
+  const server:Server = http.createServer(webserver);
 
   server.listen(process.env.PORT || 3000, null, () => {
     console.log(
@@ -37,9 +39,8 @@ module.exports = (controller: SlackController) => {
     );
   });
 
-  normalizedPath = require('path').join(__dirname, 'routes');
-  require('fs')
-    .readdirSync(normalizedPath)
+  normalizedPath = path.join(__dirname, 'routes');
+  fs.readdirSync(normalizedPath)
     .forEach(file => {
       require(`./routes/${file}`)(webserver, controller);
     });

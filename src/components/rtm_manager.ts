@@ -1,8 +1,9 @@
 import * as debug from 'debug';
+import {SlackBot, SlackController, SlackSpawnConfiguration} from "botkit";
 
 const log = debug('botkit:rtm_manager');
 
-module.exports = controller => {
+module.exports = (controller:SlackController) => {
   const managed_bots = {};
   // The manager object exposes some useful tools for managing the RTM
   const manager = {
@@ -32,23 +33,12 @@ module.exports = controller => {
       log('Removing bot from manager');
       delete managed_bots[bot.config.token];
     },
-    reconnect: () => {
-      log('Reconnecting all existing bots...');
-      controller.storage.teams.all(function(err, list) {
-        if (err) {
-          throw new Error('Error: Could not load existing bots:' + err);
-        } else {
-          for (let l = 0; l < list.length; l++) {
-            manager.start(controller.spawn(list[l].bot));
-          }
-        }
-      });
-    },
   };
 
   // Capture the rtm:start event and actually start the RTM...
-  controller.on('rtm:start', config => {
-    const bot = controller.spawn(config);
+  // @ts-ignore
+  controller.on('rtm:start', (config:SlackSpawnConfiguration) => {
+    const bot:SlackBot = controller.spawn(config);
 
     manager.start(bot);
   });

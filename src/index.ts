@@ -1,7 +1,7 @@
 import * as path from 'path';
-import { SlackConfiguration, SlackSpawnConfiguration } from 'botkit';
+import {SlackConfiguration, SlackController, SlackSpawnConfiguration} from 'botkit';
 import * as fs from 'fs';
-const Botkit = require('botkit');
+import * as Botkit from 'botkit';
 
 if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
   process.exit(1);
@@ -34,7 +34,7 @@ const spawnConfig: SlackSpawnConfiguration = {
 
 const botConfig: SlackConfiguration = slackBotConfiguration();
 
-const controller = Botkit.slackbot(botConfig);
+const controller:SlackController = Botkit.slackbot(botConfig);
 
 const webserver = require(`${__dirname}/components/express_webserver.js`)(
   controller
@@ -63,5 +63,6 @@ if (!process.env.clientId || !process.env.clientSecret) {
     require(`./skills/${file}`)(controller);
   });
 
+  // @ts-ignore
   controller.trigger('rtm:start', [spawnConfig]);
 }
