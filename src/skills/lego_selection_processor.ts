@@ -1,19 +1,5 @@
 import { SlackAttachment, SlackBot, SlackMessage } from 'botkit';
 
-class MessageRepository {
-  static oldMessages: any = {};
-
-  //TODO need to consider channel info in the key
-  static findMessage(channel: String, messageId): any {
-    return this.oldMessages[messageId];
-  }
-
-  static saveMessage(channel: String, messageId, messageData): any {
-    this.oldMessages[messageId] = messageData;
-    console.log(`oldMessages: ${JSON.stringify(this.oldMessages)}`);
-  }
-}
-
 function formatMessage(messageStoredData): String {
   let messageStr: String = '';
   for (const actionName of Object.keys(messageStoredData)) {
@@ -30,11 +16,7 @@ function formatMessage(messageStoredData): String {
   return messageStr;
 }
 
-function createReplyAttachment(message): SlackAttachment {
-  let messageId: String = message.original_message.ts;
-  let messageStoredData =
-    MessageRepository.findMessage(message.channel, messageId) || {};
-
+function updatedStatusForAction(messageStoredData, message): any {
   let currentAction = message.actions[0];
 
   let statusForAction = messageStoredData[currentAction.name] || {};
@@ -44,37 +26,64 @@ function createReplyAttachment(message): SlackAttachment {
   };
   statusForAction[message.user].value = currentAction.selected_options[0].value;
 
-  messageStoredData[currentAction.name] = statusForAction;
-
-  MessageRepository.saveMessage(message.channel, messageId, messageStoredData);
-
-  let messageStr: String = formatMessage(messageStoredData);
-  console.log(`messageStr: ${messageStr}`);
-
   return {
-    text: `${messageStr}`,
+    actionName: currentAction.name,
+    statusForAction: statusForAction,
   };
 }
 
-function createResponse(message): SlackMessage {
-  const reply: SlackMessage = message.original_message;
-
-  let attachmentsToSend: SlackAttachment[] = reply.attachments.filter(
-    attachment => attachment.callback_id === 'lego_stats'
-  );
-
-  let replyStatusAttachment: SlackAttachment = createReplyAttachment(message);
-  attachmentsToSend.push(replyStatusAttachment);
-
-  reply.attachments = attachmentsToSend;
-  return reply;
+function defaultErrorHandling(err) {
+  console.error(err);
 }
 
 module.exports = controller => {
+  function attachmentsToSend(messageStoredData, message): SlackAttachment[] {
+    const reply: SlackMessage = message.original_message;
+
+    let attachmentsToSend: SlackAttachment[] = reply.attachments.filter(
+      attachment => attachment.callback_id === 'lego_stats'
+    );
+    attachmentsToSend.push({
+      text: `${formatMessage(messageStoredData)}`,
+    });
+
+    return attachmentsToSend;
+  }
+
+  function updateMessage(messageData, message) {
+    let messageStoredData = messageData || {};
+    let { actionName, statusForAction } = updatedStatusForAction(
+      messageStoredData,
+      message
+    );
+    messageStoredData[actionName] = statusForAction;
+
+    return messageStoredData;
+  }
+
   controller.middleware.receive.use((bot: SlackBot, message, next) => {
     if (message.type == 'interactive_message_callback' && message.actions) {
       if (message.actions[0].name.match(/^lego-select-option-/)) {
-        bot.replyInteractive(message, createResponse(message));
+        let fullMessageId = `${message.channel}_${message.original_message.ts}`;
+
+        controller.storage.lego_messages.get(
+          fullMessageId,
+          (err, messageData) => {
+            if (err) {
+              defaultErrorHandling(err);
+            } else {
+              let messageStoredData = updateMessage(messageData || {}, message);
+              controller.storage.lego_messages.save(
+                { id: fullMessageId, messageStoredData },
+                err => defaultErrorHandling(err)
+              );
+
+              const reply: SlackMessage = message.original_message;
+              reply.attachments = attachmentsToSend(messageStoredData, message);
+              bot.replyInteractive(message, reply);
+            }
+          }
+        );
       }
     }
 
