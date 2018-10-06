@@ -65,6 +65,7 @@ const legoSelectionHandler = (controller): void => {
       id: fullMessageId,
       selectedValues: selectedValues,
       channel: message.channel,
+      date: storedLegoMessage.date
     };
   }
 
