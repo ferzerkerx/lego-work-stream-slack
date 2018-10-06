@@ -16,16 +16,14 @@ class LegoMessage {
   channel: string;
 }
 
-function formatMessage(messageStoredData): string {
+function formatMessage(legoSelectedValues: LegoSelectedValue[]): string {
   let messageStr: string = '';
 
-  for (const actionName of Object.keys(messageStoredData)) {
-    const actionData: any = messageStoredData[actionName];
-    messageStr += `${actionName}: `;
-    for (const entryKey of Object.keys(actionData)) {
-      const entryData = actionData[entryKey];
-      if (entryData.value) {
-        messageStr += `<@${entryData.user}>:${entryData.value}, `;
+  for (let legoSelectedValue of legoSelectedValues) {
+    messageStr += `${legoSelectedValue.id}: `;
+    for (let entry of legoSelectedValue.entries) {
+      if (entry.value) {
+        messageStr += `<@${entry.user}>:${entry.value}, `;
       }
     }
     messageStr += `\n`;
@@ -39,7 +37,7 @@ function defaultErrorHandling(err: Error): void {
 
 const legoSelectionHandler = (controller): void => {
   function attachmentsToSend(
-    messageStoredData,
+    legoSelectedValues: LegoSelectedValue[],
     message: SlackMessage
   ): SlackAttachment[] {
     // @ts-ignore
@@ -49,7 +47,7 @@ const legoSelectionHandler = (controller): void => {
       attachment => attachment.callback_id === 'lego_stats'
     );
     attachmentsToSend.push({
-      text: `${formatMessage(messageStoredData)}`,
+      text: `${formatMessage(legoSelectedValues)}`,
     });
 
     return attachmentsToSend;

@@ -6,7 +6,7 @@ import {
 } from 'botkit';
 import * as fs from 'fs';
 import * as Botkit from 'botkit';
-import {Express} from "express";
+import { Express } from 'express';
 
 if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
   process.exit(1);
@@ -41,7 +41,7 @@ const botConfig: SlackConfiguration = slackBotConfiguration();
 
 const controller: SlackController = Botkit.slackbot(botConfig);
 
-const webserver:Express = require(`${__dirname}/components/express_webserver.js`)(
+const webserver: Express = require(`${__dirname}/components/express_webserver.js`)(
   controller
 );
 
