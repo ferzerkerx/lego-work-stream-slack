@@ -69,7 +69,11 @@ module.exports = controller => {
               message
             );
             controller.storage.lego_messages.save(
-              { id: fullMessageId, selectedValues: selectedValues },
+              {
+                id: fullMessageId,
+                selectedValues: selectedValues,
+                channel: message.channel,
+              },
               err => defaultErrorHandling(err)
             );
 
