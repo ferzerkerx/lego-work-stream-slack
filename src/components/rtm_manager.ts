@@ -1,9 +1,9 @@
 import * as debug from 'debug';
-import {SlackBot, SlackController, SlackSpawnConfiguration} from "botkit";
+import { SlackBot, SlackController, SlackSpawnConfiguration } from 'botkit';
 
 const log = debug('botkit:rtm_manager');
 
-module.exports = (controller:SlackController) => {
+const createRtmManager = (controller: SlackController): any => {
   const managed_bots = {};
   // The manager object exposes some useful tools for managing the RTM
   const manager = {
@@ -21,7 +21,7 @@ module.exports = (controller:SlackController) => {
         });
       }
     },
-    stop: (bot) => {
+    stop: bot => {
       if (managed_bots[bot.config.token]) {
         if (managed_bots[bot.config.token].rtm) {
           log('Stop RTM: Stopping bot');
@@ -37,8 +37,8 @@ module.exports = (controller:SlackController) => {
 
   // Capture the rtm:start event and actually start the RTM...
   // @ts-ignore
-  controller.on('rtm:start', (config:SlackSpawnConfiguration) => {
-    const bot:SlackBot = controller.spawn(config);
+  controller.on('rtm:start', (config: SlackSpawnConfiguration) => {
+    const bot: SlackBot = controller.spawn(config);
 
     manager.start(bot);
   });
@@ -50,3 +50,4 @@ module.exports = (controller:SlackController) => {
 
   return manager;
 };
+module.exports = createRtmManager;

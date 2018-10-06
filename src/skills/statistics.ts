@@ -1,7 +1,7 @@
-import { SlackController } from 'botkit';
+import { Conversation, SlackController, SlackMessage } from 'botkit';
 
-function formatUptime(uptime) {
-  let unit = 'second';
+function formatUptime(uptime: number): string {
+  let unit: string = 'second';
   if (uptime > 60) {
     uptime = uptime / 60;
     unit = 'minute';
@@ -13,10 +13,10 @@ function formatUptime(uptime) {
   if (uptime != 1) {
     unit = unit + 's';
   }
-  return `${parseInt(uptime)} ${unit}`;
+  return `${uptime} ${unit}`;
 }
 
-module.exports = (controller: SlackController) => {
+const statisticsHandler = (controller: SlackController) => {
   const stats = {
     triggers: 0,
     convos: 0,
@@ -34,18 +34,22 @@ module.exports = (controller: SlackController) => {
     ['^uptime', '^debug'],
     'direct_message,direct_mention',
     (bot, message) => {
-      bot.createConversation(message, (err, convo) => {
-        if (!err) {
-          convo.setVar('uptime', formatUptime(process.uptime()));
-          convo.setVar('convos', stats.convos);
-          convo.setVar('triggers', stats.triggers);
+      bot.createConversation(
+        message,
+        (err: Error, convo: Conversation<SlackMessage>) => {
+          if (!err) {
+            convo.setVar('uptime', formatUptime(process.uptime()));
+            convo.setVar('convos', stats.convos);
+            convo.setVar('triggers', stats.triggers);
 
-          convo.say(
-            'My main process has been online for {{vars.uptime}}. Since booting, I have heard {{vars.triggers}} triggers, and conducted {{vars.convos}} conversations.'
-          );
-          convo.activate();
+            convo.say(
+              'My main process has been online for {{vars.uptime}}. Since booting, I have heard {{vars.triggers}} triggers, and conducted {{vars.convos}} conversations.'
+            );
+            convo.activate();
+          }
         }
-      });
+      );
     }
   );
 };
+module.exports = statisticsHandler;

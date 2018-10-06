@@ -1,8 +1,8 @@
-import { SlackMessage } from 'botkit';
+import { SlackBot, SlackController, SlackMessage } from 'botkit';
 
-function legoOption(name, text, values = 8) {
-  let options = [];
-  for (let i = 0; i <= values; i++) {
+function legoOption(name: string, text: string, values: number = 8): any {
+  let options: any = [];
+  for (let i: number = 0; i <= values; i++) {
     options.push({
       text: `${i}`,
       value: i,
@@ -37,7 +37,7 @@ function legoMessage(): SlackMessage {
   };
 }
 //TODO this function needs to be called when the bot starts
-function saveTeamIfNeeded(bot, controller) {
+function saveTeamIfNeeded(bot, controller: SlackController): void {
   let team = {
     id: bot.team_info.id,
     name: bot.team_info.name,
@@ -46,14 +46,21 @@ function saveTeamIfNeeded(bot, controller) {
       name: bot.identity.name,
     },
   };
-  controller.storage.teams.save(team, err => {
-    if (err) console.error(err);
+  controller.storage.teams.save(team, (err: Error) => {
+    if (err) {
+      console.error(err);
+    }
   });
 }
 
-module.exports = controller => {
-  controller.hears('lego', 'direct_mention', (bot, message) => {
-    saveTeamIfNeeded(bot, controller);
-    bot.reply(message, legoMessage());
-  });
+const legoMentionHandler = (controller: SlackController): void => {
+  controller.hears(
+    'lego',
+    'direct_mention',
+    (bot: SlackBot, message: SlackMessage) => {
+      saveTeamIfNeeded(bot, controller);
+      bot.reply(message, legoMessage());
+    }
+  );
 };
+module.exports = legoMentionHandler;
