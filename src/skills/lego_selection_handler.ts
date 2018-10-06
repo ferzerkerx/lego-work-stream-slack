@@ -1,5 +1,5 @@
-import {SlackAttachment, SlackBot, SlackMessage} from 'botkit';
-import {NextFunction} from 'express';
+import { SlackAttachment, SlackBot, SlackMessage } from 'botkit';
+import { NextFunction } from 'express';
 
 class LegoSelectedValue {
   id: string;
@@ -32,6 +32,63 @@ function formatMessage(legoSelectedValues: LegoSelectedValue[]): string {
   return messageStr;
 }
 
+function createLegoMessage(params: {
+  legoMessage: LegoMessage;
+  fullMessageId: string;
+  user: string;
+  action: string;
+  channel: string;
+}): LegoMessage {
+  const storedLegoMessage: LegoMessage =
+    params.legoMessage || new LegoMessage();
+  let selectedValues: LegoSelectedValue[] = updateLegoSelectedValues(
+    storedLegoMessage.selectedValues || [],
+    params.user,
+    params.action
+  );
+
+  return {
+    id: params.fullMessageId,
+    selectedValues: selectedValues,
+    channel: params.channel,
+    date: storedLegoMessage.date,
+  };
+}
+
+function updateLegoSelectedValues(
+  currentSelectedValues: LegoSelectedValue[] = [],
+  user,
+  action
+): LegoSelectedValue[] {
+  let selectedValues: LegoSelectedValue[] = currentSelectedValues.slice();
+  let currentAction = action;
+
+  let currentSelectedValue: LegoSelectedValue = selectedValues
+    .filter(value => value.id == currentAction.name)
+    .shift();
+
+  if (!currentSelectedValue) {
+    currentSelectedValue = new LegoSelectedValue();
+    selectedValues.push(currentSelectedValue);
+  }
+
+  currentSelectedValue.id = currentAction.name;
+
+  let legoSelectedValueEntry: LegoSelectedValueEntry = currentSelectedValue.entries
+    .filter(entry => entry.user == user)
+    .shift();
+
+  if (!legoSelectedValueEntry) {
+    legoSelectedValueEntry = new LegoSelectedValueEntry();
+    currentSelectedValue.entries.push(legoSelectedValueEntry);
+  }
+
+  legoSelectedValueEntry.user = user;
+  legoSelectedValueEntry.value = currentAction.selected_options[0].value;
+
+  return selectedValues;
+}
+
 function defaultErrorHandling(err: Error): void {
   console.error(err);
 }
@@ -54,55 +111,6 @@ const legoSelectionHandler = (controller): void => {
     return attachmentsToSend;
   }
 
-  function updateLegoMessage(legoMessage: LegoMessage, message, fullMessageId: string) {
-    const storedLegoMessage: LegoMessage = legoMessage || new LegoMessage();
-    let selectedValues: LegoSelectedValue[] = updateLegoSelectedValues(
-      storedLegoMessage.selectedValues || [],
-      message
-    );
-
-    return {
-      id: fullMessageId,
-      selectedValues: selectedValues,
-      channel: message.channel,
-      date: storedLegoMessage.date
-    };
-  }
-
-
-  function updateLegoSelectedValues(
-    currentSelectedValues: LegoSelectedValue[] = [],
-    message
-  ): LegoSelectedValue[] {
-    let selectedValues: LegoSelectedValue[] = currentSelectedValues.slice();
-    let currentAction = message.actions[0];
-
-    let currentSelectedValue: LegoSelectedValue = selectedValues
-      .filter(value => value.id == currentAction.name)
-      .shift();
-
-    if (!currentSelectedValue) {
-      currentSelectedValue = new LegoSelectedValue();
-      selectedValues.push(currentSelectedValue);
-    }
-
-    currentSelectedValue.id = currentAction.name;
-
-    let legoSelectedValueEntry: LegoSelectedValueEntry = currentSelectedValue.entries
-      .filter(entry => entry.user == message.user)
-      .shift();
-
-    if (!legoSelectedValueEntry) {
-      legoSelectedValueEntry = new LegoSelectedValueEntry();
-      currentSelectedValue.entries.push(legoSelectedValueEntry);
-    }
-
-    legoSelectedValueEntry.user = message.user;
-    legoSelectedValueEntry.value = currentAction.selected_options[0].value;
-
-    return selectedValues;
-  }
-
   controller.middleware.receive.use(
     (bot: SlackBot, message, next: NextFunction) => {
       if (message.type == 'interactive_message_callback' && message.actions) {
@@ -117,7 +125,13 @@ const legoSelectionHandler = (controller): void => {
               if (err) {
                 defaultErrorHandling(err);
               } else {
-                const legoMessage = updateLegoMessage(storedLegoMessage, message, fullMessageId);
+                const legoMessage = createLegoMessage({
+                  legoMessage: storedLegoMessage,
+                  fullMessageId,
+                  user: message.user,
+                  action: message.actions[0],
+                  channel: message.channel,
+                });
 
                 controller.storage.lego_messages.save(legoMessage, err =>
                   defaultErrorHandling(err)
