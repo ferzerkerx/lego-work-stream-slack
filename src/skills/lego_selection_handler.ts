@@ -100,16 +100,13 @@ const legoSelectionHandler = (controller): void => {
               if (err) {
                 defaultErrorHandling(err);
               } else {
-                let messageData: LegoMessage = data;
-                if (!messageData) {
-                  messageData = new LegoMessage();
-                }
+
+                const savedSelectedValues:LegoSelectedValue[] = data.selectedValues || [];
+
                 let selectedValues: LegoSelectedValue[] = updateSelectedValues(
-                  messageData.selectedValues,
+                  savedSelectedValues,
                   message
                 );
-
-                messageData.selectedValues = selectedValues;
 
                 const legoMessage: LegoMessage = {
                   id: fullMessageId,
