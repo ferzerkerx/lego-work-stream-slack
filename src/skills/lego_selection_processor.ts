@@ -42,12 +42,11 @@ module.exports = controller => {
     let currentSelectedValue = selectedValues[currentAction.name] || {};
     currentSelectedValue[message.user] = currentSelectedValue[message.user] || {
       user: message.user,
-      name: message.user.name,
       value: 0,
     };
     currentSelectedValue[message.user].value =
       currentAction.selected_options[0].value;
-    selectedValues[currentAction] = currentSelectedValue;
+    selectedValues[currentAction.name] = currentSelectedValue;
 
     return selectedValues;
   }
