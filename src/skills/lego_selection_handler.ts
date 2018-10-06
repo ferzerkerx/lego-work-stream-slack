@@ -17,7 +17,66 @@ class LegoMessage {
   date: Date = new Date();
 }
 
-function formatMessage(legoSelectedValues: LegoSelectedValue[]): string {
+class LegoMessageFactory {
+  static createLegoMessage(params: {
+    legoMessage: LegoMessage;
+    fullMessageId: string;
+    user: string;
+    action: string;
+    channel: string;
+  }): LegoMessage {
+    const storedLegoMessage: LegoMessage =
+      params.legoMessage || new LegoMessage();
+    let selectedValues: LegoSelectedValue[] = this._legoSelectedValues(
+      storedLegoMessage.selectedValues || [],
+      params.user,
+      params.action
+    );
+
+    return {
+      id: params.fullMessageId,
+      selectedValues: selectedValues,
+      channel: params.channel,
+      date: storedLegoMessage.date,
+    };
+  }
+
+  static _legoSelectedValues(
+    currentSelectedValues: LegoSelectedValue[] = [],
+    user,
+    action
+  ): LegoSelectedValue[] {
+    let selectedValues: LegoSelectedValue[] = currentSelectedValues.slice();
+    let currentAction = action;
+
+    let currentSelectedValue: LegoSelectedValue = selectedValues
+      .filter(value => value.id == currentAction.name)
+      .shift();
+
+    if (!currentSelectedValue) {
+      currentSelectedValue = new LegoSelectedValue();
+      selectedValues.push(currentSelectedValue);
+    }
+
+    currentSelectedValue.id = currentAction.name;
+
+    let legoSelectedValueEntry: LegoSelectedValueEntry = currentSelectedValue.entries
+      .filter(entry => entry.user == user)
+      .shift();
+
+    if (!legoSelectedValueEntry) {
+      legoSelectedValueEntry = new LegoSelectedValueEntry();
+      currentSelectedValue.entries.push(legoSelectedValueEntry);
+    }
+
+    legoSelectedValueEntry.user = user;
+    legoSelectedValueEntry.value = currentAction.selected_options[0].value;
+
+    return selectedValues;
+  }
+}
+
+function formatSelectedValues(legoSelectedValues: LegoSelectedValue[]): string {
   let messageStr: string = '';
 
   for (let legoSelectedValue of legoSelectedValues) {
@@ -30,63 +89,6 @@ function formatMessage(legoSelectedValues: LegoSelectedValue[]): string {
     messageStr += `\n`;
   }
   return messageStr;
-}
-
-function createLegoMessage(params: {
-  legoMessage: LegoMessage;
-  fullMessageId: string;
-  user: string;
-  action: string;
-  channel: string;
-}): LegoMessage {
-  const storedLegoMessage: LegoMessage =
-    params.legoMessage || new LegoMessage();
-  let selectedValues: LegoSelectedValue[] = updateLegoSelectedValues(
-    storedLegoMessage.selectedValues || [],
-    params.user,
-    params.action
-  );
-
-  return {
-    id: params.fullMessageId,
-    selectedValues: selectedValues,
-    channel: params.channel,
-    date: storedLegoMessage.date,
-  };
-}
-
-function updateLegoSelectedValues(
-  currentSelectedValues: LegoSelectedValue[] = [],
-  user,
-  action
-): LegoSelectedValue[] {
-  let selectedValues: LegoSelectedValue[] = currentSelectedValues.slice();
-  let currentAction = action;
-
-  let currentSelectedValue: LegoSelectedValue = selectedValues
-    .filter(value => value.id == currentAction.name)
-    .shift();
-
-  if (!currentSelectedValue) {
-    currentSelectedValue = new LegoSelectedValue();
-    selectedValues.push(currentSelectedValue);
-  }
-
-  currentSelectedValue.id = currentAction.name;
-
-  let legoSelectedValueEntry: LegoSelectedValueEntry = currentSelectedValue.entries
-    .filter(entry => entry.user == user)
-    .shift();
-
-  if (!legoSelectedValueEntry) {
-    legoSelectedValueEntry = new LegoSelectedValueEntry();
-    currentSelectedValue.entries.push(legoSelectedValueEntry);
-  }
-
-  legoSelectedValueEntry.user = user;
-  legoSelectedValueEntry.value = currentAction.selected_options[0].value;
-
-  return selectedValues;
 }
 
 function defaultErrorHandling(err: Error): void {
@@ -105,7 +107,7 @@ const legoSelectionHandler = (controller): void => {
       attachment => attachment.callback_id === 'lego_stats'
     );
     attachmentsToSend.push({
-      text: `${formatMessage(legoSelectedValues)}`,
+      text: `${formatSelectedValues(legoSelectedValues)}`,
     });
 
     return attachmentsToSend;
@@ -125,7 +127,7 @@ const legoSelectionHandler = (controller): void => {
               if (err) {
                 defaultErrorHandling(err);
               } else {
-                const legoMessage = createLegoMessage({
+                const legoMessage = LegoMessageFactory.createLegoMessage({
                   legoMessage: storedLegoMessage,
                   fullMessageId,
                   user: message.user,
