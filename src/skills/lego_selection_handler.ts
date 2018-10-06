@@ -120,10 +120,16 @@ const legoSelectionHandler = (controller): void => {
 
                 const savedSelectedValues:LegoSelectedValue[] = storedLegoMessage.selectedValues || [];
 
-                let selectedValues: LegoSelectedValue[] = updateSelectedValues(
+                let selectedValues: LegoSelectedValue[] = updateLegoSelectedValues(
                   savedSelectedValues,
                   message
                 );
+
+                const legoMessage: LegoMessage = {
+                  id: fullMessageId,
+                  selectedValues: selectedValues,
+                  channel: message.channel,
+                };
 
                 controller.storage.lego_messages.save(legoMessage, err =>
                   defaultErrorHandling(err)
