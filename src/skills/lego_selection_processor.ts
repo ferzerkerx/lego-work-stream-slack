@@ -2,12 +2,8 @@ import { SlackAttachment, SlackBot, SlackMessage } from 'botkit';
 
 function formatMessage(messageStoredData): String {
   let messageStr: String = '';
-  const ignoredKeys = ['id', '_id'];
-  let actionNames = Object.keys(messageStoredData).filter(
-    key => ignoredKeys.indexOf(key) == -1
-  );
 
-  for (const actionName of actionNames) {
+  for (const actionName of Object.keys(messageStoredData)) {
     const actionData = messageStoredData[actionName];
     messageStr += `${actionName}: `;
     for (const entryKey of Object.keys(actionData)) {
@@ -77,9 +73,9 @@ module.exports = controller => {
             if (err) {
               defaultErrorHandling(err);
             } else {
-              let messageStoredData = updateMessage(messageData || {}, message);
+              let messageStoredData = updateMessage(messageData.actions || {}, message);
               controller.storage.lego_messages.save(
-                { id: fullMessageId, ...messageStoredData },
+                { id: fullMessageId, actions:messageStoredData },
                 err => defaultErrorHandling(err)
               );
 
