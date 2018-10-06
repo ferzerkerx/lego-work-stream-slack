@@ -96,12 +96,12 @@ const legoSelectionHandler = (controller): void => {
 
           controller.storage.lego_messages.get(
             fullMessageId,
-            (err: Error, data: LegoMessage) => {
+            (err: Error, storedLegoMessage: LegoMessage) => {
               if (err) {
                 defaultErrorHandling(err);
               } else {
 
-                const savedSelectedValues:LegoSelectedValue[] = data.selectedValues || [];
+                const savedSelectedValues:LegoSelectedValue[] = storedLegoMessage.selectedValues || [];
 
                 let selectedValues: LegoSelectedValue[] = updateSelectedValues(
                   savedSelectedValues,
@@ -119,7 +119,7 @@ const legoSelectionHandler = (controller): void => {
                 );
 
                 const reply: SlackMessage = message.original_message;
-                reply.attachments = attachmentsToSend(selectedValues, message);
+                reply.attachments = attachmentsToSend(legoMessage.selectedValues, message);
                 bot.replyInteractive(message, reply);
               }
             }
