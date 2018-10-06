@@ -21,7 +21,7 @@ module.exports = (controller:SlackController) => {
         });
       }
     },
-    stop: bot => {
+    stop: (bot) => {
       if (managed_bots[bot.config.token]) {
         if (managed_bots[bot.config.token].rtm) {
           log('Stop RTM: Stopping bot');
