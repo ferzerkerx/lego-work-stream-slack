@@ -14,6 +14,7 @@ class LegoMessage {
   id: string;
   selectedValues: LegoSelectedValue[] = [];
   channel: string;
+  date: Date = new Date();
 }
 
 function formatMessage(legoSelectedValues: LegoSelectedValue[]): string {
