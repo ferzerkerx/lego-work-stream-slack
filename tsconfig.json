@@ -10,8 +10,7 @@
   "files": [
     "./node_modules/@types/mocha/index.d.ts",
     "./node_modules/@types/node/index.d.ts",
-    "./node_modules/@types/express/index.d.ts",
-    "./node_modules/tsc/bin/lib.core.es6.d.ts"
+    "./node_modules/@types/express/index.d.ts"
   ],
   "include": [
     "src/**/*.ts"
