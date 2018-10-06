@@ -35,6 +35,21 @@ function defaultErrorHandling(err: Error): void {
   console.error(err);
 }
 
+function updateLegoMessage(data: LegoMessage, message, fullMessageId: string) {
+  const storedLegoMessage: LegoMessage = data || new LegoMessage();
+  let selectedValues: LegoSelectedValue[] = updateLegoSelectedValues(
+    storedLegoMessage.selectedValues || [],
+    message
+  );
+
+  const legoMessage: LegoMessage = {
+    id: fullMessageId,
+    selectedValues: selectedValues,
+    channel: message.channel,
+  };
+  return legoMessage;
+}
+
 const legoSelectionHandler = (controller): void => {
   function attachmentsToSend(
     legoSelectedValues: LegoSelectedValue[],
@@ -59,7 +74,7 @@ const legoSelectionHandler = (controller): void => {
     fullMessageId: string
   ): LegoMessage {
     let updatedLegoSelectedValues: LegoSelectedValue[] = updateLegoSelectedValues(
-      storedLegoMessage.selectedValues,
+      storedLegoMessage.selectedValues || [],
       message
     );
 
@@ -117,20 +132,7 @@ const legoSelectionHandler = (controller): void => {
               if (err) {
                 defaultErrorHandling(err);
               } else {
-
-                const storedLegoMessage:LegoMessage = data || new LegoMessage();
-                const savedSelectedValues:LegoSelectedValue[] = storedLegoMessage.selectedValues || [];
-
-                let selectedValues: LegoSelectedValue[] = updateLegoSelectedValues(
-                  savedSelectedValues,
-                  message
-                );
-
-                const legoMessage: LegoMessage = {
-                  id: fullMessageId,
-                  selectedValues: selectedValues,
-                  channel: message.channel,
-                };
+                const legoMessage = updateLegoMessage(data || new LegoMessage(), message, fullMessageId);
 
                 controller.storage.lego_messages.save(legoMessage, err =>
                   defaultErrorHandling(err)
