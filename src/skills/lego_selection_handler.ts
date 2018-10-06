@@ -3,10 +3,10 @@ import { NextFunction } from 'express';
 
 class LegoSelectedValue {
   id: string;
-  entries: LegoEntry[] = [];
+  entries: LegoSelectedValueEntry[] = [];
 }
 
-class LegoEntry {
+class LegoSelectedValueEntry {
   user: string;
   value: number = 0;
 }
@@ -53,8 +53,25 @@ const legoSelectionHandler = (controller): void => {
     return attachmentsToSend;
   }
 
-  function updateSelectedValues(
-    currentSelectedValues: LegoSelectedValue[],
+  function updateLegoMessage(
+    storedLegoMessage: LegoMessage = new LegoMessage(),
+    message,
+    fullMessageId: string
+  ): LegoMessage {
+    let updatedLegoSelectedValues: LegoSelectedValue[] = updateLegoSelectedValues(
+      storedLegoMessage.selectedValues,
+      message
+    );
+
+    return {
+      id: fullMessageId,
+      selectedValues: updatedLegoSelectedValues,
+      channel: message.channel,
+    };
+  }
+
+  function updateLegoSelectedValues(
+    currentSelectedValues: LegoSelectedValue[] = [],
     message
   ): LegoSelectedValue[] {
     let selectedValues: LegoSelectedValue[] = currentSelectedValues.slice();
@@ -71,17 +88,17 @@ const legoSelectionHandler = (controller): void => {
 
     currentSelectedValue.id = currentAction.name;
 
-    let legoEntry: LegoEntry = currentSelectedValue.entries
+    let legoSelectedValueEntry: LegoSelectedValueEntry = currentSelectedValue.entries
       .filter(entry => entry.user == message.user)
       .shift();
 
-    if (!legoEntry) {
-      legoEntry = new LegoEntry();
-      currentSelectedValue.entries.push(legoEntry);
+    if (!legoSelectedValueEntry) {
+      legoSelectedValueEntry = new LegoSelectedValueEntry();
+      currentSelectedValue.entries.push(legoSelectedValueEntry);
     }
 
-    legoEntry.user = message.user;
-    legoEntry.value = currentAction.selected_options[0].value;
+    legoSelectedValueEntry.user = message.user;
+    legoSelectedValueEntry.value = currentAction.selected_options[0].value;
 
     return selectedValues;
   }
@@ -108,18 +125,15 @@ const legoSelectionHandler = (controller): void => {
                   message
                 );
 
-                const legoMessage: LegoMessage = {
-                  id: fullMessageId,
-                  selectedValues: selectedValues,
-                  channel: message.channel,
-                };
-
                 controller.storage.lego_messages.save(legoMessage, err =>
                   defaultErrorHandling(err)
                 );
 
                 const reply: SlackMessage = message.original_message;
-                reply.attachments = attachmentsToSend(legoMessage.selectedValues, message);
+                reply.attachments = attachmentsToSend(
+                  legoMessage.selectedValues,
+                  message
+                );
                 bot.replyInteractive(message, reply);
               }
             }
