@@ -16,14 +16,12 @@ function slackBotConfiguration(): SlackConfiguration {
     scopes: ['bot', 'incoming-webhook'],
   };
 
-  // Use a mongo database if specified, otherwise store in a JSON file local to the app.
-  // Mongo is automatically configured when deploying to Heroku
   if (process.env.MONGO_URI) {
     botConfig.storage = require('botkit-storage-mongo')({
       mongoUri: process.env.MONGO_URI,
     });
   } else {
-    botConfig.json_file_store = __dirname + '/.data/db/'; // store user data in a simple JSON format
+    botConfig.json_file_store = __dirname + '/.data/db/';
   }
   return botConfig;
 }
