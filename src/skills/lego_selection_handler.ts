@@ -113,7 +113,7 @@ const legoSelectionHandler = (controller): void => {
 
           controller.storage.lego_messages.get(
             fullMessageId,
-            (err: Error, storedLegoMessage: LegoMessage) => {
+            (err: Error, storedLegoMessage: LegoMessage = new LegoMessage()) => {
               if (err) {
                 defaultErrorHandling(err);
               } else {
