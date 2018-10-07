@@ -1,4 +1,4 @@
-import { LegoSelectionService } from './LegoSelectionService';
+import { LegoSelectionService, MessageContext } from './LegoSelectionService';
 import { LegoSelectMessage } from './LegoSelectMessage';
 import { LegoSelectedValue } from './LegoSelectedValue';
 
@@ -7,14 +7,17 @@ describe('LegoSelectionService', () => {
     const storedLegoMessage: LegoSelectMessage = new LegoSelectMessage();
     storedLegoMessage.date = new Date('2018-10-01');
 
+    const messageContext: MessageContext = {
+      fullMessageId: 'someMessageId',
+      userData: { userId: 'someUserId', userName: 'someuser' },
+      action: { selected_options: [{ name: 'someActionName', value: 7 }] },
+      channelData: { channelId: 'someChannelId', name: 'someChannel' },
+    };
+
     const legoSelectMessage: LegoSelectMessage = LegoSelectionService.createLegoSelectMessage(
       {
         legoMessage: storedLegoMessage,
-        fullMessageId: 'someMessageId',
-        user: 'someuser',
-        userName: 'someUserName',
-        action: { selected_options: [{ name: 'someActionName', value: 7 }] },
-        channel: 'someChannel',
+        messageContext: messageContext,
       }
     );
     expect(legoSelectMessage).toMatchSnapshot();
@@ -24,11 +27,21 @@ describe('LegoSelectionService', () => {
     let selectedValues: LegoSelectedValue[] = [
       {
         id: 'someActionName',
-        entries: [{ user: 'someuser', value: 8 }],
+        entries: [
+          {
+            userData: { userId: 'someUserId', userName: 'someuser' },
+            value: 8,
+          },
+        ],
       },
       {
         id: 'someOtherActionName',
-        entries: [{ user: 'someuser', value: 6 }],
+        entries: [
+          {
+            userData: { userId: 'someUserId', userName: 'someuser' },
+            value: 6,
+          },
+        ],
       },
     ];
 
@@ -36,17 +49,20 @@ describe('LegoSelectionService', () => {
       id: 'someMessageId',
       selectedValues: selectedValues,
       date: new Date('2018-10-01'),
-      channel: 'someChannel',
+      channelData: { channelId: 'someChannelId', name: 'someChannel' },
+    };
+
+    const messageContext: MessageContext = {
+      fullMessageId: 'someMessageId',
+      userData: { userId: 'someUserId', userName: 'someuser' },
+      action: { selected_options: [{ name: 'someActionName', value: 7 }] },
+      channelData: { channelId: 'someChannelId', name: 'someChannel' },
     };
 
     const legoSelectMessage: LegoSelectMessage = LegoSelectionService.createLegoSelectMessage(
       {
         legoMessage: storedLegoMessage,
-        fullMessageId: 'someMessageId',
-        user: 'someuser',
-        userName: 'someUserName',
-        action: { name: 'someActionName', selected_options: [{ value: 7 }] },
-        channel: 'someChannel',
+        messageContext: messageContext,
       }
     );
     expect(legoSelectMessage).toMatchSnapshot();

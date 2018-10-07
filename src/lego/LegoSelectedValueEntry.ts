@@ -1,5 +1,4 @@
 export class LegoSelectedValueEntry {
-  user: string;
-  userName?: string;
+  userData: { userId: string; userName: string };
   value: number = 0;
 }

@@ -2,40 +2,43 @@ import { LegoSelectMessage } from './LegoSelectMessage';
 import { LegoSelectedValue } from './LegoSelectedValue';
 import { LegoSelectedValueEntry } from './LegoSelectedValueEntry';
 
+export class MessageContext {
+  fullMessageId: string;
+  userData: { userId: string; userName: string };
+  action: any;
+  channelData: { channelId: string; name: string };
+}
+
 export class LegoSelectionService {
   static createLegoSelectMessage(params: {
     legoMessage?: LegoSelectMessage;
-    fullMessageId: string;
-    user: string;
-    userName: string;
-    action: any;
-    channel: string;
+    messageContext: MessageContext;
   }): LegoSelectMessage {
     const storedLegoMessage: LegoSelectMessage =
       params.legoMessage || new LegoSelectMessage();
+
+    const messageContext = params.messageContext;
     let selectedValues: LegoSelectedValue[] = this._legoSelectedValues(
       storedLegoMessage.selectedValues || [],
-      params.user,
-      params.userName,
-      params.action
+      messageContext
     );
 
     return {
-      id: params.fullMessageId,
+      id: messageContext.fullMessageId,
       selectedValues: selectedValues,
-      channel: params.channel,
+      channelData: messageContext.channelData,
       date: storedLegoMessage.date,
     };
   }
 
   private static _legoSelectedValues(
     currentSelectedValues: LegoSelectedValue[] = [],
-    user:string,
-    userName:string,
-    action:any
+    messageContext: MessageContext
   ): LegoSelectedValue[] {
-    let selectedValues: LegoSelectedValue[] = JSON.parse(JSON.stringify(currentSelectedValues));
-    let currentAction = action;
+    let selectedValues: LegoSelectedValue[] = JSON.parse(
+      JSON.stringify(currentSelectedValues)
+    );
+    let currentAction = messageContext.action;
 
     let currentSelectedValue: LegoSelectedValue = selectedValues
       .filter(value => value.id == currentAction.name)
@@ -48,8 +51,9 @@ export class LegoSelectionService {
 
     currentSelectedValue.id = currentAction.name;
 
+    const userData = messageContext.userData;
     let legoSelectedValueEntry: LegoSelectedValueEntry = currentSelectedValue.entries
-      .filter(entry => entry.user == user)
+      .filter(entry => entry.userData.userId == userData.userId)
       .shift();
 
     if (!legoSelectedValueEntry) {
@@ -57,8 +61,7 @@ export class LegoSelectionService {
       currentSelectedValue.entries.push(legoSelectedValueEntry);
     }
 
-    legoSelectedValueEntry.user = user;
-    legoSelectedValueEntry.userName = userName;
+    legoSelectedValueEntry.userData = userData;
     legoSelectedValueEntry.value = currentAction.selected_options[0].value;
 
     return selectedValues;

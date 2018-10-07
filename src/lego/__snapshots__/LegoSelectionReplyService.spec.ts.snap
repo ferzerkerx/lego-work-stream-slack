@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`LegoSelectionReplyService formatMessage properly 1`] = `
-"theActualName: <@someuser>:8
-someOtherActionName: <@someuser>:6
+"theActualName: <@someuserId>:8
+someOtherActionName: <@someuserId>:6
 "
 `;

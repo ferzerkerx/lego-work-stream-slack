@@ -6,15 +6,30 @@ describe('LegoSelectionReplyService', () => {
     let selectedValues: LegoSelectedValue[] = [
       {
         id: 'someActionName',
-        entries: [{ user: 'someuser', value: 8 }],
+        entries: [
+          {
+            userData: { userId: 'someuserId', userName: 'someuser' },
+            value: 8,
+          },
+        ],
       },
       {
         id: 'someOtherActionName',
-        entries: [{ user: 'someuser', value: 6 }],
+        entries: [
+          {
+            userData: { userId: 'someuserId', userName: 'someuser' },
+            value: 6,
+          },
+        ],
       },
       {
         id: 'awesomeActionName',
-        entries: [{ user: 'someuser', value: 0 }],
+        entries: [
+          {
+            userData: { userId: 'someuserId', userName: 'someuser' },
+            value: 0,
+          },
+        ],
       },
     ];
 

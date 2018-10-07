@@ -16,11 +16,18 @@ export class LegoSelectionReplyService {
       .then((storedLegoMessage: LegoSelectMessage) => {
         const legoMessage = LegoSelectionService.createLegoSelectMessage({
           legoMessage: storedLegoMessage,
-          fullMessageId,
-          user: message.user,
-          userName: message.raw_message.user.name,
-          action: message.actions[0],
-          channel: message.channel,
+          messageContext: {
+            fullMessageId,
+            userData: {
+              userId: message.user,
+              userName: message.raw_message.user.name,
+            },
+            action: message.actions[0],
+            channelData: {
+              channelId: message.channel,
+              name: message.raw_message.channel.name,
+            },
+          },
         });
 
         // @ts-ignore
@@ -71,7 +78,7 @@ export class LegoSelectionReplyService {
     for (let legoSelectedValue of legoSelectedValues) {
       let entriesStr: string = legoSelectedValue.entries
         .filter(entry => entry.value > 0)
-        .map(entry => `<@${entry.user}>:${entry.value}`)
+        .map(entry => `<@${entry.userData.userId}>:${entry.value}`)
         .join(',');
 
       const actionDisplayName = actionMappings[legoSelectedValue.id]
