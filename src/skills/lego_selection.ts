@@ -11,7 +11,7 @@ const legoMentionHandler = (controller: SlackController): void => {
     (bot: SlackBot, message: SlackMessage) => {
       let defaultConfig: LegoMessageConfig = {
         //TODO  retrieve this config from db
-        date: new Date('2018-10-01'),
+        date: new Date(),
         actionDescriptors: [
           { name: 'green', text: 'Green' },
           { name: 'red', text: 'Red' },
