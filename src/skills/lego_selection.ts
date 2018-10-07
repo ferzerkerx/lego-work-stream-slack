@@ -4,14 +4,13 @@ import {
   LegoMessageFactory,
 } from '../lego/LegoMessageFactory';
 
-export function legoMentionHandler(controller: SlackController): void {
+const legoMentionHandler = (controller: SlackController): void => {
   controller.hears(
     'lego',
     'direct_mention',
     (bot: SlackBot, message: SlackMessage) => {
       let defaultConfig: LegoMessageConfig = {
         //TODO  retrieve this config from db
-        date: new Date(),
         actionDescriptors: [
           { name: 'green', text: 'Green' },
           { name: 'red', text: 'Red' },
@@ -22,7 +21,11 @@ export function legoMentionHandler(controller: SlackController): void {
         max: 8,
       };
 
-      bot.reply(message, LegoMessageFactory.createMessage(defaultConfig));
+      bot.reply(
+        message,
+        LegoMessageFactory.createMessage(defaultConfig, new Date())
+      );
     }
   );
-}
+};
+module.exports = legoMentionHandler;

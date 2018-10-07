@@ -1,10 +1,13 @@
 import { SlackMessage } from 'botkit';
 
 export class LegoMessageFactory {
-  static createMessage(config: LegoMessageConfig): SlackMessage {
+  static createMessage(
+    config: LegoMessageConfig,
+    date: Date = new Date()
+  ): SlackMessage {
     return {
       text: `Please select your Legos for today ${this.toPrettyDate(
-        config.date.toDateString()
+        date.toDateString()
       )}`,
       attachments: [
         {

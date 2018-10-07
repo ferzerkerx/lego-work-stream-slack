@@ -4,7 +4,6 @@ import { SlackMessage } from 'botkit';
 describe('LegoMessageFactory', () => {
   test('should create message with valid structure', () => {
     let config: LegoMessageConfig = {
-      date: new Date('2018-10-01'),
       actionDescriptors: [
         { name: 'green', text: 'Green' },
         { name: 'red', text: 'Red' },
@@ -14,7 +13,10 @@ describe('LegoMessageFactory', () => {
       min: 0,
       max: 8,
     };
-    const message: SlackMessage = LegoMessageFactory.createMessage(config);
+    const message: SlackMessage = LegoMessageFactory.createMessage(
+      config,
+      new Date('2018-10-01')
+    );
     expect(message).toMatchSnapshot();
   });
 });
