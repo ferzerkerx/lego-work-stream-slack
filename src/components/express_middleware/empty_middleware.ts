@@ -1,4 +1,4 @@
-import { Express, Request, Response, NextFunction } from 'express';
+import { Express, NextFunction, Request, Response } from 'express';
 import { SlackController } from 'botkit';
 
 const middleWare = (webserver: Express, controller: SlackController): void => {

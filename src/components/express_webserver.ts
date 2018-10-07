@@ -2,10 +2,10 @@ import { SlackController } from 'botkit';
 import * as path from 'path';
 import * as bodyParser from 'body-parser';
 import * as http from 'http';
+import { Server } from 'http';
 import * as cookieParser from 'cookie-parser';
 import * as fs from 'fs';
 import * as express from 'express';
-import { Server } from 'http';
 import { Express, Request } from 'express';
 
 const createExpressServer = (controller: SlackController): Express => {

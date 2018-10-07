@@ -1,13 +1,12 @@
 import * as path from 'path';
+import * as Botkit from 'botkit';
 import {
   SlackConfiguration,
   SlackController,
   SlackSpawnConfiguration,
 } from 'botkit';
 import * as fs from 'fs';
-import * as Botkit from 'botkit';
 import { Express } from 'express';
-import * as botkit from 'botkit';
 
 if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
   process.exit(1);
