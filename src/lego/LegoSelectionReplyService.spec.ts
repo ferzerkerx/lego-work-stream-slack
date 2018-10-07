@@ -12,10 +12,15 @@ describe('LegoSelectionReplyService', () => {
         id: 'someOtherActionName',
         entries: [{ user: 'someuser', value: 6 }],
       },
+      {
+        id: 'awesomeActionName',
+        entries: [{ user: 'someuser', value: 0 }],
+      },
     ];
 
     let actionMappings: any = {
-      someActionName: 'theActualName',
+      someActionName: { text: 'theActualName' },
+      awesomeActionName: { text: 'CoolName' },
     };
 
     const legoSelectMessage: string = LegoSelectionReplyService.formatSelectedValues(

@@ -46,7 +46,7 @@ export class LegoSelectionReplyService {
 
     let actionMappings: any = {};
     attachmentsToSend[0].actions.forEach(actionDetail => {
-      actionMappings[actionDetail.name] = actionDetail.text;
+      actionMappings[actionDetail.name] = { text: actionDetail.text };
     });
 
     attachmentsToSend.push({
@@ -68,14 +68,17 @@ export class LegoSelectionReplyService {
     let messageStr: string = '';
 
     for (let legoSelectedValue of legoSelectedValues) {
-      messageStr += `${actionMappings[legoSelectedValue.id] ||
-        legoSelectedValue.id}: `;
-      for (let entry of legoSelectedValue.entries) {
-        if (entry.value) {
-          messageStr += `<@${entry.user}>:${entry.value}, `;
-        }
+      let entriesStr: string = legoSelectedValue.entries
+        .filter(entry => entry.value > 0)
+        .map(entry => `<@${entry.user}>:${entry.value}`)
+        .join(',');
+
+      const actionDisplayName = actionMappings[legoSelectedValue.id]
+        ? actionMappings[legoSelectedValue.id].text
+        : legoSelectedValue.id;
+      if (entriesStr.length > 0) {
+        messageStr += `${actionDisplayName}: ${entriesStr}\n`;
       }
-      messageStr += `\n`;
     }
     return messageStr;
   }
