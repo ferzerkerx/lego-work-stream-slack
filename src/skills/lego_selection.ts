@@ -52,29 +52,12 @@ function selectYourLegosMessage(): SlackMessage {
     ],
   };
 }
-//TODO this function needs to be called when the bot starts
-function saveTeamIfNeeded(bot, controller: SlackController): void {
-  let team = {
-    id: bot.team_info.id,
-    name: bot.team_info.name,
-    bot: {
-      user_id: bot.identity.id,
-      name: bot.identity.name,
-    },
-  };
-  controller.storage.teams.save(team, (err: Error) => {
-    if (err) {
-      console.error(err);
-    }
-  });
-}
 
 const legoMentionHandler = (controller: SlackController): void => {
   controller.hears(
     'lego',
     'direct_mention',
     (bot: SlackBot, message: SlackMessage) => {
-      saveTeamIfNeeded(bot, controller);
       bot.reply(message, selectYourLegosMessage());
     }
   );

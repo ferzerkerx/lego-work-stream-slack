@@ -1,6 +1,6 @@
-import {LegoSelectMessage} from "./LegoSelectMessage";
-import {LegoSelectedValue} from "./LegoSelectedValue";
-import {LegoSelectedValueEntry} from "./LegoSelectedValueEntry";
+import { LegoSelectMessage } from './LegoSelectMessage';
+import { LegoSelectedValue } from './LegoSelectedValue';
+import { LegoSelectedValueEntry } from './LegoSelectedValueEntry';
 
 export class LegoSelectionService {
   static createLegoSelectMessage(params: {

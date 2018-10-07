@@ -1,4 +1,4 @@
-import {LegoSelectedValue} from "./LegoSelectedValue";
+import { LegoSelectedValue } from './LegoSelectedValue';
 
 export class LegoSelectMessage {
   id: string;

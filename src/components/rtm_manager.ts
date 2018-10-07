@@ -3,6 +3,22 @@ import { SlackBot, SlackController, SlackSpawnConfiguration } from 'botkit';
 
 const log = debug('botkit:rtm_manager');
 
+function saveTeamIfNeeded(bot, controller: SlackController): void {
+  let team = {
+    id: bot.team_info.id,
+    name: bot.team_info.name,
+    bot: {
+      user_id: bot.identity.id,
+      name: bot.identity.name,
+    },
+  };
+  controller.storage.teams.save(team, (err: Error) => {
+    if (err) {
+      console.error(err);
+    }
+  });
+}
+
 const createRtmManager = (controller: SlackController): any => {
   const managed_bots = {};
   // The manager object exposes some useful tools for managing the RTM
@@ -17,6 +33,7 @@ const createRtmManager = (controller: SlackController): any => {
           } else {
             managed_bots[bot.config.token] = bot.rtm;
             log('Start RTM: Success');
+            saveTeamIfNeeded(bot, controller);
           }
         });
       }

@@ -1,8 +1,8 @@
-import {SlackAttachment, SlackBot, SlackMessage} from 'botkit';
-import {NextFunction} from 'express';
-import {LegoSelectedValue} from "../lego/LegoSelectedValue";
-import {LegoSelectMessage} from "../lego/LegoSelectMessage";
-import {LegoSelectionService} from "../lego/LegoSelectionService";
+import { SlackAttachment, SlackBot, SlackMessage } from 'botkit';
+import { NextFunction } from 'express';
+import { LegoSelectedValue } from '../lego/LegoSelectedValue';
+import { LegoSelectMessage } from '../lego/LegoSelectMessage';
+import { LegoSelectionService } from '../lego/LegoSelectionService';
 
 function formatSelectedValues(legoSelectedValues: LegoSelectedValue[]): string {
   let messageStr: string = '';
@@ -55,13 +55,15 @@ const legoSelectionHandler = (controller): void => {
               if (err) {
                 defaultErrorHandling(err);
               } else {
-                const legoMessage = LegoSelectionService.createLegoSelectMessage({
-                  legoMessage: storedLegoMessage,
-                  fullMessageId,
-                  user: message.user,
-                  action: message.actions[0],
-                  channel: message.channel,
-                });
+                const legoMessage = LegoSelectionService.createLegoSelectMessage(
+                  {
+                    legoMessage: storedLegoMessage,
+                    fullMessageId,
+                    user: message.user,
+                    action: message.actions[0],
+                    channel: message.channel,
+                  }
+                );
 
                 controller.storage.lego_messages.save(legoMessage, err =>
                   defaultErrorHandling(err)
