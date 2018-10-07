@@ -2,15 +2,21 @@
 
 exports[`LegoSelectionService createLegoSelectMessage with existing entries 1`] = `
 Object {
-  "channel": "someChannel",
+  "channelData": Object {
+    "channelId": "someChannelId",
+    "name": "someChannel",
+  },
   "date": 2018-10-01T00:00:00.000Z,
   "id": "someMessageId",
   "selectedValues": Array [
     Object {
       "entries": Array [
         Object {
-          "user": "someuser",
-          "value": 7,
+          "userData": Object {
+            "userId": "someUserId",
+            "userName": "someuser",
+          },
+          "value": 8,
         },
       ],
       "id": "someActionName",
@@ -18,11 +24,26 @@ Object {
     Object {
       "entries": Array [
         Object {
-          "user": "someuser",
+          "userData": Object {
+            "userId": "someUserId",
+            "userName": "someuser",
+          },
           "value": 6,
         },
       ],
       "id": "someOtherActionName",
+    },
+    LegoSelectedValue {
+      "entries": Array [
+        LegoSelectedValueEntry {
+          "userData": Object {
+            "userId": "someUserId",
+            "userName": "someuser",
+          },
+          "value": 7,
+        },
+      ],
+      "id": undefined,
     },
   ],
 }

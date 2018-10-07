@@ -1,8 +1,9 @@
 import { LegoSelectedValue } from './LegoSelectedValue';
+import { Utils } from '../Utils';
 
 export class LegoSelectMessage {
   id: string;
   selectedValues: LegoSelectedValue[] = [];
   channelData: { channelId: string; name: string };
-  date: Date = new Date();
+  date: Date = Utils.now();
 }

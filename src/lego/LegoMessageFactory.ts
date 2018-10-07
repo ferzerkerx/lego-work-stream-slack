@@ -1,4 +1,5 @@
 import { SlackMessage } from 'botkit';
+import { Utils } from '../Utils';
 
 export class LegoMessageFactory {
   static createMessage(
@@ -6,7 +7,7 @@ export class LegoMessageFactory {
     date: Date = new Date()
   ): SlackMessage {
     return {
-      text: `Please select your Legos for today ${this.toPrettyDate(
+      text: `Please select your Legos for today ${Utils.toPrettyDate(
         date.toDateString()
       )}`,
       attachments: [
@@ -45,21 +46,6 @@ export class LegoMessageFactory {
       type: 'select',
       options: options,
     };
-  }
-
-  private static toPrettyDate(theValue: string): string {
-    let theDate: Date = new Date(theValue),
-      month = '' + (theDate.getMonth() + 1),
-      day = '' + theDate.getDate(),
-      year = theDate.getFullYear();
-
-    if (month.length < 2) {
-      month = '0' + month;
-    }
-    if (day.length < 2) {
-      day = '0' + day;
-    }
-    return [year, month, day].join('-');
   }
 }
 
