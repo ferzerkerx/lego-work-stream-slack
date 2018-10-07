@@ -1,6 +1,6 @@
-import {LegoSelectionService} from './LegoSelectionService';
-import {LegoSelectMessage} from './LegoSelectMessage';
-import {LegoSelectedValue} from './LegoSelectedValue';
+import { LegoSelectionService } from './LegoSelectionService';
+import { LegoSelectMessage } from './LegoSelectMessage';
+import { LegoSelectedValue } from './LegoSelectedValue';
 
 describe('LegoSelectionService', () => {
   test('createLegoSelectMessage without entries', () => {
