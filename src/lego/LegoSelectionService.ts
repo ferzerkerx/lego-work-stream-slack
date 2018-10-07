@@ -7,6 +7,7 @@ export class LegoSelectionService {
     legoMessage?: LegoSelectMessage;
     fullMessageId: string;
     user: string;
+    userName: string;
     action: any;
     channel: string;
   }): LegoSelectMessage {
@@ -15,6 +16,7 @@ export class LegoSelectionService {
     let selectedValues: LegoSelectedValue[] = this._legoSelectedValues(
       storedLegoMessage.selectedValues || [],
       params.user,
+      params.userName,
       params.action
     );
 
@@ -28,8 +30,9 @@ export class LegoSelectionService {
 
   private static _legoSelectedValues(
     currentSelectedValues: LegoSelectedValue[] = [],
-    user,
-    action
+    user:string,
+    userName:string,
+    action:any
   ): LegoSelectedValue[] {
     let selectedValues: LegoSelectedValue[] = JSON.parse(JSON.stringify(currentSelectedValues));
     let currentAction = action;
@@ -55,6 +58,7 @@ export class LegoSelectionService {
     }
 
     legoSelectedValueEntry.user = user;
+    legoSelectedValueEntry.userName = userName;
     legoSelectedValueEntry.value = currentAction.selected_options[0].value;
 
     return selectedValues;

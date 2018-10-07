@@ -18,6 +18,7 @@ export class LegoSelectionReplyService {
           legoMessage: storedLegoMessage,
           fullMessageId,
           user: message.user,
+          userName: message.raw_message.user.name,
           action: message.actions[0],
           channel: message.channel,
         });

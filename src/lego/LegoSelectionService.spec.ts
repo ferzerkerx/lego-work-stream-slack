@@ -12,6 +12,7 @@ describe('LegoSelectionService', () => {
         legoMessage: storedLegoMessage,
         fullMessageId: 'someMessageId',
         user: 'someuser',
+        userName: 'someUserName',
         action: { selected_options: [{ name: 'someActionName', value: 7 }] },
         channel: 'someChannel',
       }
@@ -43,6 +44,7 @@ describe('LegoSelectionService', () => {
         legoMessage: storedLegoMessage,
         fullMessageId: 'someMessageId',
         user: 'someuser',
+        userName: 'someUserName',
         action: { name: 'someActionName', selected_options: [{ value: 7 }] },
         channel: 'someChannel',
       }

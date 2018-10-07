@@ -38,6 +38,7 @@ Object {
       "entries": Array [
         LegoSelectedValueEntry {
           "user": "someuser",
+          "userName": "someUserName",
           "value": 7,
         },
       ],
