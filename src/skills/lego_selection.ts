@@ -1,6 +1,6 @@
 import { SlackBot, SlackController, SlackMessage } from 'botkit';
 
-function legoOption(name: string, text: string, values: number = 8): any {
+function legoAction(name: string, text: string, values: number = 8): any {
   let options: any = [];
   for (let i: number = 0; i <= values; i++) {
     options.push({
@@ -16,9 +16,25 @@ function legoOption(name: string, text: string, values: number = 8): any {
   };
 }
 
-function legoMessage(): SlackMessage {
+function toPrettyDate(theValue) {
+  let theDate = new Date(theValue),
+    month = '' + (theDate.getMonth() + 1),
+    day = '' + theDate.getDate(),
+    year = theDate.getFullYear();
+
+  if (month.length < 2) {
+    month = '0' + month;
+  }
+  if (day.length < 2) {
+    day = '0' + day;
+  }
+  return [year, month, day].join('-');
+}
+
+function selectYourLegosMessage(): SlackMessage {
+  const now = new Date();
   return {
-    text: 'Please select your Legos',
+    text: `Please select your Legos for today ${toPrettyDate(now)}`,
     attachments: [
       {
         text: 'Choose your legos!',
@@ -27,10 +43,10 @@ function legoMessage(): SlackMessage {
         color: '#3AA3E3',
         attachment_type: 'default',
         actions: [
-          legoOption('lego-select-option-green', 'Green'),
-          legoOption('lego-select-option-red', 'Red'),
-          legoOption('lego-select-option-orange', 'Orange'),
-          legoOption('lego-select-option-black', 'Black'),
+          legoAction('lego-select-option-green', 'Green'),
+          legoAction('lego-select-option-red', 'Red'),
+          legoAction('lego-select-option-orange', 'Orange'),
+          legoAction('lego-select-option-black', 'Black'),
         ],
       },
     ],
@@ -59,7 +75,7 @@ const legoMentionHandler = (controller: SlackController): void => {
     'direct_mention',
     (bot: SlackBot, message: SlackMessage) => {
       saveTeamIfNeeded(bot, controller);
-      bot.reply(message, legoMessage());
+      bot.reply(message, selectYourLegosMessage());
     }
   );
 };
