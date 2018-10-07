@@ -5,41 +5,63 @@ import { LegoSelectMessage } from '../lego/LegoSelectMessage';
 import { LegoSelectionService } from '../lego/LegoSelectionService';
 
 class LegoSelectionReplyService {
-  static createReply(message, controller, bot: SlackBot): Promise<any> {
+  static createReply(message, controller): Promise<any> {
     let fullMessageId: string = `${message.channel}_${
       message.original_message.ts
     }`;
 
-    controller.storage.lego_messages.get(
-      fullMessageId,
-      (err: Error, storedLegoMessage: LegoSelectMessage) => {
-        if (err) {
-          this.defaultErrorHandling(err);
-        } else {
-          const legoMessage = LegoSelectionService.createLegoSelectMessage({
-            legoMessage: storedLegoMessage,
-            fullMessageId,
-            user: message.user,
-            action: message.actions[0],
-            channel: message.channel,
-          });
+    return controller.storage.lego_messages.get(
+      fullMessageId).then((storedLegoMessage: LegoSelectMessage)=> {
+      const legoMessage = LegoSelectionService.createLegoSelectMessage({
+        legoMessage: storedLegoMessage,
+        fullMessageId,
+        user: message.user,
+        action: message.actions[0],
+        channel: message.channel,
+      });
 
-          controller.storage.lego_messages.save(legoMessage, err =>
-            this.defaultErrorHandling(err)
-          );
+      return controller.storage.lego_messages.save(legoMessage).then(()=> {
+        const reply: SlackMessage = message.original_message;
+        reply.attachments = LegoSelectionReplyService.attachmentsToSend(
+          legoMessage.selectedValues,
+          message,
+          reply.attachments
+        );
 
-          const reply: SlackMessage = message.original_message;
-          reply.attachments = LegoSelectionReplyService.attachmentsToSend(
-            legoMessage.selectedValues,
-            message,
-            reply.attachments
-          );
-          bot.replyInteractive(message, reply);
-        }
-      }
-    );
+        return reply;
+      });
+    });
 
-    return Promise.resolve({ id: 'test' });
+
+    // controller.storage.lego_messages.get(
+    //   fullMessageId,
+    //   (err: Error, storedLegoMessage: LegoSelectMessage) => {
+    //     if (err) {
+    //       this.defaultErrorHandling(err);
+    //     } else {
+    //       const legoMessage = LegoSelectionService.createLegoSelectMessage({
+    //         legoMessage: storedLegoMessage,
+    //         fullMessageId,
+    //         user: message.user,
+    //         action: message.actions[0],
+    //         channel: message.channel,
+    //       });
+    //
+    //       controller.storage.lego_messages.save(legoMessage, err =>
+    //         this.defaultErrorHandling(err)
+    //       );
+    //
+    //       const reply: SlackMessage = message.original_message;
+    //       reply.attachments = LegoSelectionReplyService.attachmentsToSend(
+    //         legoMessage.selectedValues,
+    //         message,
+    //         reply.attachments
+    //       );
+    //
+    //       return reply;
+    //     }
+    //   }
+    // );
   }
 
   static formatSelectedValues(legoSelectedValues: LegoSelectedValue[]): string {
@@ -82,8 +104,8 @@ const legoSelectionHandler = (controller): void => {
     (bot: SlackBot, message, next: NextFunction) => {
       if (message.type == 'interactive_message_callback' && message.actions) {
         if (message.actions[0].name.match(/^lego-select-option-/)) {
-          LegoSelectionReplyService.createReply(message, controller, bot).then(
-            ads => console.log(`$$$$$$$$$$$$ ${ads}`)
+          LegoSelectionReplyService.createReply(message, controller).then(
+            reply => {bot.replyInteractive(message, reply)}
           );
         }
       }
