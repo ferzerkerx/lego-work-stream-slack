@@ -65,6 +65,8 @@ const legoSelectionHandler = (controller): void => {
                   }
                 );
 
+                console.log(JSON.stringify(message));
+
                 controller.storage.lego_messages.save(legoMessage, err =>
                   defaultErrorHandling(err)
                 );
