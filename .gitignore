@@ -4,3 +4,4 @@ components/routes/_*
 .sass-cache/*
 .idea/*
 dist/*
+coverage/*

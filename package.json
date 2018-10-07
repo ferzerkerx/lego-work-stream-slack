@@ -7,7 +7,7 @@
     "start": "node dist/",
     "compile": "tsc",
     "dev": "tsc & nodemon dist",
-    "test": "jest",
+    "test": "jest --coverage",
     "tsc": "tsc",
     "prettier": "prettier --write \"src/**/*.ts\"",
     "postinstall": "yarn compile"
