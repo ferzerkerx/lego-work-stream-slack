@@ -1,14 +1,15 @@
-import { SlackAttachment, SlackBot, SlackMessage } from 'botkit';
+import { SlackAttachment, SlackBot, SlackMessage, Storage } from 'botkit';
 import { NextFunction } from 'express';
 import { LegoSelectedValue } from '../lego/LegoSelectedValue';
 import { LegoSelectMessage } from '../lego/LegoSelectMessage';
 import { LegoSelectionService } from '../lego/LegoSelectionService';
 
 class LegoSelectionReplyService {
-  static createReply(message, controller): Promise<SlackMessage> {
+  static createReply(message, storage:Storage<LegoSelectMessage>): Promise<SlackMessage> {
     let fullMessageId: string = this.getMessageId(message);
 
-    return controller.storage.lego_messages
+    // @ts-ignore
+    return storage.lego_messages
       .get(fullMessageId)
       .then((storedLegoMessage: LegoSelectMessage) => {
         const legoMessage = LegoSelectionService.createLegoSelectMessage({
@@ -19,7 +20,8 @@ class LegoSelectionReplyService {
           channel: message.channel,
         });
 
-        return controller.storage.lego_messages.save(legoMessage).then(() => {
+        // @ts-ignore
+        return storage.lego_messages.save(legoMessage).then(() => {
           return this._createReply(message, legoMessage);
         });
       })
@@ -73,7 +75,7 @@ const legoSelectionHandler = (controller): void => {
     (bot: SlackBot, message, next: NextFunction) => {
       if (message.type == 'interactive_message_callback' && message.actions) {
         if (message.actions[0].name.match(/^lego-select-option-/)) {
-          LegoSelectionReplyService.createReply(message, controller).then(
+          LegoSelectionReplyService.createReply(message, controller.storage).then(
             (reply: SlackMessage) => {
               bot.replyInteractive(message, reply);
             }
