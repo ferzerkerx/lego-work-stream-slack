@@ -57,9 +57,9 @@ if (!process.env.clientId || !process.env.clientSecret) {
     'WARNING: This application is not fully configured to work with Slack'
   );
 } else {
-  // webserver.get('/', (req, res) => {
-  //   res.send('active');
-  // });
+  webserver.get('/', (req, res) => {
+    res.send('active');
+  });
 
   require(`${__dirname}/components/rtm_manager.js`)(controller);
 
