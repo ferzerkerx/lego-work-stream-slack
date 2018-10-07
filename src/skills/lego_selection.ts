@@ -4,7 +4,7 @@ import {
   LegoMessageFactory,
 } from '../lego/LegoMessageFactory';
 
-const legoMentionHandler = (controller: SlackController): void => {
+const legoSelectionHandler = (controller: SlackController): void => {
   controller.hears(
     'lego',
     'direct_mention',
@@ -28,4 +28,4 @@ const legoMentionHandler = (controller: SlackController): void => {
     }
   );
 };
-module.exports = legoMentionHandler;
+module.exports = legoSelectionHandler;

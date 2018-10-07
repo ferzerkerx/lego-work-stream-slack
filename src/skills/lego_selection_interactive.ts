@@ -2,7 +2,7 @@ import { SlackBot, SlackMessage } from 'botkit';
 import { NextFunction } from 'express';
 import { LegoSelectionReplyService } from '../lego/LegoSelectionReplyService';
 
-const legoSelectionHandler = (controller): void => {
+const legoSelectionInteractiveHandler = (controller): void => {
   controller.middleware.receive.use(
     (bot: SlackBot, message, next: NextFunction) => {
       if (message.type == 'interactive_message_callback' && message.actions) {
@@ -20,4 +20,4 @@ const legoSelectionHandler = (controller): void => {
     }
   );
 };
-module.exports = legoSelectionHandler;
+module.exports = legoSelectionInteractiveHandler;

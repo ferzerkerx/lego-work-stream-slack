@@ -1,33 +1,33 @@
 import { Conversation, SlackController, SlackMessage } from 'botkit';
 
-function formatUptime(uptime: number): string {
-  let unit: string = 'second';
-  if (uptime > 60) {
-    uptime = uptime / 60;
-    unit = 'minute';
+class Statistics {
+  static triggers: number = 0;
+  static convos: number = 0;
+
+  static formatUptime(uptime: number): string {
+    let unit: string = 'second';
+    if (uptime > 60) {
+      uptime = uptime / 60;
+      unit = 'minute';
+    }
+    if (uptime > 60) {
+      uptime = uptime / 60;
+      unit = 'hour';
+    }
+    if (uptime != 1) {
+      unit = unit + 's';
+    }
+    return `${uptime} ${unit}`;
   }
-  if (uptime > 60) {
-    uptime = uptime / 60;
-    unit = 'hour';
-  }
-  if (uptime != 1) {
-    unit = unit + 's';
-  }
-  return `${uptime} ${unit}`;
 }
 
 const statisticsHandler = (controller: SlackController) => {
-  const stats = {
-    triggers: 0,
-    convos: 0,
-  };
-
   controller.on('heard_trigger', () => {
-    stats.triggers++;
+    Statistics.triggers++;
   });
 
   controller.on('conversationStarted', () => {
-    stats.convos++;
+    Statistics.convos++;
   });
 
   controller.hears(
@@ -38,9 +38,9 @@ const statisticsHandler = (controller: SlackController) => {
         message,
         (err: Error, convo: Conversation<SlackMessage>) => {
           if (!err) {
-            convo.setVar('uptime', formatUptime(process.uptime()));
-            convo.setVar('convos', stats.convos);
-            convo.setVar('triggers', stats.triggers);
+            convo.setVar('uptime', Statistics.formatUptime(process.uptime()));
+            convo.setVar('convos', Statistics.convos);
+            convo.setVar('triggers', Statistics.triggers);
 
             convo.say(
               'My main process has been online for {{vars.uptime}}. Since booting, I have heard {{vars.triggers}} triggers, and conducted {{vars.convos}} conversations.'
