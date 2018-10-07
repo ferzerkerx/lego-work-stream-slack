@@ -28,6 +28,7 @@ const createExpressServer = (controller: SlackController): Express => {
     require(`./express_middleware/${file}`)(webserver, controller);
   });
 
+  webserver.use(express.static('public'));
   const server: Server = http.createServer(webserver);
 
   server.listen(process.env.PORT || 3000, null, () => {
