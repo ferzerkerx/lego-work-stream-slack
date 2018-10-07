@@ -22,7 +22,7 @@ const createExpressServer = (controller: SlackController): Express => {
   webserver.use(cookieParser());
   webserver.use(bodyParser.json());
   webserver.use(bodyParser.urlencoded({ extended: true }));
-  webserver.use('/static', express.static(path.join(__dirname, '../public')))
+  webserver.use(express.static(path.join(__dirname, 'public')))
 
   let normalizedPath: string = path.join(__dirname, 'express_middleware');
   fs.readdirSync(normalizedPath).forEach(file => {
