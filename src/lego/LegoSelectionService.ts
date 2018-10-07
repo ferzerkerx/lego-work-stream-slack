@@ -31,7 +31,7 @@ export class LegoSelectionService {
     user,
     action
   ): LegoSelectedValue[] {
-    let selectedValues: LegoSelectedValue[] = currentSelectedValues.slice(); //TODO should do deep clone
+    let selectedValues: LegoSelectedValue[] = JSON.parse(JSON.stringify(currentSelectedValues));
     let currentAction = action;
 
     let currentSelectedValue: LegoSelectedValue = selectedValues
