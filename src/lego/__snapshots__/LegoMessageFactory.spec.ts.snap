@@ -1,0 +1,190 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LegoMessageFactory should create message with valid structure 1`] = `
+Object {
+  "attachments": Array [
+    Object {
+      "actions": Array [
+        Object {
+          "name": "lego-select-option-green",
+          "options": Array [
+            Object {
+              "text": "0",
+              "value": 0,
+            },
+            Object {
+              "text": "1",
+              "value": 1,
+            },
+            Object {
+              "text": "2",
+              "value": 2,
+            },
+            Object {
+              "text": "3",
+              "value": 3,
+            },
+            Object {
+              "text": "4",
+              "value": 4,
+            },
+            Object {
+              "text": "5",
+              "value": 5,
+            },
+            Object {
+              "text": "6",
+              "value": 6,
+            },
+            Object {
+              "text": "7",
+              "value": 7,
+            },
+            Object {
+              "text": "8",
+              "value": 8,
+            },
+          ],
+          "text": "Green",
+          "type": "select",
+        },
+        Object {
+          "name": "lego-select-option-red",
+          "options": Array [
+            Object {
+              "text": "0",
+              "value": 0,
+            },
+            Object {
+              "text": "1",
+              "value": 1,
+            },
+            Object {
+              "text": "2",
+              "value": 2,
+            },
+            Object {
+              "text": "3",
+              "value": 3,
+            },
+            Object {
+              "text": "4",
+              "value": 4,
+            },
+            Object {
+              "text": "5",
+              "value": 5,
+            },
+            Object {
+              "text": "6",
+              "value": 6,
+            },
+            Object {
+              "text": "7",
+              "value": 7,
+            },
+            Object {
+              "text": "8",
+              "value": 8,
+            },
+          ],
+          "text": "Red",
+          "type": "select",
+        },
+        Object {
+          "name": "lego-select-option-orange",
+          "options": Array [
+            Object {
+              "text": "0",
+              "value": 0,
+            },
+            Object {
+              "text": "1",
+              "value": 1,
+            },
+            Object {
+              "text": "2",
+              "value": 2,
+            },
+            Object {
+              "text": "3",
+              "value": 3,
+            },
+            Object {
+              "text": "4",
+              "value": 4,
+            },
+            Object {
+              "text": "5",
+              "value": 5,
+            },
+            Object {
+              "text": "6",
+              "value": 6,
+            },
+            Object {
+              "text": "7",
+              "value": 7,
+            },
+            Object {
+              "text": "8",
+              "value": 8,
+            },
+          ],
+          "text": "Orange",
+          "type": "select",
+        },
+        Object {
+          "name": "lego-select-option-black",
+          "options": Array [
+            Object {
+              "text": "0",
+              "value": 0,
+            },
+            Object {
+              "text": "1",
+              "value": 1,
+            },
+            Object {
+              "text": "2",
+              "value": 2,
+            },
+            Object {
+              "text": "3",
+              "value": 3,
+            },
+            Object {
+              "text": "4",
+              "value": 4,
+            },
+            Object {
+              "text": "5",
+              "value": 5,
+            },
+            Object {
+              "text": "6",
+              "value": 6,
+            },
+            Object {
+              "text": "7",
+              "value": 7,
+            },
+            Object {
+              "text": "8",
+              "value": 8,
+            },
+          ],
+          "text": "Black",
+          "type": "select",
+        },
+      ],
+      "attachment_type": "default",
+      "callback_id": "lego_stats",
+      "color": "#3AA3E3",
+      "fallback": "Unable to set lego stats",
+      "text": "Choose your legos!",
+    },
+  ],
+  "text": "Please select your Legos for today 2018-10-01",
+}
+`;
