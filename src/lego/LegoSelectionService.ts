@@ -4,10 +4,10 @@ import { LegoSelectedValueEntry } from './LegoSelectedValueEntry';
 
 export class LegoSelectionService {
   static createLegoSelectMessage(params: {
-    legoMessage: LegoSelectMessage;
+    legoMessage?: LegoSelectMessage;
     fullMessageId: string;
     user: string;
-    action: string;
+    action: any;
     channel: string;
   }): LegoSelectMessage {
     const storedLegoMessage: LegoSelectMessage =
@@ -26,12 +26,12 @@ export class LegoSelectionService {
     };
   }
 
-  static _legoSelectedValues(
+  private static _legoSelectedValues(
     currentSelectedValues: LegoSelectedValue[] = [],
     user,
     action
   ): LegoSelectedValue[] {
-    let selectedValues: LegoSelectedValue[] = currentSelectedValues.slice();
+    let selectedValues: LegoSelectedValue[] = currentSelectedValues.slice(); //TODO should do deep clone
     let currentAction = action;
 
     let currentSelectedValue: LegoSelectedValue = selectedValues

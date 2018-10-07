@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LegoSelectionService createLegoSelectMessage with existing entries 1`] = `
+Object {
+  "channel": "someChannel",
+  "date": 2018-10-01T00:00:00.000Z,
+  "id": "someMessageId",
+  "selectedValues": Array [
+    Object {
+      "entries": Array [
+        Object {
+          "user": "someuser",
+          "value": 7,
+        },
+      ],
+      "id": "someActionName",
+    },
+    Object {
+      "entries": Array [
+        Object {
+          "user": "someuser",
+          "value": 6,
+        },
+      ],
+      "id": "someOtherActionName",
+    },
+  ],
+}
+`;
+
+exports[`LegoSelectionService createLegoSelectMessage without entries 1`] = `
+Object {
+  "channel": "someChannel",
+  "date": 2018-10-01T00:00:00.000Z,
+  "id": "someMessageId",
+  "selectedValues": Array [
+    LegoSelectedValue {
+      "entries": Array [
+        LegoSelectedValueEntry {
+          "user": "someuser",
+          "value": 7,
+        },
+      ],
+      "id": undefined,
+    },
+  ],
+}
+`;
