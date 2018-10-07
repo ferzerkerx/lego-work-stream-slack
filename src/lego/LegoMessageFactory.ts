@@ -7,7 +7,7 @@ export class LegoMessageFactory {
     date: Date = new Date()
   ): SlackMessage {
     return {
-      text: `Please select your Legos for today ${Utils.toPrettyDate(
+      text: `Please select your legos for today: ${Utils.toPrettyDate(
         date.toDateString()
       )}`,
       attachments: [
