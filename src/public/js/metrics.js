@@ -15,17 +15,18 @@ d3.json('lego_stats.json').then(jsonResponse => {
   const orderOfDates = d3.range(jsonResponse.entries.length);
 
   const sumsPerDateAndCategory = jsonResponse.entries.map(d =>
-    Array.from(categories, V => d[V]));
+    Array.from(categories, V => d[V])
+  );
 
   const data = Object.assign(
     d3.stack().keys(d3.range(jsonResponse.keys.length))(
-      d3.permute(sumsPerDateAndCategory, orderOfDates),
+      d3.permute(sumsPerDateAndCategory, orderOfDates)
     ),
     {
       keys: Array.from(categories),
       totals: d3.permute(totalCountsPerDates, orderOfDates),
       names: d3.permute(datesToDisplay, orderOfDates),
-    },
+    }
   );
 
   console.log(data);
