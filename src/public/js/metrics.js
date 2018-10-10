@@ -1,96 +1,104 @@
-var svg = d3.select("#stacked"),
-  margin = {top: 20, right: 180, bottom: 30, left: 40},
-  width = +svg.attr("width") - margin.left - margin.right,
-  height = +svg.attr("height") - margin.top - margin.bottom,
-  g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+const svg = d3.select('#stacked'),
+  margin = { top: 10, right: 10, bottom: 20, left: 40 },
+  width = +svg.attr('width') - margin.left - margin.right,
+  height = +svg.attr('height') - margin.top - margin.bottom;
 
-// var margin = {top: 20, right: 150, bottom: 50, left: 40},
-//     width = 600 - margin.left - marginStacked.right,
-//     height = 500 - margin.top - marginStacked.bottom;
-//
-//
-// var svg = d3.select("#stacked").append("svg")
-//     .attr("width", widthStacked + marginStacked.left + marginStacked.right)
-//     .attr("height", heightStacked + marginStacked.top + marginStacked.bottom)
-//   .append("g")
-//     .attr("transform", "translate(" + marginStacked.left + "," + marginStacked.top + ")");
+d3.json('lego_stats.json').then(jsonResponse => {
+  const categories = jsonResponse.keys;
 
-var x = d3.scaleBand()
-  .rangeRound([0, width])
-  .padding(0.3)
-  .align(0.3);
+  const datesToDisplay = jsonResponse.entries.map(d => d.date);
 
-var y = d3.scaleLinear()
-  .rangeRound([height, 0]);
+  const totalCountsPerDates = jsonResponse.entries.map(d => {
+    return d3.sum(categories.map(key => d[key]));
+  });
 
-var z = d3.scaleOrdinal(d3.schemeCategory20);
-// .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+  const orderOfDates = d3.range(jsonResponse.entries.length);
 
-var stack = d3.stack();
+  const sumsPerDateAndCategory = jsonResponse.entries.map(d =>
+    Array.from(categories, V => d[V]));
 
-d3.csv('segments_table2.csv', function(error, data) {
+  const data = Object.assign(
+    d3.stack().keys(d3.range(jsonResponse.keys.length))(
+      d3.permute(sumsPerDateAndCategory, orderOfDates),
+    ),
+    {
+      keys: Array.from(categories),
+      totals: d3.permute(totalCountsPerDates, orderOfDates),
+      names: d3.permute(datesToDisplay, orderOfDates),
+    },
+  );
 
-
-  console.log(JSON.stringify(data));
   console.log(data);
-  data.sort(function(a, b) { return b.total - a.total; });
 
-  x.domain(data.map(function(d) { return d.ethnicity; }));
-  y.domain([0, d3.max(data, function(d) { return d.total; })]).nice();
-  z.domain(data.columns.slice(1));
+  const y = d3
+    .scaleLinear()
+    .domain([0, d3.max(data.totals)])
+    .rangeRound([height - margin.bottom, margin.top]);
 
-  g.selectAll(".serie")
-    .data(stack.keys(data.columns.slice(1))(data))
-    .enter().append("g")
-    .attr("class", "serie")
-    .attr("fill", function(d) { return z(d.key); })
-    .selectAll("rect")
-    .data(function(d) { return d; })
-    .enter().append("rect")
-    .attr("x", function(d) { return x(d.data.ethnicity); })
-    .attr("y", function(d) { return y(d[1]); })
-    .attr("height", function(d) { return y(d[0]) - y(d[1]); })
-    .attr("width", x.bandwidth());
+  const x = d3
+    .scaleBand()
+    .domain(data.names)
+    .range([margin.left, width - margin.right])
+    .padding(0.1);
 
-  g.append("g")
-    .attr("class", "axis axis--x")
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x));
+  const yAxis = g =>
+    g
+      .attr('transform', `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y).ticks(null, 's'))
+      .call(g => g.selectAll('.domain').remove());
 
-  g.append("g")
-    .attr("class", "axis axis--y")
-    .call(d3.axisLeft(y).ticks(10, "s"))
-    .append("text")
-    .attr("x", 2)
-    .attr("y", y(y.ticks(10).pop()))
-    .attr("dy", "0.35em")
-    .attr("text-anchor", "start")
-    .attr("fill", "#000")
-    .text("Population");
+  const xAxis = g =>
+    g
+      .attr('transform', `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(x).tickSizeOuter(0))
+      .call(g => g.selectAll('.domain').remove());
 
-  var legend = g.selectAll(".legend")
-    .data(data.columns.slice(1).reverse())
-    .enter().append("g")
-    .attr("class", "legend")
-    .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; })
-    .style("font", "10px sans-serif");
+  svg
+    .append('g')
+    .selectAll('g')
+    .data(data)
+    .enter()
+    .append('g')
+    .attr('fill', (d, i) => data.keys[i])
+    .selectAll('rect')
+    .data(d => d)
+    .enter()
+    .append('rect')
+    .attr('x', (d, i) => x(data.names[i]))
+    .attr('y', d => y(d[1]))
+    .attr('height', d => y(d[0]) - y(d[1]))
+    .attr('width', x.bandwidth());
 
-  legend.append("rect")
-    .attr("x", width + 18)
-    .attr("width", 18)
-    .attr("height", 18)
-    .attr("fill", z);
+  svg.append('g').call(xAxis);
 
-  legend.append("text")
-    .attr("x", width + 44)
-    .attr("y", 9)
-    .attr("dy", ".35em")
-    .attr("text-anchor", "start")
-    .text(function(d) { return d; });
+  svg.append('g').call(yAxis);
+
+  const legend = svg => {
+    const g = svg
+      .attr('font-family', 'sans-serif')
+      .attr('font-size', 10)
+      .attr('text-anchor', 'end')
+      .selectAll('g')
+      .data(data.keys.slice())
+      .enter()
+      .append('g')
+      .attr('transform', (d, i) => `translate(0,${i * 20})`);
+
+    g.append('rect')
+      .attr('x', 29)
+      .attr('width', 19)
+      .attr('height', 19)
+      .attr('fill', (d, i) => data.keys[i]);
+
+    g.append('text')
+      .attr('x', 24)
+      .attr('y', 9.5)
+      .attr('dy', '0.35em')
+      .text(d => d);
+  };
+
+  svg
+    .append('g')
+    .attr('transform', `translate(${width - margin.right},${margin.top})`)
+    .call(legend);
 });
-
-function type(d, i, columns) {
-  for (i = 1, t = 0; i < columns.length; ++i) t += d[columns[i]] = +d[columns[i]];
-  d.total = t;
-  return d;
-}

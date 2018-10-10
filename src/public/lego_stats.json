@@ -1,0 +1,77 @@
+{
+  "keys":["green", "red", "black", "orange", "blue"],
+  "entries":[
+    {
+      "date": "2018-10-07",
+      "green": 10,
+      "blue": 5,
+      "red": 2,
+      "black": 1,
+      "orange": 0
+    },
+    {
+      "date": "2018-10-08",
+      "green": 15,
+      "blue": 5,
+      "red": 0,
+      "black": 0,
+      "orange": 0
+    },
+    {
+      "date": "2018-10-09",
+      "green": 12,
+      "blue": 5,
+      "red": 1,
+      "black": 1,
+      "orange": 0
+    },
+    {
+      "date": "2018-10-09",
+      "green": 12,
+      "blue": 5,
+      "red": 1,
+      "black": 1,
+      "orange": 0
+    },
+    {
+      "date": "2018-10-09",
+      "green": 12,
+      "blue": 5,
+      "red": 1,
+      "black": 1,
+      "orange": 0
+    },
+    {
+      "date": "2018-10-09",
+      "green": 12,
+      "blue": 5,
+      "red": 1,
+      "black": 1,
+      "orange": 0
+    },
+    {
+      "date": "2018-10-09",
+      "green": 12,
+      "blue": 5,
+      "red": 1,
+      "black": 1,
+      "orange": 0
+    },
+    {
+      "date": "2018-10-09",
+      "green": 12,
+      "blue": 5,
+      "red": 1,
+      "black": 1,
+      "orange": 0
+    },
+    {
+      "date": "2018-10-10",
+      "green": 10,
+      "blue": 8,
+      "red": 1,
+      "black": 0,
+      "orange": 1
+    }
+  ]
+}
