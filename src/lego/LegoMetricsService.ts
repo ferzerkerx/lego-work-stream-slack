@@ -1,7 +1,7 @@
-import { SlackAttachment, SlackMessage, Storage } from 'botkit';
+import { Storage } from 'botkit';
 import { LegoSelectMessage } from './LegoSelectMessage';
-import { LegoSelectionService } from './LegoSelectionService';
 import { LegoSelectedValue } from './LegoSelectedValue';
+import { Utils } from '../Utils';
 
 export class LegoMetricsService {
   static metricsForDate(
@@ -12,7 +12,35 @@ export class LegoMetricsService {
     // @ts-ignore
     return storage.lego_messages
       .find({ date: date })
+      .then(messages => this.toMetricsObject(messages))
       .catch(e => this.defaultErrorHandling(e));
+  }
+
+  static toMetricsObject(messages: LegoSelectMessage[]): any {
+    let keys = new Set();
+    let datesEntries = {};
+    for (let message of messages) {
+      const selectedValues: LegoSelectedValue[] = message.selectedValues;
+
+      const dateKey = Utils.toPrettyDate(message.date.toDateString());
+      let dateEntry = datesEntries[dateKey] || { date: dateKey };
+
+      for (let selectedValue of selectedValues) {
+        const userEntries = selectedValue.entries;
+
+        keys.add(selectedValue.id);
+        dateEntry[selectedValue.id] = userEntries
+          .map(entry => entry.value)
+          .reduce((accumulator, currentValue) => accumulator + currentValue);
+      }
+
+      datesEntries[dateKey] = dateEntry;
+    }
+
+    return {
+      keys: Array.from(keys),
+      entries: Object.keys(datesEntries).map(key => datesEntries[key]),
+    };
   }
 
   private static defaultErrorHandling(err: Error): void {
