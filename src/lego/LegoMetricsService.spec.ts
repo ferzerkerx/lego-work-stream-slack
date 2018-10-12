@@ -14,6 +14,19 @@ function givenLegoMessages(): LegoSelectMessage[] {
             { userData: { userId: 'userTwo', userName: 'userTwo' }, value: 5 },
           ],
         },
+      ],
+      channelData: { channelId: 'someChannel', name: 'name' },
+    },
+    {
+      id: 'someCoolId',
+      date: new Date('2018-10-10'),
+      selectedValues: [
+        {
+          id: 'someKey',
+          entries: [
+            { userData: { userId: 'userOne', userName: 'userOne' }, value: 1 },
+          ],
+        },
         {
           id: 'someOtherKey',
           entries: [
@@ -28,7 +41,7 @@ function givenLegoMessages(): LegoSelectMessage[] {
       channelData: { channelId: 'someChannel', name: 'name' },
     },
     {
-      id: 'someId',
+      id: 'someOtherId',
       date: new Date('2018-10-11'),
       selectedValues: [
         {
@@ -56,9 +69,7 @@ function givenLegoMessages(): LegoSelectMessage[] {
 
 describe('LegoMetricsService', () => {
   test('toMetricsObject', () => {
-    const entry: string = LegoMetricsService.toMetricsObject(
-      givenLegoMessages()
-    );
+    const entry: any = LegoMetricsService.toMetricsObject(givenLegoMessages());
     expect(entry).toMatchSnapshot();
   });
 });

@@ -29,9 +29,12 @@ export class LegoMetricsService {
         const userEntries = selectedValue.entries;
 
         keys.add(selectedValue.id);
-        dateEntry[selectedValue.id] = userEntries
+        const currentSum = userEntries
           .map(entry => entry.value)
           .reduce((accumulator, currentValue) => accumulator + currentValue);
+
+        let totalSum : number = dateEntry[selectedValue.id] || 0;
+        dateEntry[selectedValue.id] = totalSum + currentSum;
       }
 
       datesEntries[dateKey] = dateEntry;
