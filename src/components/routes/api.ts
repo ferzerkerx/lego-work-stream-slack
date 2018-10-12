@@ -6,9 +6,9 @@ import { LegoSelectMessage } from '../../lego/LegoSelectMessage';
 const api = (webserver: Express, controller: SlackController): void => {
   webserver.get('/api/metrics', (req: Request, res: Response) => {
     LegoMetricsService.metricsForDate(
-      new Date('2018-10-07'),
       // @ts-ignore
-      controller.storage
+      controller.storage,
+      new Date('2018-10-07')
     ).then((messages: LegoSelectMessage) => {
       res.send(JSON.stringify(messages));
     });

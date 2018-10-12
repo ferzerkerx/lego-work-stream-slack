@@ -5,15 +5,40 @@ import { Utils } from '../Utils';
 
 export class LegoMetricsService {
   static metricsForDate(
-    date: Date,
-    storage: Storage<LegoSelectMessage>
+    storage: Storage<LegoSelectMessage>,
+    startDate: Date,
+    endDate?: Date
   ): Promise<LegoSelectMessage[]> {
     //TODO need to consider also the team
-    // @ts-ignore
-    return storage.lego_messages
-      .find({ date: date })
-      .then(messages => this.toMetricsObject(messages))
-      .catch(e => this.defaultErrorHandling(e));
+
+    return this.datesArray(startDate, endDate)
+      .map(theDate => {
+        // @ts-ignore
+        return storage.lego_messages
+          .find({ date: theDate })
+          .catch(e => this.defaultErrorHandling(e));
+      })
+      .map(thePromise =>
+        thePromise.then(messages => {
+          return this.toMetricsObject(messages);
+        })
+      ).reduce((accumulator, currentValue) => accumulator.concat(currentValue));
+  }
+
+  static datesArray(startDate: Date, endDate?: Date): Array<Date> {
+    const theDates = [startDate];
+    if (endDate) {
+      if (endDate < startDate) {
+        throw Error('End date should be bigger');
+      }
+      let currentDate = new Date(startDate);
+      while (currentDate < endDate) {
+        currentDate = new Date(currentDate);
+        currentDate.setDate(currentDate.getDate() + 1);
+        theDates.push(currentDate);
+      }
+    }
+    return theDates;
   }
 
   static toMetricsObject(messages: LegoSelectMessage[]): any {
@@ -33,7 +58,7 @@ export class LegoMetricsService {
           .map(entry => entry.value)
           .reduce((accumulator, currentValue) => accumulator + currentValue);
 
-        let totalSum : number = dateEntry[selectedValue.id] || 0;
+        let totalSum: number = dateEntry[selectedValue.id] || 0;
         dateEntry[selectedValue.id] = totalSum + currentSum;
       }
 

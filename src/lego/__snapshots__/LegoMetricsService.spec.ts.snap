@@ -1,5 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`LegoMetricsService datesArray startdate and endDate 1`] = `
+Array [
+  2018-10-10T00:00:00.000Z,
+  2018-10-11T00:00:00.000Z,
+  2018-10-12T00:00:00.000Z,
+  2018-10-13T00:00:00.000Z,
+  2018-10-14T00:00:00.000Z,
+  2018-10-15T00:00:00.000Z,
+]
+`;
+
+exports[`LegoMetricsService datesArray startdate only 1`] = `
+Array [
+  2018-10-10T00:00:00.000Z,
+]
+`;
+
 exports[`LegoMetricsService toMetricsObject 1`] = `
 Object {
   "entries": Array [
