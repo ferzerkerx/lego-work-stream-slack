@@ -68,7 +68,12 @@ export class LegoMetricsService {
       for (let selectedValue of selectedValues) {
         const userEntries = selectedValue.entries;
 
-        keys.add(selectedValue.id);
+        const sanitizedValueId = selectedValue.id.includes(
+          'lego-select-option-'
+        )
+          ? selectedValue.id.substr('lego-select-option-'.length)
+          : selectedValue.id;
+        keys.add(sanitizedValueId);
         const currentSum: number = userEntries
           .map(entry => entry.value)
           .reduce(
@@ -76,8 +81,8 @@ export class LegoMetricsService {
               Number(accumulator) + Number(currentValue)
           );
 
-        let totalSum: number = dateEntry[selectedValue.id] || 0;
-        dateEntry[selectedValue.id] = Number(totalSum) + Number(currentSum);
+        let totalSum: number = dateEntry[sanitizedValueId] || 0;
+        dateEntry[sanitizedValueId] = Number(totalSum) + Number(currentSum);
       }
 
       datesEntries[dateKey] = dateEntry;

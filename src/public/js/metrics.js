@@ -3,7 +3,7 @@ const svg = d3.select('#stacked'),
   width = +svg.attr('width') - margin.left - margin.right,
   height = +svg.attr('height') - margin.top - margin.bottom;
 
-d3.json('lego_stats.json').then(jsonResponse => {
+d3.json('/api/metrics').then(jsonResponse => {
   const categories = jsonResponse.keys;
 
   const datesToDisplay = jsonResponse.entries.map(d => d.date);
