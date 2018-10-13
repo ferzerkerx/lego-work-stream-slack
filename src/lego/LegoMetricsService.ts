@@ -11,18 +11,33 @@ export class LegoMetricsService {
   ): Promise<LegoSelectMessage[]> {
     //TODO need to consider also the team
 
-    return this.datesArray(startDate, endDate)
-      .map(theDate => {
-        // @ts-ignore
-        return storage.lego_messages
-          .find({ date: theDate })
-          .catch(e => this.defaultErrorHandling(e));
-      })
-      .map(thePromise =>
-        thePromise.then(messages => {
-          return this.toMetricsObject(messages);
-        })
-      ).reduce((accumulator, currentValue) => accumulator.concat(currentValue));
+    const messagesPerDatePromises: Promise<
+      LegoSelectMessage[]
+    >[] = this.datesArray(startDate, endDate).map(theDate =>
+      this.findMessagesBy(storage, theDate)
+    );
+
+    return Promise.all(messagesPerDatePromises).then(
+      (allMessages: LegoSelectMessage[][]) => {
+        const legoSelectMessages: LegoSelectMessage[] = allMessages.reduce(
+          (
+            accumulator: LegoSelectMessage[],
+            currentValue: LegoSelectMessage[]
+          ) => accumulator.concat(currentValue)
+        );
+        return this.toMetricsObject(legoSelectMessages);
+      }
+    );
+  }
+
+  private static findMessagesBy(
+    storage: Storage<LegoSelectMessage>,
+    theDate: Date
+  ): Promise<LegoSelectMessage[]> {
+    // @ts-ignore
+    return storage.lego_messages
+      .find({ date: theDate })
+      .catch(e => this.defaultErrorHandling(e));
   }
 
   static datesArray(startDate: Date, endDate?: Date): Array<Date> {
@@ -54,12 +69,15 @@ export class LegoMetricsService {
         const userEntries = selectedValue.entries;
 
         keys.add(selectedValue.id);
-        const currentSum = userEntries
+        const currentSum: number = userEntries
           .map(entry => entry.value)
-          .reduce((accumulator, currentValue) => accumulator + currentValue);
+          .reduce(
+            (accumulator: number, currentValue: number) =>
+              Number(accumulator) + Number(currentValue)
+          );
 
         let totalSum: number = dateEntry[selectedValue.id] || 0;
-        dateEntry[selectedValue.id] = totalSum + currentSum;
+        dateEntry[selectedValue.id] = Number(totalSum) + Number(currentSum);
       }
 
       datesEntries[dateKey] = dateEntry;
