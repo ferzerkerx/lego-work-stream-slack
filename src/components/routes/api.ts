@@ -13,19 +13,36 @@ const api = (webserver: Express, controller: SlackController): void => {
     return DateUtils.parseDate(paramValue);
   }
 
-  webserver.get('/api/metrics', (req: Request, res: Response) => {
+  function numberParam(req: Request, paramName: string) {
+    const paramValue = req.query[paramName];
+    if (!paramValue) {
+      return null;
+    }
+    const result = Number(req.query[paramName]);
+    if (isNaN(result)) {
+      return null;
+    }
+    return result;
+  }
+
+  function metricsConfiguration(req: Request) {
     const starDate = dateParam(req, 'startDate') || DateUtils.now();
     const endDate =
       dateParam(req, 'endDate') || DateUtils.add(DateUtils.now(), 1);
+    const frequencyInDays = numberParam(req, 'frequency') || 15;
 
-    const config: any = {
+    return {
       starDate: starDate,
       endDate: endDate,
+      frequencyInDays: frequencyInDays,
     };
-    LegoMetricsService.metricsForDate(
+  }
+
+  webserver.get('/api/metrics', (req: Request, res: Response) => {
+    LegoMetricsService.metricsForConfig(
       // @ts-ignore
       controller.storage,
-      config
+      metricsConfiguration(req)
     ).then((messages: LegoSelectMessage) => {
       res.send(JSON.stringify(messages));
     });

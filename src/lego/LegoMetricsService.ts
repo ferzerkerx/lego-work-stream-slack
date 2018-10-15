@@ -4,15 +4,15 @@ import { LegoSelectedValue } from './LegoSelectedValue';
 import { DateUtils } from '../DateUtils';
 
 export class LegoMetricsService {
-  static metricsForDate(
+  static metricsForConfig(
     storage: Storage<LegoSelectMessage>,
     config: {
       startDate: Date;
       endDate?: Date;
+      frequencyInDays: number;
+      //TODO need to consider also the team
     }
   ): Promise<LegoSelectMessage[]> {
-    //TODO need to consider also the team
-
     const messagesPerDatePromises: Promise<
       LegoSelectMessage[]
     >[] = this.datesArray(config.startDate, config.endDate).map(theDate =>
