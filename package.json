@@ -10,7 +10,7 @@
     "test": "jest --coverage",
     "tsc": "tsc",
     "prettier": "prettier --write \"src/**/*.ts\"",
-    "postinstall": "yarn compile && copyfiles -f src/public/** dist/public && copyfiles -f src/public/js/** dist/public/js"
+    "postinstall": "yarn compile && copyfiles -f src/public/** dist/public && copyfiles -f src/public/js/** dist/public/js && copyfiles -f src/public/css/** dist/public/css"
   },
   "prettier": {
     "singleQuote": true,

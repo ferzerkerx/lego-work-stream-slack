@@ -1,4 +1,5 @@
 const svg = d3.select('#stacked'),
+  tooltip = d3.select('#tooltip'),
   margin = { top: 10, right: 10, bottom: 20, left: 40 },
   width = +svg.attr('width') - margin.left - margin.right,
   height = +svg.attr('height') - margin.top - margin.bottom;
@@ -28,8 +29,6 @@ d3.json('/api/metrics').then(jsonResponse => {
       names: d3.permute(datesToDisplay, orderOfDates),
     }
   );
-
-  console.log(data);
 
   const y = d3
     .scaleLinear()
@@ -61,6 +60,19 @@ d3.json('/api/metrics').then(jsonResponse => {
     .enter()
     .append('g')
     .attr('fill', (d, i) => data.keys[i])
+    .on('mouseover', (d, i) => {
+      const displayText = `${Math.abs(d[0][0] - d[0][1])} - ${data.keys[i]}`;
+
+      tooltip.style('opacity', 0.9);
+
+      tooltip
+        .html(`${displayText}`)
+        .style('left', `${d3.event.pageX + 30}px`)
+        .style('top', `${d3.event.pageY - 30}px`);
+    })
+    .on('mouseout', () => {
+      tooltip.style('opacity', 0);
+    })
     .selectAll('rect')
     .data(d => d)
     .enter()
