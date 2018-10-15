@@ -22,4 +22,10 @@ export class Utils {
     date.setMilliseconds(0);
     return date;
   }
+
+  static add(currentDate: Date, days: number) {
+    let date = new Date(currentDate);
+    date.setDate(date.getDate() + days);
+    return date;
+  }
 }

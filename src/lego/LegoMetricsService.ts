@@ -48,8 +48,7 @@ export class LegoMetricsService {
       }
       let currentDate = new Date(startDate);
       while (currentDate < endDate) {
-        currentDate = new Date(currentDate);
-        currentDate.setDate(currentDate.getDate() + 1);
+        currentDate = Utils.add(currentDate, 1);
         theDates.push(currentDate);
       }
     }
