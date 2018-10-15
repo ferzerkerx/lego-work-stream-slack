@@ -73,13 +73,13 @@ describe('LegoMetricsService', () => {
     expect(entry).toMatchSnapshot();
   });
 
-  test('datesArray startdate only', () => {
-    const entry: any = LegoMetricsService.datesArray(new Date('2018-10-10'));
+  test('toDatesArray startdate only', () => {
+    const entry: any = LegoMetricsService.toDatesArray(new Date('2018-10-10'));
     expect(entry).toMatchSnapshot();
   });
 
-  test('datesArray startdate and endDate', () => {
-    const entry: any = LegoMetricsService.datesArray(
+  test('toDatesArray startdate and endDate', () => {
+    const entry: any = LegoMetricsService.toDatesArray(
       new Date('2018-10-10'),
       new Date('2018-10-15')
     );

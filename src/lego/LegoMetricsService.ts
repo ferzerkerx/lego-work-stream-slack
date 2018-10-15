@@ -15,7 +15,7 @@ export class LegoMetricsService {
   ): Promise<LegoSelectMessage[]> {
     const messagesPerDatePromises: Promise<
       LegoSelectMessage[]
-    >[] = this.datesArray(config.startDate, config.endDate).map(theDate =>
+    >[] = this.toDatesArray(config.startDate, config.endDate).map(theDate =>
       this.findMessagesBy(storage, theDate)
     );
 
@@ -42,7 +42,7 @@ export class LegoMetricsService {
       .catch(e => this.defaultErrorHandling(e));
   }
 
-  static datesArray(startDate: Date, endDate?: Date): Array<Date> {
+  static toDatesArray(startDate: Date, endDate?: Date): Array<Date> {
     const theDates = [startDate];
     if (endDate) {
       if (endDate < startDate) {

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`LegoMetricsService datesArray startdate and endDate 1`] = `
+exports[`LegoMetricsService toDatesArray startdate and endDate 1`] = `
 Array [
   2018-10-10T00:00:00.000Z,
   2018-10-11T00:00:00.000Z,
@@ -11,7 +11,7 @@ Array [
 ]
 `;
 
-exports[`LegoMetricsService datesArray startdate only 1`] = `
+exports[`LegoMetricsService toDatesArray startdate only 1`] = `
 Array [
   2018-10-10T00:00:00.000Z,
 ]
