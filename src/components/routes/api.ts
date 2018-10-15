@@ -17,11 +17,14 @@ const api = (webserver: Express, controller: SlackController): void => {
     const starDate = dateParam(req, 'startDate') || DateUtils.now();
     const endDate = dateParam(req, 'endDate') || DateUtils.add(DateUtils.now(), 1);
 
+    const config:any = {
+      starDate: starDate,
+      endDate: endDate,
+    };
     LegoMetricsService.metricsForDate(
       // @ts-ignore
       controller.storage,
-      starDate,
-      endDate
+      config
     ).then((messages: LegoSelectMessage) => {
       res.send(JSON.stringify(messages));
     });

@@ -6,14 +6,15 @@ import { DateUtils } from '../DateUtils';
 export class LegoMetricsService {
   static metricsForDate(
     storage: Storage<LegoSelectMessage>,
-    startDate: Date,
-    endDate?: Date
-  ): Promise<LegoSelectMessage[]> {
+    config:{
+      startDate: Date,
+      endDate?: Date
+    }): Promise<LegoSelectMessage[]> {
     //TODO need to consider also the team
 
     const messagesPerDatePromises: Promise<
       LegoSelectMessage[]
-    >[] = this.datesArray(startDate, endDate).map(theDate =>
+    >[] = this.datesArray(config.startDate, config.endDate).map(theDate =>
       this.findMessagesBy(storage, theDate)
     );
 
