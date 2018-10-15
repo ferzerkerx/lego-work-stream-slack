@@ -10,11 +10,7 @@ const api = (webserver: Express, controller: SlackController): void => {
     if (!paramValue) {
       return null;
     }
-    const date: Date = new Date(paramValue);
-    if (isNaN(date.getTime())) {
-      return null;
-    }
-    return date;
+    return Utils.parseDate(paramValue);
   }
 
   webserver.get('/api/metrics', (req: Request, res: Response) => {

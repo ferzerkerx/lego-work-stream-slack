@@ -28,4 +28,11 @@ export class Utils {
     date.setDate(date.getDate() + days);
     return date;
   }
+
+  static parseDate(paramValue: string) {
+    const date: Date = new Date(paramValue);
+    if (isNaN(date.getTime())) {
+      return null;
+    }
+  }
 }
