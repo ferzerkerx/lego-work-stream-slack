@@ -1,6 +1,6 @@
 export class DateUtils {
   static toPrettyDate(theValue: string): string {
-    let theDate: Date = new Date(theValue),
+    let theDate: Date = this.parseDate(theValue),
       month = '' + (theDate.getMonth() + 1),
       day = '' + theDate.getDate(),
       year = theDate.getFullYear();
@@ -34,5 +34,6 @@ export class DateUtils {
     if (isNaN(date.getTime())) {
       return null;
     }
+    return date;
   }
 }

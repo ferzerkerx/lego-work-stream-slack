@@ -6,10 +6,11 @@ import { DateUtils } from '../DateUtils';
 export class LegoMetricsService {
   static metricsForDate(
     storage: Storage<LegoSelectMessage>,
-    config:{
-      startDate: Date,
-      endDate?: Date
-    }): Promise<LegoSelectMessage[]> {
+    config: {
+      startDate: Date;
+      endDate?: Date;
+    }
+  ): Promise<LegoSelectMessage[]> {
     //TODO need to consider also the team
 
     const messagesPerDatePromises: Promise<

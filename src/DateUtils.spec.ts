@@ -1,14 +1,25 @@
+import { DateUtils } from './DateUtils';
 
 describe('DateUtils', () => {
   test('toPrettyDate', () => {
-    //TODO
+    const date = new Date('2018-10-10');
+    const dateStr = DateUtils.toPrettyDate(date.toDateString());
+    expect(dateStr).toMatchSnapshot();
   });
 
   test('add', () => {
-    //TODO
+    const date = new Date('2018-10-10');
+    const resultDate = DateUtils.add(date, 2);
+    expect(resultDate).toMatchSnapshot();
   });
 
-  test('parseDate', () => {
-    //TODO
+  test('should parse valid date', () => {
+    const resultDate = DateUtils.parseDate('2018-10-10');
+    expect(resultDate).toMatchSnapshot();
+  });
+
+  test('should not parse invalid date', () => {
+    const resultDate = DateUtils.parseDate('not a date');
+    expect(resultDate).toBeNull();
   });
 });

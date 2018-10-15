@@ -15,9 +15,10 @@ const api = (webserver: Express, controller: SlackController): void => {
 
   webserver.get('/api/metrics', (req: Request, res: Response) => {
     const starDate = dateParam(req, 'startDate') || DateUtils.now();
-    const endDate = dateParam(req, 'endDate') || DateUtils.add(DateUtils.now(), 1);
+    const endDate =
+      dateParam(req, 'endDate') || DateUtils.add(DateUtils.now(), 1);
 
-    const config:any = {
+    const config: any = {
       starDate: starDate,
       endDate: endDate,
     };

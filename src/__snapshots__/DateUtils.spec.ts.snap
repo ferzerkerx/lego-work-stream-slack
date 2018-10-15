@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DateUtils add 1`] = `2018-10-12T00:00:00.000Z`;
+
+exports[`DateUtils should parse valid date 1`] = `2018-10-10T00:00:00.000Z`;
+
+exports[`DateUtils toPrettyDate 1`] = `"2018-10-10"`;
