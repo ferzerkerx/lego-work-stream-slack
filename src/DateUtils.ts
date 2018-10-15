@@ -1,4 +1,4 @@
-export class Utils {
+export class DateUtils {
   static toPrettyDate(theValue: string): string {
     let theDate: Date = new Date(theValue),
       month = '' + (theDate.getMonth() + 1),

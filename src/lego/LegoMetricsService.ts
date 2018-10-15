@@ -1,7 +1,7 @@
 import { Storage } from 'botkit';
 import { LegoSelectMessage } from './LegoSelectMessage';
 import { LegoSelectedValue } from './LegoSelectedValue';
-import { Utils } from '../Utils';
+import { DateUtils } from '../DateUtils';
 
 export class LegoMetricsService {
   static metricsForDate(
@@ -48,7 +48,7 @@ export class LegoMetricsService {
       }
       let currentDate = new Date(startDate);
       while (currentDate < endDate) {
-        currentDate = Utils.add(currentDate, 1);
+        currentDate = DateUtils.add(currentDate, 1);
         theDates.push(currentDate);
       }
     }
@@ -61,7 +61,7 @@ export class LegoMetricsService {
     for (let message of messages) {
       const selectedValues: LegoSelectedValue[] = message.selectedValues;
 
-      const dateKey = Utils.toPrettyDate(message.date.toDateString());
+      const dateKey = DateUtils.toPrettyDate(message.date.toDateString());
       let dateEntry = datesEntries[dateKey] || { date: dateKey };
 
       for (let selectedValue of selectedValues) {
