@@ -69,7 +69,13 @@ function givenLegoMessages(): LegoSelectMessage[] {
 
 describe('LegoMetricsService', () => {
   test('toMetricsObject', () => {
-    const entry: any = LegoMetricsService.toMetricsObject(givenLegoMessages());
+    const entry: any = LegoMetricsService.toMetricsObject(
+      givenLegoMessages(),
+      LegoMetricsService.toDatesArray(
+        new Date('2018-10-10'),
+        new Date('2018-10-11')
+      )
+    );
     expect(entry).toMatchSnapshot();
   });
 
