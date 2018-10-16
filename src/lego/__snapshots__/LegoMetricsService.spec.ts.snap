@@ -16,24 +16,3 @@ Array [
   2018-10-10T00:00:00.000Z,
 ]
 `;
-
-exports[`LegoMetricsService toMetricsObject 1`] = `
-Object {
-  "entries": Array [
-    Object {
-      "date": "2018-10-10",
-      "someKey": 16,
-      "someOtherKey": 9,
-    },
-    Object {
-      "date": "2018-10-11",
-      "someKey": 3,
-      "someOtherKey": 13,
-    },
-  ],
-  "keys": Array [
-    "someKey",
-    "someOtherKey",
-  ],
-}
-`;

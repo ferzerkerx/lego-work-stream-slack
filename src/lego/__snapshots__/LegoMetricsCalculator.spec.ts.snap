@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LegoMetricsCalculator calculate 1`] = `
+Object {
+  "entries": Array [
+    Object {
+      "date": "2018-10-10",
+      "someKey": 16,
+      "someOtherKey": 9,
+    },
+    Object {
+      "date": "2018-10-11",
+      "someKey": 3,
+      "someOtherKey": 13,
+    },
+  ],
+  "keys": Array [
+    "someKey",
+    "someOtherKey",
+  ],
+}
+`;
