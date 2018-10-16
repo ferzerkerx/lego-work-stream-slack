@@ -28,7 +28,7 @@ const api = (webserver: Express, controller: SlackController): void => {
   function metricsConfiguration(req: Request) {
     const starDate = dateParam(req, 'startDate') || DateUtils.now();
     const endDate =
-      dateParam(req, 'endDate') || DateUtils.add(DateUtils.now(), 1);
+      dateParam(req, 'endDate') || DateUtils.add(starDate, 1);
     const frequencyInDays = numberParam(req, 'frequency') || 15;
 
     return {
