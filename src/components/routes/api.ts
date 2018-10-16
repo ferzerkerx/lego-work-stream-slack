@@ -32,17 +32,18 @@ const api = (webserver: Express, controller: SlackController): void => {
     const frequencyInDays = numberParam(req, 'frequency') || 15;
 
     return {
-      starDate: starDate,
+      startDate: starDate,
       endDate: endDate,
       frequencyInDays: frequencyInDays,
     };
   }
 
   webserver.get('/api/metrics', (req: Request, res: Response) => {
+    const config = metricsConfiguration(req);
     LegoMetricsService.metricsForConfig(
       // @ts-ignore
       controller.storage,
-      metricsConfiguration(req)
+      config
     ).then((messages: LegoSelectMessage) => {
       res.send(JSON.stringify(messages));
     });
