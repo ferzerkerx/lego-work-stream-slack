@@ -1,10 +1,23 @@
+function draw(form) {
+  return false;
+}
+
+
 const svg = d3.select('#stacked'),
   tooltip = d3.select('#tooltip'),
   margin = { top: 10, right: 10, bottom: 20, left: 40 },
   width = +svg.attr('width') - margin.left - margin.right,
   height = +svg.attr('height') - margin.top - margin.bottom;
 
-d3.json('/api/metrics').then(jsonResponse => {
+//TODO remove hardcodes
+let config = {
+  startDate: '2018-10-07',
+  endDate: '2018-10-17',
+  frequency: 15
+};
+
+const url = `/api/metrics?startDate=${config.startDate}&endDate=${config.endDate}&frequency=${config.frequency}`;
+d3.json(url).then(jsonResponse => {
   const categories = jsonResponse.keys;
 
   const datesToDisplay = jsonResponse.entries.map(d => d.date);

@@ -7,6 +7,11 @@
 </head>
 <body>
 <div>
+    <form onsubmit="draw(this)">
+        <input type="date" name="startDate"/>
+        <input type="date" name="endDate"/>
+        <input type="submit"/>
+    </form>
     <div id="stackedbars">
         <h1>Lego blocks by period of time</h1>
         <svg id="stacked" width="1024" height="768"></svg>
