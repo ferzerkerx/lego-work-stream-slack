@@ -79,4 +79,15 @@ describe('LegoMetricsCalculator', () => {
     );
     expect(entry).toMatchSnapshot();
   });
+
+  test('calculate with periods', () => {
+    const entry: any = LegoMetricsCalculator.calculate(
+      givenLegoMessages(),
+      LegoMetricsService.toDatesArray(
+        new Date('2018-10-11'),
+        new Date('2018-10-12')
+      )
+    );
+    expect(entry).toMatchSnapshot();
+  });
 });

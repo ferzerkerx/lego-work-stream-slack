@@ -20,3 +20,19 @@ Object {
   ],
 }
 `;
+
+exports[`LegoMetricsCalculator calculate with periods 1`] = `
+Object {
+  "entries": Array [
+    Object {
+      "date": "2018-10-11",
+      "someKey": 19,
+      "someOtherKey": 22,
+    },
+  ],
+  "keys": Array [
+    "someKey",
+    "someOtherKey",
+  ],
+}
+`;
