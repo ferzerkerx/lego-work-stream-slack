@@ -7,10 +7,10 @@
 </head>
 <body>
 <div>
-    <form onsubmit="draw(this)">
+    <form id="inputForm">
         <input type="date" name="startDate"/>
         <input type="date" name="endDate"/>
-        <input type="submit"/>
+        <input type="submit" onclick="renderMetrics(event)"/>
     </form>
     <div id="stackedbars">
         <h1>Lego blocks by period of time</h1>
