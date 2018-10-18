@@ -1,8 +1,8 @@
 import { Express, Request, Response } from 'express';
 import { SlackController } from 'botkit';
 import { LegoMetricsService } from '../../lego/LegoMetricsService';
-import { LegoSelectMessage } from '../../lego/LegoSelectMessage';
 import { DateUtils } from '../../DateUtils';
+import { MetricEntry } from '../../lego/LegoMetricsCalculator';
 
 const api = (webserver: Express, controller: SlackController): void => {
   function dateParam(req: Request, paramName: string) {
@@ -25,11 +25,11 @@ const api = (webserver: Express, controller: SlackController): void => {
     return result;
   }
 
-  function metricsConfiguration(req: Request) {
-    const starDate = dateParam(req, 'startDate') || DateUtils.now();
-    const endDate =
+  function metricsConfiguration(req: Request): MetricsConfiguration {
+    const starDate: Date = dateParam(req, 'startDate') || DateUtils.now();
+    const endDate: Date =
       dateParam(req, 'endDate') || DateUtils.add(starDate, 1);
-    const frequencyInDays = numberParam(req, 'frequency') || 15;
+    const frequencyInDays: number = numberParam(req, 'frequency') || 15;
 
     return {
       startDate: starDate,
@@ -39,13 +39,13 @@ const api = (webserver: Express, controller: SlackController): void => {
   }
 
   webserver.get('/api/metrics', (req: Request, res: Response) => {
-    const config = metricsConfiguration(req);
+    const config: MetricsConfiguration = metricsConfiguration(req);
     LegoMetricsService.metricsForConfig(
       // @ts-ignore
       controller.storage,
       config
-    ).then((messages: LegoSelectMessage) => {
-      res.send(JSON.stringify(messages));
+    ).then((entry: MetricEntry) => {
+      res.send(JSON.stringify(entry));
     });
   });
 };

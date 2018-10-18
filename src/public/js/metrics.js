@@ -4,18 +4,28 @@ const svg = d3.select('#stacked'),
   width = +svg.attr('width') - margin.left - margin.right,
   height = +svg.attr('height') - margin.top - margin.bottom;
 
+function addDays(dateString) {
+  const referenceDate = new Date(dateString);
+  return new Date(new Date().setDate(referenceDate.getDate() + 1));
+}
+
+function toString(theDate) {
+  return theDate.toJSON().slice(0,10)
+}
+
 function renderMetrics(evt) {
   evt.preventDefault();
+  svg.selectAll("*").remove();
 
   const form = document.forms[0];
-  const startDate = form.startDate.value;
-  const endDate = form.endDate.value;
+  const startDate = form.startDate.value || toString(new Date());
+  const endDate = form.endDate.value || toString(addDays(startDate, 1));
+  const frequency = form.frequency.value || 1;
 
-  //TODO validate
   const config = {
     startDate: startDate,
     endDate: endDate,
-    frequency: 15,
+    frequency: frequency,
   };
 
   const url = `/api/metrics?startDate=${config.startDate}&endDate=${
