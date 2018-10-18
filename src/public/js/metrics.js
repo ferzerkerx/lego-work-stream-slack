@@ -32,18 +32,19 @@ function renderMetrics(evt) {
     config.endDate
   }&frequency=${config.frequency}`;
   d3.json(url).then(jsonResponse => {
+
     const categories = jsonResponse.keys;
 
-    const datesToDisplay = jsonResponse.entries.map(d => d.date);
+    const datesToDisplay = jsonResponse.entries.map(entry => entry.date);
 
-    const totalCountsPerDates = jsonResponse.entries.map(d => {
-      return d3.sum(categories.map(key => d[key]));
+    const totalCountsPerDates = jsonResponse.entries.map(entry => {
+      return d3.sum(categories.map(key => entry[key]));
     });
 
     const orderOfDates = d3.range(jsonResponse.entries.length);
 
-    const sumsPerDateAndCategory = jsonResponse.entries.map(d =>
-      Array.from(categories, V => d[V])
+    const sumsPerDateAndCategory = jsonResponse.entries.map(entry =>
+      Array.from(categories, category => entry[category] || 0)
     );
 
     const data = Object.assign(
@@ -94,6 +95,7 @@ function renderMetrics(evt) {
 
         tooltip
           .html(`${displayText}`)
+          .attr('class', `d3-tip`)
           .style('left', `${d3.event.pageX + 30}px`)
           .style('top', `${d3.event.pageY - 30}px`);
       })
