@@ -35,6 +35,7 @@ const api = (webserver: Express, controller: SlackController): void => {
       startDate: starDate,
       endDate: endDate,
       frequencyInDays: frequencyInDays,
+      isPercentage: true,
     };
   }
 

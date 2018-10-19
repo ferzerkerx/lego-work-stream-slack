@@ -16,8 +16,14 @@ export interface DateEntry {
 export class LegoMetricsCalculator {
   static calculate(
     messages: LegoSelectMessage[],
-    datesArray: Array<Date>
+    config: MetricsConfiguration
   ): MetricEntry {
+    let datesArray = DateUtils.toDatesArray(
+      config.startDate,
+      config.endDate,
+      config.frequencyInDays
+    );
+
     let keys = new Set<string>();
     let datesEntries = new Map<string, any>();
 

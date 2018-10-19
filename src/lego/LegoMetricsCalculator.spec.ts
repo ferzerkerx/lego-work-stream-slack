@@ -1,4 +1,3 @@
-import { LegoMetricsService } from './LegoMetricsService';
 import { LegoSelectMessage } from './LegoSelectMessage';
 import { LegoMetricsCalculator } from './LegoMetricsCalculator';
 
@@ -70,23 +69,31 @@ function givenLegoMessages(): LegoSelectMessage[] {
 
 describe('LegoMetricsCalculator', () => {
   test('calculate', () => {
+    let config: MetricsConfiguration = {
+      startDate: new Date('2018-10-10'),
+      endDate: new Date('2018-10-11'),
+      frequencyInDays: 1,
+      isPercentage: false,
+    };
+
     const entry: any = LegoMetricsCalculator.calculate(
       givenLegoMessages(),
-      LegoMetricsService.toDatesArray(
-        new Date('2018-10-10'),
-        new Date('2018-10-11')
-      )
+      config
     );
     expect(entry).toMatchSnapshot();
   });
 
   test('calculate with periods', () => {
+    let config: MetricsConfiguration = {
+      startDate: new Date('2018-10-08'),
+      endDate: new Date('2018-10-12'),
+      frequencyInDays: 3,
+      isPercentage: false,
+    };
+
     const entry: any = LegoMetricsCalculator.calculate(
       givenLegoMessages(),
-      LegoMetricsService.toDatesArray(
-        new Date('2018-10-11'),
-        new Date('2018-10-12')
-      )
+      config
     );
     expect(entry).toMatchSnapshot();
   });

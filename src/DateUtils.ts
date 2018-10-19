@@ -36,4 +36,23 @@ export class DateUtils {
     }
     return date;
   }
+
+  static toDatesArray(
+    startDate: Date,
+    endDate?: Date,
+    interval: number = 1
+  ): Array<Date> {
+    const theDates = [startDate];
+    if (endDate) {
+      if (endDate < startDate) {
+        throw Error('End date should be bigger');
+      }
+      let currentDate = new Date(startDate);
+      while (currentDate < endDate) {
+        currentDate = DateUtils.add(currentDate, interval);
+        theDates.push(currentDate);
+      }
+    }
+    return theDates;
+  }
 }

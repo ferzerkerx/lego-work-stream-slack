@@ -10,8 +10,8 @@ export class LegoMetricsService {
   ): Promise<MetricEntry> {
     const messagesPerDatePromises: Promise<
       LegoSelectMessage[]
-    >[] = this.toDatesArray(config.startDate, config.endDate).map(theDate =>
-      this.findMessagesBy(storage, theDate)
+    >[] = DateUtils.toDatesArray(config.startDate, config.endDate).map(
+      theDate => this.findMessagesBy(storage, theDate)
     );
 
     return Promise.all(messagesPerDatePromises).then(
@@ -22,14 +22,7 @@ export class LegoMetricsService {
             currentValue: LegoSelectMessage[]
           ) => accumulator.concat(currentValue)
         );
-        return LegoMetricsCalculator.calculate(
-          legoSelectMessages,
-          this.toDatesArray(
-            config.startDate,
-            config.endDate,
-            config.frequencyInDays
-          )
-        );
+        return LegoMetricsCalculator.calculate(legoSelectMessages, config);
       }
     );
   }
@@ -42,25 +35,6 @@ export class LegoMetricsService {
     return storage.lego_messages
       .find({ date: theDate })
       .catch(e => this.defaultErrorHandling(e));
-  }
-
-  static toDatesArray(
-    startDate: Date,
-    endDate?: Date,
-    interval: number = 1
-  ): Array<Date> {
-    const theDates = [startDate];
-    if (endDate) {
-      if (endDate < startDate) {
-        throw Error('End date should be bigger');
-      }
-      let currentDate = new Date(startDate);
-      while (currentDate < endDate) {
-        currentDate = DateUtils.add(currentDate, interval);
-        theDates.push(currentDate);
-      }
-    }
-    return theDates;
   }
 
   private static defaultErrorHandling(err: Error): void {

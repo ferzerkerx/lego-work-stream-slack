@@ -22,4 +22,17 @@ describe('DateUtils', () => {
     const resultDate = DateUtils.parseDate('not a date');
     expect(resultDate).toBeNull();
   });
+
+  test('toDatesArray startdate only', () => {
+    const entry: any = DateUtils.toDatesArray(new Date('2018-10-10'));
+    expect(entry).toMatchSnapshot();
+  });
+
+  test('toDatesArray startdate and endDate', () => {
+    const entry: any = DateUtils.toDatesArray(
+      new Date('2018-10-10'),
+      new Date('2018-10-15')
+    );
+    expect(entry).toMatchSnapshot();
+  });
 });
