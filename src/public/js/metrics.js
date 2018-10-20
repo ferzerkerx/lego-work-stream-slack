@@ -9,56 +9,75 @@ function addDays(dateString) {
   return new Date(new Date().setDate(referenceDate.getDate() + 1));
 }
 
-function toString(theDate) {
-  return theDate.toJSON().slice(0,10)
+function toNumber(value) {
+  const numberValue = Number(value);
+  if (isNaN(numberValue)) {
+    return null;
+  }
+  return numberValue;
 }
 
-function renderMetrics(evt) {
-  evt.preventDefault();
-  svg.selectAll("*").remove();
+function toString(theDate) {
+  return theDate.toJSON().slice(0, 10);
+}
 
+function createConfiguration() {
   const form = document.forms[0];
   const startDate = form.startDate.value || toString(new Date());
   const endDate = form.endDate.value || toString(addDays(startDate, 1));
-  const frequency = form.frequency.value || 1;
+  const frequency = toNumber(form.frequency.value) || 1;
   const isPercentage = form.isPercentage.checked || false;
 
-  const config = {
+  return {
     startDate: startDate,
     endDate: endDate,
     frequency: frequency,
     isPercentage: isPercentage,
   };
+}
 
-  const url = `/api/metrics?startDate=${config.startDate}&endDate=${
+function url(config) {
+  return `/api/metrics?startDate=${config.startDate}&endDate=${
     config.endDate
-  }&frequency=${config.frequency}&isPercentage=${isPercentage}`;
+  }&frequency=${config.frequency}&isPercentage=${config.isPercentage}`;
+}
+
+function createDataFromResponse(jsonResponse) {
+  const { categories, entries } = jsonResponse;
+
+  const datesToDisplay = entries.map(entry => entry.date);
+
+  const totalCountsPerDates = entries.map(entry => {
+    return d3.sum(categories.map(key => entry.valuesByCategory[key]));
+  });
+
+  const orderOfDates = d3.range(entries.length);
+
+  const sumsPerDateAndCategory = entries.map(entry =>
+    Array.from(categories, category => entry.valuesByCategory[category] || 0)
+  );
+
+  return Object.assign(
+    d3.stack().keys(d3.range(categories.length))(
+      d3.permute(sumsPerDateAndCategory, orderOfDates)
+    ),
+    {
+      categories: Array.from(categories),
+      totals: d3.permute(totalCountsPerDates, orderOfDates),
+      names: d3.permute(datesToDisplay, orderOfDates),
+    }
+  );
+}
+
+function renderMetrics(evt) {
+  evt.preventDefault();
+  svg.selectAll('*').remove();
+
+  const config = createConfiguration();
+
+  const url = url(config);
   d3.json(url).then(jsonResponse => {
-
-    const {categories, entries} = jsonResponse;
-
-    const datesToDisplay = entries.map(entry => entry.date);
-
-    const totalCountsPerDates = entries.map(entry => {
-      return d3.sum(categories.map(key => entry.valuesByCategory[key]));
-    });
-
-    const orderOfDates = d3.range(entries.length);
-
-    const sumsPerDateAndCategory = entries.map(entry =>
-      Array.from(categories, category => entry.valuesByCategory[category] || 0)
-    );
-
-    const data = Object.assign(
-      d3.stack().keys(d3.range(categories.length))(
-        d3.permute(sumsPerDateAndCategory, orderOfDates)
-      ),
-      {
-        categories: Array.from(categories),
-        totals: d3.permute(totalCountsPerDates, orderOfDates),
-        names: d3.permute(datesToDisplay, orderOfDates),
-      }
-    );
+    const data = createDataFromResponse(jsonResponse);
 
     const y = d3
       .scaleLinear()
@@ -91,7 +110,9 @@ function renderMetrics(evt) {
       .append('g')
       .attr('fill', (d, i) => data.categories[i])
       .on('mouseover', (d, i) => {
-        const displayText = `${Math.abs(d[0][0] - d[0][1])} - ${data.categories[i]} ${isPercentage ? '%': ''}`;
+        const displayText = `${Math.abs(d[0][0] - d[0][1])} - ${
+          data.categories[i]
+        } ${config.isPercentage ? '%' : ''}`;
 
         tooltip.style('opacity', 0.9);
 
@@ -117,13 +138,14 @@ function renderMetrics(evt) {
 
     svg.append('g').call(yAxis);
 
-    svg.append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 0 - 10)
-      .attr("x",0 - (height / 2))
-      .attr("dy", "1em")
-      .style("text-anchor", "middle")
-      .text(`${isPercentage ? 'Percentages': 'Values'}`);
+    svg
+      .append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', 0 - 10)
+      .attr('x', 0 - height / 2)
+      .attr('dy', '1em')
+      .style('text-anchor', 'middle')
+      .text(`${config.isPercentage ? 'Percentages' : 'Values'}`);
 
     const legend = svg => {
       const g = svg
