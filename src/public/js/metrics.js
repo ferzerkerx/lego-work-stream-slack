@@ -70,115 +70,132 @@ const metricsComponent = (() => {
     );
   }
 
-  function render(evt) {
+  const render = (jsonResponse, config) => {
+    const data = createDataFromResponse(jsonResponse);
+
+    const y = d3
+      .scaleLinear()
+      .domain([0, d3.max(data.totals)])
+      .rangeRound([height - margin.bottom, margin.top]);
+
+    const x = d3
+      .scaleBand()
+      .domain(data.names)
+      .range([margin.left, width - margin.right])
+      .padding(0.1);
+
+    const yAxis = g =>
+      g
+        .attr('transform', `translate(${margin.left},0)`)
+        .call(d3.axisLeft(y).ticks(null, 's'))
+        .call(g => g.selectAll('.domain').remove());
+
+    const xAxis = g =>
+      g
+        .attr('transform', `translate(0,${height - margin.bottom})`)
+        .call(d3.axisBottom(x).tickSizeOuter(0))
+        .call(g => g.selectAll('.domain').remove());
+
+    const onMouseOver = (d, i) => {
+      const customAttribute = d3.event.target.getAttribute('custom');
+      if (!customAttribute) {
+        return;
+      }
+      const column = Number(customAttribute.slice(-1));
+      if (!Number.isInteger(column)) {
+        return;
+      }
+
+      let value = Math.abs(d[column][0] - d[column][1]);
+
+      let displayText = `${value} - ${data.categories[i]} ${
+        config.isPercentage ? '%' : ''
+      }`;
+
+      tooltip.style('opacity', 0.9);
+
+      tooltip
+        .html(`${displayText}`)
+        .attr('class', `d3-tip`)
+        .style('left', `${d3.event.pageX + 30}px`)
+        .style('top', `${d3.event.pageY - 30}px`);
+    };
+
+    svg
+      .append('g')
+      .selectAll('g')
+      .data(data)
+      .enter()
+      .append('g')
+      .attr('fill', (d, i) => data.categories[i])
+      .on('mouseover', onMouseOver)
+      .on('mouseout', () => {
+        tooltip.style('opacity', 0);
+      })
+      .selectAll('rect')
+      .data(d => d)
+      .enter()
+      .append('rect')
+      .attr('x', (d, i) => x(data.names[i]))
+      .attr('y', d => y(d[1]))
+      .attr('custom', (d, i) => `col-${i}`)
+      .attr('height', d => y(d[0]) - y(d[1]))
+      .attr('width', x.bandwidth());
+
+    svg.append('g').call(xAxis);
+
+    svg.append('g').call(yAxis);
+
+    svg
+      .append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', 0 - 2)
+      .attr('x', 0 - height / 2)
+      .attr('dy', '1em')
+      .style('text-anchor', 'middle')
+      .text(`${config.isPercentage ? 'Percentages' : 'Values'}`);
+
+    const legend = svg => {
+      const g = svg
+        .attr('font-family', 'sans-serif')
+        .attr('font-size', 10)
+        .attr('text-anchor', 'end')
+        .selectAll('g')
+        .data(data.categories.slice())
+        .enter()
+        .append('g')
+        .attr('transform', (d, i) => `translate(0,${i * 20})`);
+
+      g.append('rect')
+        .attr('x', 29)
+        .attr('width', 19)
+        .attr('height', 19)
+        .attr('fill', (d, i) => data.categories[i]);
+
+      g.append('text')
+        .attr('x', 24)
+        .attr('y', 9.5)
+        .attr('dy', '0.35em')
+        .text(d => d);
+    };
+
+    svg
+      .append('g')
+      .attr('transform', `translate(${width - margin.right},${margin.top})`)
+      .call(legend);
+  };
+
+  function requestMetrics(evt) {
     evt.preventDefault();
     svg.selectAll('*').remove();
 
     const config = createConfiguration();
 
     const url = createUrl(config);
-    d3.json(url).then(jsonResponse => {
-      const data = createDataFromResponse(jsonResponse);
 
-      const y = d3
-        .scaleLinear()
-        .domain([0, d3.max(data.totals)])
-        .rangeRound([height - margin.bottom, margin.top]);
-
-      const x = d3
-        .scaleBand()
-        .domain(data.names)
-        .range([margin.left, width - margin.right])
-        .padding(0.1);
-
-      const yAxis = g =>
-        g
-          .attr('transform', `translate(${margin.left},0)`)
-          .call(d3.axisLeft(y).ticks(null, 's'))
-          .call(g => g.selectAll('.domain').remove());
-
-      const xAxis = g =>
-        g
-          .attr('transform', `translate(0,${height - margin.bottom})`)
-          .call(d3.axisBottom(x).tickSizeOuter(0))
-          .call(g => g.selectAll('.domain').remove());
-
-      svg
-        .append('g')
-        .selectAll('g')
-        .data(data)
-        .enter()
-        .append('g')
-        .attr('fill', (d, i) => data.categories[i])
-        .on('mouseover', (d, i) => {
-          const displayText = `${Math.abs(d[0][0] - d[0][1])} - ${
-            data.categories[i]
-          } ${config.isPercentage ? '%' : ''}`;
-
-          tooltip.style('opacity', 0.9);
-
-          tooltip
-            .html(`${displayText}`)
-            .attr('class', `d3-tip`)
-            .style('left', `${d3.event.pageX + 30}px`)
-            .style('top', `${d3.event.pageY - 30}px`);
-        })
-        .on('mouseout', () => {
-          tooltip.style('opacity', 0);
-        })
-        .selectAll('rect')
-        .data(d => d)
-        .enter()
-        .append('rect')
-        .attr('x', (d, i) => x(data.names[i]))
-        .attr('y', d => y(d[1]))
-        .attr('height', d => y(d[0]) - y(d[1]))
-        .attr('width', x.bandwidth());
-
-      svg.append('g').call(xAxis);
-
-      svg.append('g').call(yAxis);
-
-      svg
-        .append('text')
-        .attr('transform', 'rotate(-90)')
-        .attr('y', 0 - 2)
-        .attr('x', 0 - height / 2)
-        .attr('dy', '1em')
-        .style('text-anchor', 'middle')
-        .text(`${config.isPercentage ? 'Percentages' : 'Values'}`);
-
-      const legend = svg => {
-        const g = svg
-          .attr('font-family', 'sans-serif')
-          .attr('font-size', 10)
-          .attr('text-anchor', 'end')
-          .selectAll('g')
-          .data(data.categories.slice())
-          .enter()
-          .append('g')
-          .attr('transform', (d, i) => `translate(0,${i * 20})`);
-
-        g.append('rect')
-          .attr('x', 29)
-          .attr('width', 19)
-          .attr('height', 19)
-          .attr('fill', (d, i) => data.categories[i]);
-
-        g.append('text')
-          .attr('x', 24)
-          .attr('y', 9.5)
-          .attr('dy', '0.35em')
-          .text(d => d);
-      };
-
-      svg
-        .append('g')
-        .attr('transform', `translate(${width - margin.right},${margin.top})`)
-        .call(legend);
-    });
+    d3.json(url).then(jsonResponse => render(jsonResponse, config));
   }
   return {
-    render: render,
+    render: requestMetrics,
   };
 })();
