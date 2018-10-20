@@ -17,7 +17,7 @@ export class DateEntry {
     this.valuesByCategory = {};
   }
 
-  add(valuesByCategoryToAdd: any): DateEntry {
+  merge(valuesByCategoryToAdd: any): DateEntry {
     let result = new DateEntry(this.date);
 
     let valuesByCategory: any = { ...this.valuesByCategory };
@@ -37,41 +37,46 @@ export class LegoMetricsCalculator {
     messages: LegoSelectMessage[],
     config: MetricsConfiguration
   ): MetricEntry {
-    let datesArray = DateUtils.toDatesArray(
+    const datePeriods: Date[] = DateUtils.toDatesArray(
       config.startDate,
       config.endDate,
       config.frequencyInDays
     );
 
-    let categories = new Set<string>();
-    let datesEntries = new Map<string, DateEntry>();
+    const categories = new Set<string>();
+    const dateEntries = new Map<string, DateEntry>();
 
-    let currentIndex: number = 0;
     for (let message of messages) {
-      const dateKey: string = this.keyForMessageDate(
-        datesArray,
-        currentIndex,
+      const valuesByCategoryForMessage = this.valuesByCategoryForMessage(
+        message
+      );
+
+      const datePeriodForMessage: string = this.datePeriodForMessage(
+        datePeriods,
         message.date
       );
 
-      const selectedValues: LegoSelectedValue[] = message.selectedValues;
-      let dateEntry: DateEntry =
-        datesEntries.get(dateKey) || new DateEntry(dateKey);
+      const dateEntry: DateEntry =
+        dateEntries.get(datePeriodForMessage) ||
+        new DateEntry(datePeriodForMessage);
+      const mergedDateEntry = dateEntry.merge(valuesByCategoryForMessage);
 
-      const valuesByCategory = this.valuesByCategory(selectedValues);
-      const mergedDateEntry = dateEntry.add(valuesByCategory);
-
-      Object.keys(valuesByCategory).forEach(category =>
+      Object.keys(valuesByCategoryForMessage).forEach(category =>
         categories.add(category)
       );
 
-      datesEntries.set(dateKey, mergedDateEntry);
+      dateEntries.set(datePeriodForMessage, mergedDateEntry);
     }
 
     return {
       categories: Array.from(categories),
-      entries: Array.from(datesEntries.values()),
+      entries: Array.from(dateEntries.values()),
     };
+  }
+
+  private static valuesByCategoryForMessage(message): any {
+    const selectedValues: LegoSelectedValue[] = message.selectedValues;
+    return this.valuesByCategory(selectedValues);
   }
 
   private static valuesByCategory(selectedValues: LegoSelectedValue[]): any {
@@ -93,14 +98,9 @@ export class LegoMetricsCalculator {
     return result;
   }
 
-  private static keyForMessageDate(
-    datesArray,
-    currentIndex: number,
-    messageDate
-  ): string {
+  private static datePeriodForMessage(datesArray, messageDate): string {
     let dateInPeriodForMessage: Date = LegoMetricsCalculator.dateInPeriodForMessage(
       datesArray,
-      currentIndex,
       messageDate
     );
     return DateUtils.toPrettyDate(dateInPeriodForMessage.toDateString());
@@ -108,9 +108,9 @@ export class LegoMetricsCalculator {
 
   private static dateInPeriodForMessage(
     datesArray: Array<Date>,
-    currentIndex: number,
     messageDate
   ): Date {
+    let currentIndex: number = 0;
     let currentPeriod = datesArray[currentIndex];
     while (currentPeriod < messageDate) {
       currentIndex = currentIndex + 1;
@@ -123,12 +123,10 @@ export class LegoMetricsCalculator {
   }
 
   private static extractSumForCategory(
-    userEntries: LegoSelectedValueEntry[]
+    selectedValueEntries: LegoSelectedValueEntry[]
   ): number {
-    return userEntries
-      .map(
-        (selectedValueEntry: LegoSelectedValueEntry) => selectedValueEntry.value
-      )
+    return selectedValueEntries
+      .map(selectedValueEntry => selectedValueEntry.value)
       .reduce(
         (accumulator: number, currentValue: number) =>
           Number(accumulator) + Number(currentValue)

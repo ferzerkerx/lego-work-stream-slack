@@ -33,9 +33,7 @@ function renderMetrics(evt) {
   }&frequency=${config.frequency}`;
   d3.json(url).then(jsonResponse => {
 
-    const categories = jsonResponse.categories;
-
-    const entries = jsonResponse.entries;
+    const {categories, entries} = jsonResponse;
 
     const datesToDisplay = entries.map(entry => entry.date);
 
