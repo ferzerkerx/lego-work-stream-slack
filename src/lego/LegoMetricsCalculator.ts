@@ -44,7 +44,10 @@ export class LegoMetricsCalculator {
       let dateEntry: DateEntry =
         datesEntries.get(dateKey) || new DateEntry(dateKey);
 
-      this.updateDateEntry(dateEntry, selectedValues, categories);
+      this.updateDateEntry(dateEntry, selectedValues);
+
+      Object.keys(dateEntry.values)
+        .forEach(value=> categories.add(value));
 
       datesEntries.set(dateKey, dateEntry);
     }
@@ -57,8 +60,7 @@ export class LegoMetricsCalculator {
 
   private static updateDateEntry(
     dateEntry: DateEntry,
-    selectedValues: LegoSelectedValue[],
-    keys
+    selectedValues: LegoSelectedValue[]
   ): void {
     for (let selectedValue of selectedValues) {
       const sanitizedValueId = LegoMetricsCalculator.sanitizedEntryName(
@@ -76,7 +78,6 @@ export class LegoMetricsCalculator {
         Number(totalSumForSelectedValueEntry) +
         Number(currentSumForSelectedValueEntry);
 
-      keys.add(sanitizedValueId);
       dateEntry.values[sanitizedValueId] = newTotal;
     }
   }
