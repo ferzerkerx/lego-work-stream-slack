@@ -19,13 +19,16 @@ export class LegoMetricsService {
     storage: Storage<LegoSelectMessage>,
     config: MetricsConfiguration
   ): Promise<LegoSelectMessage[]> {
-    console.log(JSON.stringify(config));
+    const conditions: any = [
+      { date: { $gte: config.startDate } },
+      { date: { $lte: config.endDate } },
+    ];
 
+    if (config.teams && config.teams.length > 0) {
+      conditions.push({ 'channelData.name': { $in: config.teams } });
+    }
     const query = {
-      $and: [
-        { date: { $gte: config.startDate } },
-        { date: { $lte: config.endDate } },
-      ],
+      $and: conditions,
     };
 
     // @ts-ignore

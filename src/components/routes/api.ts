@@ -25,12 +25,14 @@ class MetricsConfigurationFactory {
     const frequencyInDays: number = this.numberParam(req, 'frequency') || 15;
     const isPercentage: boolean =
       this.booleanParam(req, 'isPercentage') || false;
+    const teams: [] = this.arrayParam(req, 'teams') || [];
 
     return {
       startDate: starDate,
       endDate: endDate,
       frequencyInDays: frequencyInDays,
       isPercentage: isPercentage,
+      teams: teams,
     };
   }
 
@@ -57,6 +59,14 @@ class MetricsConfigurationFactory {
   static booleanParam(req: Request, paramName: string) {
     const paramValue = req.query[paramName];
     return paramValue == 'true';
+  }
+
+  static arrayParam(req: Request, paramName: string) {
+    const paramValue = req.query[paramName];
+    if (!paramValue || paramValue.length == 0) {
+      return null;
+    }
+    return paramValue.split(',');
   }
 }
 
