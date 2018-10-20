@@ -35,12 +35,64 @@ class DateMetrics {
 interface CategoryValueMap {
   [category: string]: number;
 }
+interface InternalMetrics {
+  categories: Set<string>;
+  dateEntries: Map<string, DateMetrics>;
+}
 
 export class LegoMetricsCalculator {
   static calculate(
     messages: LegoSelectMessage[],
     config: MetricsConfiguration
   ): Metrics {
+    const internalMetrics: InternalMetrics = this.internalMetrics(
+      config,
+      messages
+    );
+
+    if (config.isPercentage) {
+      for (let dateEntry of internalMetrics.dateEntries.values()) {
+        const categoryValueMapForDateEntry: CategoryValueMap =
+          dateEntry.valuesByCategory;
+
+        const totalValueForDateEntry = this.totalValueForDateEntry(
+          categoryValueMapForDateEntry
+        );
+
+        if (totalValueForDateEntry > 0) {
+          for (let category of Object.keys(categoryValueMapForDateEntry)) {
+            const percentageValue =
+              (categoryValueMapForDateEntry[category] /
+                totalValueForDateEntry) *
+              100;
+            categoryValueMapForDateEntry[category] = Math.round(
+              percentageValue
+            );
+          }
+        }
+      }
+    }
+    return {
+      categories: Array.from(internalMetrics.categories),
+      entries: Array.from(internalMetrics.dateEntries.values()),
+    };
+  }
+
+  private static totalValueForDateEntry(
+    categoryValueMapForDateEntry: CategoryValueMap
+  ): number {
+    return Object.keys(categoryValueMapForDateEntry)
+      .map(category => categoryValueMapForDateEntry[category])
+      .reduce(
+        (accumulator: number, currentValue: number) =>
+          Number(accumulator) + Number(currentValue)
+      );
+  }
+
+  private static internalMetrics(
+    config: MetricsConfiguration,
+    messages: LegoSelectMessage[]
+  ): InternalMetrics {
     const datePeriods: Date[] = DateUtils.toDatesArray(
       config.startDate,
       config.endDate,
@@ -69,32 +121,9 @@ export class LegoMetricsCalculator {
         mergedDateMetrics
       );
     }
-    if (config.isPercentage) {
-      for (let dateEntry of dateEntries.values()) {
-        const categoryValueMapForDateEntry: CategoryValueMap =
-          dateEntry.valuesByCategory;
-
-        const totalForDate = Object.keys(categoryValueMapForDateEntry)
-          .map(category => categoryValueMapForDateEntry[category])
-          .reduce(
-            (accumulator: number, currentValue: number) =>
-              Number(accumulator) + Number(currentValue)
-          );
-
-        if (totalForDate > 0) {
-          for (let category of Object.keys(categoryValueMapForDateEntry)) {
-            const percentageValue =
-              (categoryValueMapForDateEntry[category] / totalForDate) * 100;
-            categoryValueMapForDateEntry[category] = Math.round(
-              percentageValue
-            );
-          }
-        }
-      }
-    }
     return {
-      categories: Array.from(categories),
-      entries: Array.from(dateEntries.values()),
+      categories: categories,
+      dateEntries: dateEntries,
     };
   }
 

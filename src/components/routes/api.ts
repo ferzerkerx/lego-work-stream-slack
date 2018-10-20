@@ -5,7 +5,6 @@ import { DateUtils } from '../../DateUtils';
 import { Metrics } from '../../lego/LegoMetricsCalculator';
 
 const api = (webserver: Express, controller: SlackController): void => {
-
   webserver.get('/api/metrics', (req: Request, res: Response) => {
     const config: MetricsConfiguration = MetricsConfigurationFactory.of(req);
     LegoMetricsService.metricsForConfig(
@@ -19,13 +18,13 @@ const api = (webserver: Express, controller: SlackController): void => {
 };
 
 class MetricsConfigurationFactory {
-
   static of(req: Request): MetricsConfiguration {
     const starDate: Date = this.dateParam(req, 'startDate') || DateUtils.now();
     const endDate: Date =
       this.dateParam(req, 'endDate') || DateUtils.add(starDate, 1);
     const frequencyInDays: number = this.numberParam(req, 'frequency') || 15;
-    const isPercentage: boolean = this.booleanParam(req, 'isPercentage') || false;
+    const isPercentage: boolean =
+      this.booleanParam(req, 'isPercentage') || false;
 
     return {
       startDate: starDate,
@@ -57,7 +56,7 @@ class MetricsConfigurationFactory {
 
   static booleanParam(req: Request, paramName: string) {
     const paramValue = req.query[paramName];
-    return paramValue == "true";
+    return paramValue == 'true';
   }
 }
 
