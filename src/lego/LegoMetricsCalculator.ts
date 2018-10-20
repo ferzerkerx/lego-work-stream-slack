@@ -40,6 +40,11 @@ interface InternalMetrics {
   dateEntries: Map<string, DateMetrics>;
 }
 
+interface MessageMetrics {
+  datePeriodForMessage: string;
+  valuesByCategoryForMessage: CategoryValueMap;
+}
+
 export class LegoMetricsCalculator {
   static calculate(
     messages: LegoSelectMessage[],
@@ -103,7 +108,7 @@ export class LegoMetricsCalculator {
     const dateEntries = new Map<string, DateMetrics>();
 
     for (let message of messages) {
-      const metricsForMessage = this.metricsForMessage(message, datePeriods);
+      const metricsForMessage:MessageMetrics = this.metricsForMessage(message, datePeriods);
 
       const dateMetrics: DateMetrics =
         dateEntries.get(metricsForMessage.datePeriodForMessage) ||
@@ -130,10 +135,7 @@ export class LegoMetricsCalculator {
   private static metricsForMessage(
     message,
     datePeriods: Date[]
-  ): {
-    datePeriodForMessage: string;
-    valuesByCategoryForMessage: CategoryValueMap;
-  } {
+  ): MessageMetrics {
     const selectedValues: LegoSelectedValue[] = message.selectedValues;
     const valuesByCategoryForMessage = this.valuesByCategory(selectedValues);
 
@@ -143,8 +145,8 @@ export class LegoMetricsCalculator {
     );
 
     return {
-      datePeriodForMessage,
-      valuesByCategoryForMessage,
+      datePeriodForMessage: datePeriodForMessage,
+      valuesByCategoryForMessage: valuesByCategoryForMessage,
     };
   }
 
