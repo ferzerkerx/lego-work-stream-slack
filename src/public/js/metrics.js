@@ -116,7 +116,8 @@ const metrics = (() => {
     }
 
     _renderBars(x, y) {
-      const { svg, data, tooltip } = this.context;
+      const context = this.context;
+      const { svg, data, tooltip } = context;
       svg
         .append('g')
         .selectAll('g')
@@ -125,7 +126,7 @@ const metrics = (() => {
         .append('g')
         .attr('fill', (d, i) => data.categories[i])
         .on('mouseover', (d, i) =>
-          MetricsStackedBar._onMouseOverStackItem(d, i, this.context)
+          MetricsStackedBar._onMouseOverStackItem(d, i, context)
         )
         .on('mouseout', () => {
           tooltip.style('opacity', 0);
@@ -142,11 +143,12 @@ const metrics = (() => {
     }
 
     _renderLegend() {
-      const { svg, width, margin } = this.context;
+      const context = this.context;
+      const { svg, width, margin } = context;
       svg
         .append('g')
         .attr('transform', `translate(${width - margin.right},${margin.top})`)
-        .call(svg => MetricsStackedBar._legend(svg, this.context));
+        .call(svg => MetricsStackedBar._legend(svg, context));
     }
 
     _axisFunctions() {
