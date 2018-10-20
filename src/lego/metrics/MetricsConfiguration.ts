@@ -3,5 +3,5 @@ class MetricsConfiguration {
   endDate: Date;
   frequencyInDays: number;
   isPercentage?: boolean = false;
-  //TODO need to consider also the team
+  teams?: Array<string>;
 }

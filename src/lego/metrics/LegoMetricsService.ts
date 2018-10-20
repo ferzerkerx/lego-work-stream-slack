@@ -1,6 +1,5 @@
 import { Storage } from 'botkit';
 import { LegoSelectMessage } from '../LegoSelectMessage';
-import { DateUtils } from '../../DateUtils';
 import { LegoMetricsCalculator } from './LegoMetricsCalculator';
 import { Metrics } from './Metrics';
 
@@ -9,20 +8,8 @@ export class LegoMetricsService {
     storage: Storage<LegoSelectMessage>,
     config: MetricsConfiguration
   ): Promise<Metrics> {
-    const messagesPerDatePromises: Promise<
-      LegoSelectMessage[]
-    >[] = DateUtils.toDatesArray(config.startDate, config.endDate).map(
-      theDate => this.findMessagesBy(storage, theDate)
-    );
-
-    return Promise.all(messagesPerDatePromises).then(
-      (allMessages: LegoSelectMessage[][]) => {
-        const legoSelectMessages: LegoSelectMessage[] = allMessages.reduce(
-          (
-            accumulator: LegoSelectMessage[],
-            currentValue: LegoSelectMessage[]
-          ) => accumulator.concat(currentValue)
-        );
+    return this.findMessagesBy(storage, config).then(
+      (legoSelectMessages: LegoSelectMessage[]) => {
         return LegoMetricsCalculator.calculate(legoSelectMessages, config);
       }
     );
@@ -30,11 +17,20 @@ export class LegoMetricsService {
 
   private static findMessagesBy(
     storage: Storage<LegoSelectMessage>,
-    theDate: Date
+    config: MetricsConfiguration
   ): Promise<LegoSelectMessage[]> {
+    console.log(JSON.stringify(config));
+
+    const query = {
+      $and: [
+        { date: { $gte: config.startDate } },
+        { date: { $lte: config.endDate } },
+      ],
+    };
+
     // @ts-ignore
     return storage.lego_messages
-      .find({ date: theDate })
+      .find(query)
       .catch(e => this.defaultErrorHandling(e));
   }
 
