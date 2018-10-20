@@ -98,38 +98,25 @@ const metrics = (() => {
     }
 
     render() {
-      const {
-        data,
-        height,
-        margin,
-        width,
-        tooltip,
-        svg,
-        config,
-      } = this.context;
-      const y = d3
-        .scaleLinear()
-        .domain([0, d3.max(data.totals)])
-        .rangeRound([height - margin.bottom, margin.top]);
+      const { y, x, yAxis, xAxis } = this._axisFunctions();
 
-      const x = d3
-        .scaleBand()
-        .domain(data.names)
-        .range([margin.left, width - margin.right])
-        .padding(0.1);
+      this._renderBars(x, y);
 
-      const yAxis = g =>
-        g
-          .attr('transform', `translate(${margin.left},0)`)
-          .call(d3.axisLeft(y).ticks(null, 's'))
-          .call(g => g.selectAll('.domain').remove());
+      this._renderAxis(xAxis, yAxis);
 
-      const xAxis = g =>
-        g
-          .attr('transform', `translate(0,${height - margin.bottom})`)
-          .call(d3.axisBottom(x).tickSizeOuter(0))
-          .call(g => g.selectAll('.domain').remove());
+      this._renderYAxisTitle();
+      this._renderLegend();
+    }
 
+    _renderAxis(xAxis, yAxis) {
+      const { svg } = this.context;
+      svg.append('g').call(xAxis);
+
+      svg.append('g').call(yAxis);
+    }
+
+    _renderBars(x, y) {
+      const { svg, data, tooltip } = this.context;
       svg
         .append('g')
         .selectAll('g')
@@ -152,11 +139,45 @@ const metrics = (() => {
         .attr('custom', (d, i) => `col-${i}`)
         .attr('height', d => y(d[0]) - y(d[1]))
         .attr('width', x.bandwidth());
+    }
 
-      svg.append('g').call(xAxis);
+    _renderLegend() {
+      const { svg, width, margin } = this.context;
+      svg
+        .append('g')
+        .attr('transform', `translate(${width - margin.right},${margin.top})`)
+        .call(svg => MetricsStackedBar._legend(svg, this.context));
+    }
 
-      svg.append('g').call(yAxis);
+    _axisFunctions() {
+      const { data, height, margin, width } = this.context;
+      const y = d3
+        .scaleLinear()
+        .domain([0, d3.max(data.totals)])
+        .rangeRound([height - margin.bottom, margin.top]);
 
+      const x = d3
+        .scaleBand()
+        .domain(data.names)
+        .range([margin.left, width - margin.right])
+        .padding(0.1);
+
+      const yAxis = g =>
+        g
+          .attr('transform', `translate(${margin.left},0)`)
+          .call(d3.axisLeft(y).ticks(null, 's'))
+          .call(g => g.selectAll('.domain').remove());
+
+      const xAxis = g =>
+        g
+          .attr('transform', `translate(0,${height - margin.bottom})`)
+          .call(d3.axisBottom(x).tickSizeOuter(0))
+          .call(g => g.selectAll('.domain').remove());
+      return { y, x, yAxis, xAxis };
+    }
+
+    _renderYAxisTitle() {
+      const { svg, height, config } = this.context;
       svg
         .append('text')
         .attr('transform', 'rotate(-90)')
@@ -165,11 +186,6 @@ const metrics = (() => {
         .attr('dy', '1em')
         .style('text-anchor', 'middle')
         .text(`${config.isPercentage ? 'Percentages' : 'Values'}`);
-
-      svg
-        .append('g')
-        .attr('transform', `translate(${width - margin.right},${margin.top})`)
-        .call(svg => MetricsStackedBar._legend(svg, this.context));
     }
   }
 
