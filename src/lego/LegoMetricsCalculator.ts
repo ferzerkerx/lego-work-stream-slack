@@ -10,17 +10,17 @@ export class Metrics {
 
 export class DateMetrics {
   date: string;
-  valuesByCategory?: any;
+  valuesByCategory?: CategoryValueMap;
 
   constructor(date: string) {
     this.date = date;
     this.valuesByCategory = {};
   }
 
-  merge(valuesByCategoryToAdd: any): DateMetrics {
+  merge(valuesByCategoryToAdd: CategoryValueMap): DateMetrics {
     let result = new DateMetrics(this.date);
 
-    let valuesByCategory: any = { ...this.valuesByCategory };
+    let valuesByCategory: CategoryValueMap = { ...this.valuesByCategory };
     Object.keys(valuesByCategoryToAdd).forEach(category => {
       let currentValue = valuesByCategory[category] || 0;
       currentValue = currentValue + valuesByCategoryToAdd[category];
@@ -30,6 +30,10 @@ export class DateMetrics {
     result.valuesByCategory = { ...valuesByCategory };
     return result;
   }
+}
+
+interface CategoryValueMap {
+  [category: string]: number;
 }
 
 export class LegoMetricsCalculator {
@@ -72,7 +76,13 @@ export class LegoMetricsCalculator {
     };
   }
 
-  private static metricsForMessage(message, datePeriods: Date[]) {
+  private static metricsForMessage(
+    message,
+    datePeriods: Date[]
+  ): {
+    datePeriodForMessage: string;
+    valuesByCategoryForMessage: CategoryValueMap;
+  } {
     const selectedValues: LegoSelectedValue[] = message.selectedValues;
     const valuesByCategoryForMessage = this.valuesByCategory(selectedValues);
 
@@ -87,23 +97,25 @@ export class LegoMetricsCalculator {
     };
   }
 
-  private static valuesByCategory(selectedValues: LegoSelectedValue[]): any {
-    let result: any = {};
+  private static valuesByCategory(
+    selectedValues: LegoSelectedValue[]
+  ): CategoryValueMap {
+    let categoryValueMap: CategoryValueMap = {};
     for (let selectedValue of selectedValues) {
       const categoryName = LegoMetricsCalculator.extractCategoryName(
         selectedValue
       );
 
-      let totalSumForCategory: number = result[categoryName] || 0;
+      let totalSumForCategory: number = categoryValueMap[categoryName] || 0;
 
       const currentSumForCategory = LegoMetricsCalculator.extractSumForCategory(
         selectedValue.entries
       );
 
-      result[categoryName] =
+      categoryValueMap[categoryName] =
         Number(totalSumForCategory) + Number(currentSumForCategory);
     }
-    return result;
+    return categoryValueMap;
   }
 
   private static datePeriodForMessage(datesArray, messageDate): string {
