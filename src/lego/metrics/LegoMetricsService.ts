@@ -1,7 +1,8 @@
 import { Storage } from 'botkit';
 import { LegoSelectMessage } from '../LegoSelectMessage';
 import { DateUtils } from '../../DateUtils';
-import { LegoMetricsCalculator, Metrics } from './LegoMetricsCalculator';
+import { LegoMetricsCalculator } from './LegoMetricsCalculator';
+import { Metrics } from './Metrics';
 
 export class LegoMetricsService {
   static metricsForConfig(

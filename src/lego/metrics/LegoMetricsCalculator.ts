@@ -2,40 +2,11 @@ import { LegoSelectMessage } from '../LegoSelectMessage';
 import { LegoSelectedValue } from '../LegoSelectedValue';
 import { DateUtils } from '../../DateUtils';
 import { LegoSelectedValueEntry } from '../LegoSelectedValueEntry';
+import { DateMetrics } from './DateMetrics';
+import { Metrics } from './Metrics';
+import { CategoryValueMap } from './Types';
 
-export class Metrics {
-  categories: Array<string>;
-  entries: Array<DateMetrics>;
-}
-
-class DateMetrics {
-  date: string;
-  valuesByCategory?: CategoryValueMap;
-
-  constructor(date: string) {
-    this.date = date;
-    this.valuesByCategory = {};
-  }
-
-  merge(valuesByCategoryToAdd: CategoryValueMap): DateMetrics {
-    let result = new DateMetrics(this.date);
-
-    let valuesByCategory: CategoryValueMap = { ...this.valuesByCategory };
-    Object.keys(valuesByCategoryToAdd).forEach(category => {
-      let currentValue = valuesByCategory[category] || 0;
-      currentValue = currentValue + valuesByCategoryToAdd[category];
-      valuesByCategory[category] = currentValue;
-    });
-
-    result.valuesByCategory = { ...valuesByCategory };
-    return result;
-  }
-}
-
-interface CategoryValueMap {
-  [category: string]: number;
-}
-interface InternalMetrics {
+interface RawMetrics {
   categories: Set<string>;
   dateEntries: Map<string, DateMetrics>;
 }
@@ -50,37 +21,39 @@ export class LegoMetricsCalculator {
     messages: LegoSelectMessage[],
     config: MetricsConfiguration
   ): Metrics {
-    const internalMetrics: InternalMetrics = this.internalMetrics(
-      config,
-      messages
-    );
+    const rawMetrics: RawMetrics = this.rawMetrics(config, messages);
 
+    let dateMetrics = rawMetrics.dateEntries;
     if (config.isPercentage) {
-      for (let dateEntry of internalMetrics.dateEntries.values()) {
-        const categoryValueMapForDateEntry: CategoryValueMap =
-          dateEntry.valuesByCategory;
+      dateMetrics = this.toPercentage(dateMetrics);
+    }
+    return {
+      categories: Array.from(rawMetrics.categories),
+      entries: Array.from(dateMetrics.values()),
+    };
+  }
 
-        const totalValueForDateEntry = this.totalValueForDateEntry(
-          categoryValueMapForDateEntry
-        );
+  private static toPercentage(
+    dateMetrics: Map<string, DateMetrics>
+  ): Map<string, DateMetrics> {
+    for (let dateEntry of dateMetrics.values()) {
+      const categoryValueMapForDateEntry: CategoryValueMap =
+        dateEntry.valuesByCategory;
 
-        if (totalValueForDateEntry > 0) {
-          for (let category of Object.keys(categoryValueMapForDateEntry)) {
-            const percentageValue =
-              (categoryValueMapForDateEntry[category] /
-                totalValueForDateEntry) *
-              100;
-            categoryValueMapForDateEntry[category] = Math.round(
-              percentageValue
-            );
-          }
+      const totalValueForDateEntry = this.totalValueForDateEntry(
+        categoryValueMapForDateEntry
+      );
+
+      if (totalValueForDateEntry > 0) {
+        for (let category of Object.keys(categoryValueMapForDateEntry)) {
+          const percentageValue =
+            (categoryValueMapForDateEntry[category] / totalValueForDateEntry) *
+            100;
+          categoryValueMapForDateEntry[category] = Math.round(percentageValue);
         }
       }
     }
-    return {
-      categories: Array.from(internalMetrics.categories),
-      entries: Array.from(internalMetrics.dateEntries.values()),
-    };
+    return dateMetrics;
   }
 
   private static totalValueForDateEntry(
@@ -94,10 +67,10 @@ export class LegoMetricsCalculator {
       );
   }
 
-  private static internalMetrics(
+  private static rawMetrics(
     config: MetricsConfiguration,
     messages: LegoSelectMessage[]
-  ): InternalMetrics {
+  ): RawMetrics {
     const datePeriods: Date[] = DateUtils.toDatesArray(
       config.startDate,
       config.endDate,
@@ -108,7 +81,10 @@ export class LegoMetricsCalculator {
     const dateEntries = new Map<string, DateMetrics>();
 
     for (let message of messages) {
-      const metricsForMessage:MessageMetrics = this.metricsForMessage(message, datePeriods);
+      const metricsForMessage: MessageMetrics = this.metricsForMessage(
+        message,
+        datePeriods
+      );
 
       const dateMetrics: DateMetrics =
         dateEntries.get(metricsForMessage.datePeriodForMessage) ||

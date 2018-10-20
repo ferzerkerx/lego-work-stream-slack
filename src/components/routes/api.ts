@@ -2,7 +2,7 @@ import { Express, Request, Response } from 'express';
 import { SlackController } from 'botkit';
 import { LegoMetricsService } from '../../lego/metrics/LegoMetricsService';
 import { DateUtils } from '../../DateUtils';
-import { Metrics } from '../../lego/metrics/LegoMetricsCalculator';
+import { Metrics } from '../../lego/metrics/Metrics';
 
 const api = (webserver: Express, controller: SlackController): void => {
   webserver.get('/api/metrics', (req: Request, res: Response) => {
