@@ -208,6 +208,10 @@ const metrics = (() => {
       this.config = config;
       this.svg = d3.select('#graphic');
       this.tooltip = d3.select('#tooltip');
+
+      if (!this.svg || !this.tooltip) {
+        throw Error('Could not initialize component.');
+      }
       this.margin = { top: 10, right: 10, bottom: 20, left: 40 };
       this.width =
         +this.svg.attr('width') - this.margin.left - this.margin.right;
@@ -266,7 +270,11 @@ const metrics = (() => {
   const requestMetrics = evt => {
     evt.preventDefault();
 
-    const config = MetricsService.createConfiguration(document.forms[0]);
+    const form = document.forms[0];
+    if (!form) {
+      throw Error('Could not initialize component.');
+    }
+    const config = MetricsService.createConfiguration(form);
 
     const url = MetricsService.createUrl(config);
 
