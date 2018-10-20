@@ -54,7 +54,7 @@ const metrics = (() => {
         +this.svg.attr('height') - this.margin.top - this.margin.bottom;
     }
 
-    createDataFromResponse() {
+    dataForStackedGraphic() {
       const { categories, entries } = this.jsonResponse;
 
       const datesToDisplay = entries.map(entry => entry.date);
@@ -87,7 +87,7 @@ const metrics = (() => {
     render() {
       const { height, margin, width, tooltip, svg, config } = this;
       svg.selectAll('*').remove();
-      const data = this.createDataFromResponse();
+      const data = this.dataForStackedGraphic();
 
       const y = d3
         .scaleLinear()
@@ -112,7 +112,7 @@ const metrics = (() => {
           .call(d3.axisBottom(x).tickSizeOuter(0))
           .call(g => g.selectAll('.domain').remove());
 
-      const onMouseOver = (d, i) => {
+      const onMouseOverStackItem = (d, i) => {
         const customAttribute = d3.event.target.getAttribute('custom');
         if (!customAttribute) {
           return;
@@ -144,7 +144,7 @@ const metrics = (() => {
         .enter()
         .append('g')
         .attr('fill', (d, i) => data.categories[i])
-        .on('mouseover', onMouseOver)
+        .on('mouseover', onMouseOverStackItem)
         .on('mouseout', () => {
           tooltip.style('opacity', 0);
         })
