@@ -3,12 +3,12 @@ import { LegoSelectedValue } from './LegoSelectedValue';
 import { DateUtils } from '../DateUtils';
 import { LegoSelectedValueEntry } from './LegoSelectedValueEntry';
 
-export class MetricEntry {
+export class Metrics {
   categories: Array<string>;
-  entries: Array<DateEntry>;
+  entries: Array<DateMetrics>;
 }
 
-export class DateEntry {
+export class DateMetrics {
   date: string;
   valuesByCategory?: any;
 
@@ -17,8 +17,8 @@ export class DateEntry {
     this.valuesByCategory = {};
   }
 
-  merge(valuesByCategoryToAdd: any): DateEntry {
-    let result = new DateEntry(this.date);
+  merge(valuesByCategoryToAdd: any): DateMetrics {
+    let result = new DateMetrics(this.date);
 
     let valuesByCategory: any = { ...this.valuesByCategory };
     Object.keys(valuesByCategoryToAdd).forEach(category => {
@@ -36,7 +36,7 @@ export class LegoMetricsCalculator {
   static calculate(
     messages: LegoSelectMessage[],
     config: MetricsConfiguration
-  ): MetricEntry {
+  ): Metrics {
     const datePeriods: Date[] = DateUtils.toDatesArray(
       config.startDate,
       config.endDate,
@@ -44,28 +44,26 @@ export class LegoMetricsCalculator {
     );
 
     const categories = new Set<string>();
-    const dateEntries = new Map<string, DateEntry>();
+    const dateEntries = new Map<string, DateMetrics>();
 
     for (let message of messages) {
-      const valuesByCategoryForMessage = this.valuesByCategoryForMessage(
-        message
+      const metricsForMessage = this.metricsForMessage(message, datePeriods);
+
+      const dateMetrics: DateMetrics =
+        dateEntries.get(metricsForMessage.datePeriodForMessage) ||
+        new DateMetrics(metricsForMessage.datePeriodForMessage);
+      const mergedDateMetrics = dateMetrics.merge(
+        metricsForMessage.valuesByCategoryForMessage
       );
 
-      const datePeriodForMessage: string = this.datePeriodForMessage(
-        datePeriods,
-        message.date
+      Object.keys(metricsForMessage.valuesByCategoryForMessage).forEach(
+        category => categories.add(category)
       );
 
-      const dateEntry: DateEntry =
-        dateEntries.get(datePeriodForMessage) ||
-        new DateEntry(datePeriodForMessage);
-      const mergedDateEntry = dateEntry.merge(valuesByCategoryForMessage);
-
-      Object.keys(valuesByCategoryForMessage).forEach(category =>
-        categories.add(category)
+      dateEntries.set(
+        metricsForMessage.datePeriodForMessage,
+        mergedDateMetrics
       );
-
-      dateEntries.set(datePeriodForMessage, mergedDateEntry);
     }
 
     return {
@@ -74,9 +72,19 @@ export class LegoMetricsCalculator {
     };
   }
 
-  private static valuesByCategoryForMessage(message): any {
+  private static metricsForMessage(message, datePeriods: Date[]) {
     const selectedValues: LegoSelectedValue[] = message.selectedValues;
-    return this.valuesByCategory(selectedValues);
+    const valuesByCategoryForMessage = this.valuesByCategory(selectedValues);
+
+    const datePeriodForMessage: string = this.datePeriodForMessage(
+      datePeriods,
+      message.date
+    );
+
+    return {
+      datePeriodForMessage,
+      valuesByCategoryForMessage,
+    };
   }
 
   private static valuesByCategory(selectedValues: LegoSelectedValue[]): any {
@@ -107,17 +115,17 @@ export class LegoMetricsCalculator {
   }
 
   private static dateInPeriodForMessage(
-    datesArray: Array<Date>,
+    datePeriods: Array<Date>,
     messageDate
   ): Date {
     let currentIndex: number = 0;
-    let currentPeriod = datesArray[currentIndex];
+    let currentPeriod = datePeriods[currentIndex];
     while (currentPeriod < messageDate) {
       currentIndex = currentIndex + 1;
-      if (currentIndex >= datesArray.length) {
+      if (currentIndex >= datePeriods.length) {
         throw Error('Invalid date range detected');
       }
-      currentPeriod = datesArray[currentIndex];
+      currentPeriod = datePeriods[currentIndex];
     }
     return currentPeriod;
   }

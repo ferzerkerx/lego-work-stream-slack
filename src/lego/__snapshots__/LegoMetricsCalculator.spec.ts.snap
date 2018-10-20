@@ -7,14 +7,14 @@ Object {
     "someOtherKey",
   ],
   "entries": Array [
-    DateEntry {
+    DateMetrics {
       "date": "2018-10-10",
       "valuesByCategory": Object {
         "someKey": 16,
         "someOtherKey": 9,
       },
     },
-    DateEntry {
+    DateMetrics {
       "date": "2018-10-11",
       "valuesByCategory": Object {
         "someKey": 3,
@@ -32,7 +32,7 @@ Object {
     "someOtherKey",
   ],
   "entries": Array [
-    DateEntry {
+    DateMetrics {
       "date": "2018-10-11",
       "valuesByCategory": Object {
         "someKey": 19,

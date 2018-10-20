@@ -2,7 +2,7 @@ import { Express, Request, Response } from 'express';
 import { SlackController } from 'botkit';
 import { LegoMetricsService } from '../../lego/LegoMetricsService';
 import { DateUtils } from '../../DateUtils';
-import { MetricEntry } from '../../lego/LegoMetricsCalculator';
+import { Metrics } from '../../lego/LegoMetricsCalculator';
 
 const api = (webserver: Express, controller: SlackController): void => {
   function dateParam(req: Request, paramName: string) {
@@ -45,7 +45,7 @@ const api = (webserver: Express, controller: SlackController): void => {
       // @ts-ignore
       controller.storage,
       config
-    ).then((entry: MetricEntry) => {
+    ).then((entry: Metrics) => {
       res.send(JSON.stringify(entry));
     });
   });

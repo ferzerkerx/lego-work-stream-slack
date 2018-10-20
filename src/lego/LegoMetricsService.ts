@@ -1,13 +1,13 @@
 import { Storage } from 'botkit';
 import { LegoSelectMessage } from './LegoSelectMessage';
 import { DateUtils } from '../DateUtils';
-import { LegoMetricsCalculator, MetricEntry } from './LegoMetricsCalculator';
+import { LegoMetricsCalculator, Metrics } from './LegoMetricsCalculator';
 
 export class LegoMetricsService {
   static metricsForConfig(
     storage: Storage<LegoSelectMessage>,
     config: MetricsConfiguration
-  ): Promise<MetricEntry> {
+  ): Promise<Metrics> {
     const messagesPerDatePromises: Promise<
       LegoSelectMessage[]
     >[] = DateUtils.toDatesArray(config.startDate, config.endDate).map(
