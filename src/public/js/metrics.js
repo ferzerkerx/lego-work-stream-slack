@@ -117,6 +117,14 @@ function renderMetrics(evt) {
 
     svg.append('g').call(yAxis);
 
+    svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - 10)
+      .attr("x",0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text(`${isPercentage ? 'Percentages': 'Values'}`);
+
     const legend = svg => {
       const g = svg
         .attr('font-family', 'sans-serif')
