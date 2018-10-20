@@ -46,7 +46,7 @@ const metrics = (() => {
       this.context = context;
     }
 
-    static onMouseOverStackItem(d, i, context) {
+    static _onMouseOverStackItem(d, i, context) {
       const { data, tooltip, config } = context;
       const customAttribute = d3.event.target.getAttribute('custom');
       if (!customAttribute) {
@@ -72,7 +72,7 @@ const metrics = (() => {
         .style('top', `${d3.event.pageY - 30}px`);
     }
 
-    static legend(svg, context) {
+    static _legend(svg, context) {
       const { data } = context;
       const g = svg
         .attr('font-family', 'sans-serif')
@@ -138,7 +138,7 @@ const metrics = (() => {
         .append('g')
         .attr('fill', (d, i) => data.categories[i])
         .on('mouseover', (d, i) =>
-          MetricsStackedBar.onMouseOverStackItem(d, i, this.context)
+          MetricsStackedBar._onMouseOverStackItem(d, i, this.context)
         )
         .on('mouseout', () => {
           tooltip.style('opacity', 0);
@@ -169,7 +169,7 @@ const metrics = (() => {
       svg
         .append('g')
         .attr('transform', `translate(${width - margin.right},${margin.top})`)
-        .call(svg => MetricsStackedBar.legend(svg, this.context));
+        .call(svg => MetricsStackedBar._legend(svg, this.context));
     }
   }
 
