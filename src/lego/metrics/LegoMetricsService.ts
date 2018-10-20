@@ -1,6 +1,6 @@
 import { Storage } from 'botkit';
-import { LegoSelectMessage } from './LegoSelectMessage';
-import { DateUtils } from '../DateUtils';
+import { LegoSelectMessage } from '../LegoSelectMessage';
+import { DateUtils } from '../../DateUtils';
 import { LegoMetricsCalculator, Metrics } from './LegoMetricsCalculator';
 
 export class LegoMetricsService {

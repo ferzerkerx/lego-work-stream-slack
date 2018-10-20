@@ -1,7 +1,7 @@
-import { LegoSelectMessage } from './LegoSelectMessage';
-import { LegoSelectedValue } from './LegoSelectedValue';
-import { DateUtils } from '../DateUtils';
-import { LegoSelectedValueEntry } from './LegoSelectedValueEntry';
+import { LegoSelectMessage } from '../LegoSelectMessage';
+import { LegoSelectedValue } from '../LegoSelectedValue';
+import { DateUtils } from '../../DateUtils';
+import { LegoSelectedValueEntry } from '../LegoSelectedValueEntry';
 
 export class Metrics {
   categories: Array<string>;

@@ -1,4 +1,4 @@
-import { LegoSelectMessage } from './LegoSelectMessage';
+import { LegoSelectMessage } from '../LegoSelectMessage';
 import { LegoMetricsCalculator } from './LegoMetricsCalculator';
 
 function givenLegoMessages(): LegoSelectMessage[] {
