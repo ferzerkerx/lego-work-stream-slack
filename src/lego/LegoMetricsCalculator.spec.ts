@@ -95,4 +95,19 @@ describe('LegoMetricsCalculator', () => {
     );
     expect(entry).toMatchSnapshot();
   });
+
+  test('calculate with periods and percentage', () => {
+    let config: MetricsConfiguration = {
+      startDate: new Date('2018-10-08'),
+      endDate: new Date('2018-10-12'),
+      frequencyInDays: 3,
+      isPercentage: true,
+    };
+
+    const entry: any = LegoMetricsCalculator.calculate(
+      givenLegoMessages(),
+      config
+    );
+    expect(entry).toMatchSnapshot();
+  });
 });

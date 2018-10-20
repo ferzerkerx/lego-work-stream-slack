@@ -8,7 +8,7 @@ export class Metrics {
   entries: Array<DateMetrics>;
 }
 
-export class DateMetrics {
+class DateMetrics {
   date: string;
   valuesByCategory?: CategoryValueMap;
 
@@ -69,7 +69,29 @@ export class LegoMetricsCalculator {
         mergedDateMetrics
       );
     }
+    if (config.isPercentage) {
+      for (let [datePeriod, dateEntry] of dateEntries) {
+        const categoryValueMapForDateEntry: CategoryValueMap =
+          dateEntry.valuesByCategory;
 
+        const totalForDate = Object.keys(categoryValueMapForDateEntry)
+          .map(category => categoryValueMapForDateEntry[category])
+          .reduce(
+            (accumulator: number, currentValue: number) =>
+              Number(accumulator) + Number(currentValue)
+          );
+
+        if (totalForDate > 0) {
+          for (let category of Object.keys(categoryValueMapForDateEntry)) {
+            const percentageValue =
+              (categoryValueMapForDateEntry[category] / totalForDate) * 100;
+            categoryValueMapForDateEntry[category] = Math.round(
+              percentageValue
+            );
+          }
+        }
+      }
+    }
     return {
       categories: Array.from(categories),
       entries: Array.from(dateEntries.values()),

@@ -42,3 +42,21 @@ Object {
   ],
 }
 `;
+
+exports[`LegoMetricsCalculator calculate with periods and percentage 1`] = `
+Object {
+  "categories": Array [
+    "someKey",
+    "someOtherKey",
+  ],
+  "entries": Array [
+    DateMetrics {
+      "date": "2018-10-11",
+      "valuesByCategory": Object {
+        "someKey": 46,
+        "someOtherKey": 54,
+      },
+    },
+  ],
+}
+`;
