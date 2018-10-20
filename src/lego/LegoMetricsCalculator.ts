@@ -32,40 +32,23 @@ export class LegoMetricsCalculator {
     let keys = new Set<string>();
     let datesEntries = new Map<string, DateEntry>();
 
-    let currentIndex = 0;
+    let currentIndex:number = 0;
     for (let message of messages) {
-      const selectedValues: LegoSelectedValue[] = message.selectedValues;
-
-      let dateInPeriodForMessage: Date = LegoMetricsCalculator.dateInPeriodForMessage(
+      const dateKey: string = this.keyForMessageDate(
         datesArray,
         currentIndex,
-        message
+        message.date
       );
-      const dateKey: string = DateUtils.toPrettyDate(
-        dateInPeriodForMessage.toDateString()
-      );
+
+      const selectedValues: LegoSelectedValue[] = message.selectedValues;
       let dateEntry: DateEntry =
         datesEntries.get(dateKey) || new DateEntry(dateKey);
 
-      for (let selectedValue of selectedValues) {
-        const sanitizedValueId = LegoMetricsCalculator.sanitizedEntryName(
-          selectedValue
-        );
-
-        let totalSumForSelectedValueEntry: number =
-          dateEntry.values[sanitizedValueId] || 0;
-
-        const currentSumForSelectedValueEntry = LegoMetricsCalculator.sumForSelectedValueEntries(
-          selectedValue.entries
-        );
-
-        const newTotal: number =
-          Number(totalSumForSelectedValueEntry) +
-          Number(currentSumForSelectedValueEntry);
-
-        keys.add(sanitizedValueId);
-        dateEntry.values[sanitizedValueId]  = newTotal;
-      }
+       this.updateDateEntry(
+        dateEntry,
+        selectedValues,
+        keys
+      );
 
       datesEntries.set(dateKey, dateEntry);
     }
@@ -79,13 +62,49 @@ export class LegoMetricsCalculator {
     };
   }
 
+  private static updateDateEntry(dateEntry:DateEntry, selectedValues:LegoSelectedValue[], keys): void {
+
+    for (let selectedValue of selectedValues) {
+      const sanitizedValueId = LegoMetricsCalculator.sanitizedEntryName(
+        selectedValue
+      );
+
+      let totalSumForSelectedValueEntry: number =
+        dateEntry.values[sanitizedValueId] || 0;
+
+      const currentSumForSelectedValueEntry = LegoMetricsCalculator.sumForSelectedValueEntries(
+        selectedValue.entries
+      );
+
+      const newTotal: number =
+        Number(totalSumForSelectedValueEntry) +
+        Number(currentSumForSelectedValueEntry);
+
+      keys.add(sanitizedValueId);
+      dateEntry.values[sanitizedValueId] = newTotal;
+    }
+  }
+
+  private static keyForMessageDate(
+    datesArray,
+    currentIndex: number,
+    messageDate
+  ): string {
+    let dateInPeriodForMessage: Date = LegoMetricsCalculator.dateInPeriodForMessage(
+      datesArray,
+      currentIndex,
+      messageDate
+    );
+    return DateUtils.toPrettyDate(dateInPeriodForMessage.toDateString());
+  }
+
   private static dateInPeriodForMessage(
     datesArray: Array<Date>,
     currentIndex: number,
-    message
+    messageDate
   ): Date {
     let currentPeriod = datesArray[currentIndex];
-    while (currentPeriod < message.date) {
+    while (currentPeriod < messageDate) {
       currentIndex = currentIndex + 1;
       if (currentIndex >= datesArray.length) {
         throw Error('Invalid date range detected');
