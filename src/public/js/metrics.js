@@ -21,16 +21,18 @@ function renderMetrics(evt) {
   const startDate = form.startDate.value || toString(new Date());
   const endDate = form.endDate.value || toString(addDays(startDate, 1));
   const frequency = form.frequency.value || 1;
+  const isPercentage = form.isPercentage.checked || false;
 
   const config = {
     startDate: startDate,
     endDate: endDate,
     frequency: frequency,
+    isPercentage: isPercentage,
   };
 
   const url = `/api/metrics?startDate=${config.startDate}&endDate=${
     config.endDate
-  }&frequency=${config.frequency}`;
+  }&frequency=${config.frequency}&isPercentage=${isPercentage}`;
   d3.json(url).then(jsonResponse => {
 
     const {categories, entries} = jsonResponse;
@@ -52,7 +54,7 @@ function renderMetrics(evt) {
         d3.permute(sumsPerDateAndCategory, orderOfDates)
       ),
       {
-        keys: Array.from(categories),
+        categories: Array.from(categories),
         totals: d3.permute(totalCountsPerDates, orderOfDates),
         names: d3.permute(datesToDisplay, orderOfDates),
       }
@@ -87,9 +89,9 @@ function renderMetrics(evt) {
       .data(data)
       .enter()
       .append('g')
-      .attr('fill', (d, i) => data.keys[i])
+      .attr('fill', (d, i) => data.categories[i])
       .on('mouseover', (d, i) => {
-        const displayText = `${Math.abs(d[0][0] - d[0][1])} - ${data.keys[i]}`;
+        const displayText = `${Math.abs(d[0][0] - d[0][1])} - ${data.categories[i]} ${isPercentage ? '%': ''}`;
 
         tooltip.style('opacity', 0.9);
 
@@ -121,7 +123,7 @@ function renderMetrics(evt) {
         .attr('font-size', 10)
         .attr('text-anchor', 'end')
         .selectAll('g')
-        .data(data.keys.slice())
+        .data(data.categories.slice())
         .enter()
         .append('g')
         .attr('transform', (d, i) => `translate(0,${i * 20})`);
@@ -130,7 +132,7 @@ function renderMetrics(evt) {
         .attr('x', 29)
         .attr('width', 19)
         .attr('height', 19)
-        .attr('fill', (d, i) => data.keys[i]);
+        .attr('fill', (d, i) => data.categories[i]);
 
       g.append('text')
         .attr('x', 24)

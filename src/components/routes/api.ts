@@ -5,7 +5,37 @@ import { DateUtils } from '../../DateUtils';
 import { Metrics } from '../../lego/LegoMetricsCalculator';
 
 const api = (webserver: Express, controller: SlackController): void => {
-  function dateParam(req: Request, paramName: string) {
+
+  webserver.get('/api/metrics', (req: Request, res: Response) => {
+    const config: MetricsConfiguration = MetricsConfigurationFactory.of(req);
+    LegoMetricsService.metricsForConfig(
+      // @ts-ignore
+      controller.storage,
+      config
+    ).then((entry: Metrics) => {
+      res.send(JSON.stringify(entry));
+    });
+  });
+};
+
+class MetricsConfigurationFactory {
+
+  static of(req: Request): MetricsConfiguration {
+    const starDate: Date = this.dateParam(req, 'startDate') || DateUtils.now();
+    const endDate: Date =
+      this.dateParam(req, 'endDate') || DateUtils.add(starDate, 1);
+    const frequencyInDays: number = this.numberParam(req, 'frequency') || 15;
+    const isPercentage: boolean = this.booleanParam(req, 'isPercentage') || false;
+
+    return {
+      startDate: starDate,
+      endDate: endDate,
+      frequencyInDays: frequencyInDays,
+      isPercentage: isPercentage,
+    };
+  }
+
+  static dateParam(req: Request, paramName: string) {
     const paramValue = req.query[paramName];
     if (!paramValue) {
       return null;
@@ -13,7 +43,7 @@ const api = (webserver: Express, controller: SlackController): void => {
     return DateUtils.parseDate(paramValue);
   }
 
-  function numberParam(req: Request, paramName: string) {
+  static numberParam(req: Request, paramName: string) {
     const paramValue = req.query[paramName];
     if (!paramValue) {
       return null;
@@ -25,30 +55,10 @@ const api = (webserver: Express, controller: SlackController): void => {
     return result;
   }
 
-  function metricsConfiguration(req: Request): MetricsConfiguration {
-    const starDate: Date = dateParam(req, 'startDate') || DateUtils.now();
-    const endDate: Date =
-      dateParam(req, 'endDate') || DateUtils.add(starDate, 1);
-    const frequencyInDays: number = numberParam(req, 'frequency') || 15;
-
-    return {
-      startDate: starDate,
-      endDate: endDate,
-      frequencyInDays: frequencyInDays,
-      isPercentage: true,
-    };
+  static booleanParam(req: Request, paramName: string) {
+    const paramValue = req.query[paramName];
+    return paramValue == "true";
   }
-
-  webserver.get('/api/metrics', (req: Request, res: Response) => {
-    const config: MetricsConfiguration = metricsConfiguration(req);
-    LegoMetricsService.metricsForConfig(
-      // @ts-ignore
-      controller.storage,
-      config
-    ).then((entry: Metrics) => {
-      res.send(JSON.stringify(entry));
-    });
-  });
-};
+}
 
 module.exports = api;

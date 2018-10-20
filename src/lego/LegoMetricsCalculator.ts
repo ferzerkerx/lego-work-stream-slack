@@ -70,7 +70,7 @@ export class LegoMetricsCalculator {
       );
     }
     if (config.isPercentage) {
-      for (let [datePeriod, dateEntry] of dateEntries) {
+      for (let dateEntry of dateEntries.values()) {
         const categoryValueMapForDateEntry: CategoryValueMap =
           dateEntry.valuesByCategory;
 
