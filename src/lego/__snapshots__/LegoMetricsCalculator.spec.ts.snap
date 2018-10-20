@@ -2,6 +2,10 @@
 
 exports[`LegoMetricsCalculator calculate 1`] = `
 Object {
+  "categories": Array [
+    "someKey",
+    "someOtherKey",
+  ],
   "entries": Array [
     DateEntry {
       "date": "2018-10-10",
@@ -18,15 +22,15 @@ Object {
       },
     },
   ],
-  "keys": Array [
-    "someKey",
-    "someOtherKey",
-  ],
 }
 `;
 
 exports[`LegoMetricsCalculator calculate with periods 1`] = `
 Object {
+  "categories": Array [
+    "someKey",
+    "someOtherKey",
+  ],
   "entries": Array [
     DateEntry {
       "date": "2018-10-11",
@@ -35,10 +39,6 @@ Object {
         "someOtherKey": 22,
       },
     },
-  ],
-  "keys": Array [
-    "someKey",
-    "someOtherKey",
   ],
 }
 `;

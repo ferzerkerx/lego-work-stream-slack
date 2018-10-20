@@ -4,7 +4,7 @@ import { DateUtils } from '../DateUtils';
 import { LegoSelectedValueEntry } from './LegoSelectedValueEntry';
 
 export class MetricEntry {
-  keys: Array<string>;
+  categories: Array<string>;
   entries: Array<DateEntry>;
 }
 
@@ -29,10 +29,10 @@ export class LegoMetricsCalculator {
       config.frequencyInDays
     );
 
-    let keys = new Set<string>();
+    let categories = new Set<string>();
     let datesEntries = new Map<string, DateEntry>();
 
-    let currentIndex:number = 0;
+    let currentIndex: number = 0;
     for (let message of messages) {
       const dateKey: string = this.keyForMessageDate(
         datesArray,
@@ -44,26 +44,22 @@ export class LegoMetricsCalculator {
       let dateEntry: DateEntry =
         datesEntries.get(dateKey) || new DateEntry(dateKey);
 
-       this.updateDateEntry(
-        dateEntry,
-        selectedValues,
-        keys
-      );
+      this.updateDateEntry(dateEntry, selectedValues, categories);
 
       datesEntries.set(dateKey, dateEntry);
     }
 
-    const entries: Array<DateEntry> = Array.from(datesEntries.keys()).map(key =>
-      datesEntries.get(key)
-    );
     return {
-      keys: Array.from(keys),
-      entries: entries,
+      categories: Array.from(categories),
+      entries: Array.from(datesEntries.values()),
     };
   }
 
-  private static updateDateEntry(dateEntry:DateEntry, selectedValues:LegoSelectedValue[], keys): void {
-
+  private static updateDateEntry(
+    dateEntry: DateEntry,
+    selectedValues: LegoSelectedValue[],
+    keys
+  ): void {
     for (let selectedValue of selectedValues) {
       const sanitizedValueId = LegoMetricsCalculator.sanitizedEntryName(
         selectedValue

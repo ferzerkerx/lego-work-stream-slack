@@ -33,7 +33,7 @@ function renderMetrics(evt) {
   }&frequency=${config.frequency}`;
   d3.json(url).then(jsonResponse => {
 
-    const categories = jsonResponse.keys;
+    const categories = jsonResponse.categories;
 
     const entries = jsonResponse.entries;
 
@@ -50,7 +50,7 @@ function renderMetrics(evt) {
     );
 
     const data = Object.assign(
-      d3.stack().keys(d3.range(jsonResponse.keys.length))(
+      d3.stack().keys(d3.range(categories.length))(
         d3.permute(sumsPerDateAndCategory, orderOfDates)
       ),
       {
