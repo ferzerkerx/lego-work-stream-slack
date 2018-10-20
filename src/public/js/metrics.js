@@ -40,13 +40,13 @@ function renderMetrics(evt) {
     const datesToDisplay = entries.map(entry => entry.date);
 
     const totalCountsPerDates = entries.map(entry => {
-      return d3.sum(categories.map(key => entry.values[key]));
+      return d3.sum(categories.map(key => entry.valuesByCategory[key]));
     });
 
     const orderOfDates = d3.range(entries.length);
 
     const sumsPerDateAndCategory = entries.map(entry =>
-      Array.from(categories, category => entry.values[category] || 0)
+      Array.from(categories, category => entry.valuesByCategory[category] || 0)
     );
 
     const data = Object.assign(

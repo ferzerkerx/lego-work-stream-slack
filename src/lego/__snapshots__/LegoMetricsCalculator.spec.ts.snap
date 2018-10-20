@@ -9,14 +9,14 @@ Object {
   "entries": Array [
     DateEntry {
       "date": "2018-10-10",
-      "values": Object {
+      "valuesByCategory": Object {
         "someKey": 16,
         "someOtherKey": 9,
       },
     },
     DateEntry {
       "date": "2018-10-11",
-      "values": Object {
+      "valuesByCategory": Object {
         "someKey": 3,
         "someOtherKey": 13,
       },
@@ -34,7 +34,7 @@ Object {
   "entries": Array [
     DateEntry {
       "date": "2018-10-11",
-      "values": Object {
+      "valuesByCategory": Object {
         "someKey": 19,
         "someOtherKey": 22,
       },

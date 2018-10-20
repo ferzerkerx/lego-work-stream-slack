@@ -10,27 +10,24 @@ export class MetricEntry {
 
 export class DateEntry {
   date: string;
-  values?: any;
+  valuesByCategory?: any;
 
   constructor(date: string) {
     this.date = date;
-    this.values = {};
+    this.valuesByCategory = {};
   }
 
-  add(valuesToAdd:any) : DateEntry  {
-
+  add(valuesByCategoryToAdd: any): DateEntry {
     let result = new DateEntry(this.date);
 
-    let values:any = {...this.values};
-    Object.keys(valuesToAdd)
-      .forEach(value=> {
+    let valuesByCategory: any = { ...this.valuesByCategory };
+    Object.keys(valuesByCategoryToAdd).forEach(category => {
+      let currentValue = valuesByCategory[category] || 0;
+      currentValue = currentValue + valuesByCategoryToAdd[category];
+      valuesByCategory[category] = currentValue;
+    });
 
-        let currentValue = values[value] || 0;
-          currentValue = currentValue + valuesToAdd[value];
-          values[value] = currentValue;
-      });
-
-    result.values = {...values};
+    result.valuesByCategory = { ...valuesByCategory };
     return result;
   }
 }
@@ -61,11 +58,12 @@ export class LegoMetricsCalculator {
       let dateEntry: DateEntry =
         datesEntries.get(dateKey) || new DateEntry(dateKey);
 
-      const valuesForEntry = this.valuesForEntry(selectedValues);
-      const mergedDateEntry = dateEntry.add(valuesForEntry);
+      const valuesByCategory = this.valuesByCategory(selectedValues);
+      const mergedDateEntry = dateEntry.add(valuesByCategory);
 
-      Object.keys(valuesForEntry)
-        .forEach(value=> categories.add(value));
+      Object.keys(valuesByCategory).forEach(category =>
+        categories.add(category)
+      );
 
       datesEntries.set(dateKey, mergedDateEntry);
     }
@@ -76,25 +74,21 @@ export class LegoMetricsCalculator {
     };
   }
 
-  private static valuesForEntry(
-    selectedValues: LegoSelectedValue[]
-  ): any {
-
+  private static valuesByCategory(selectedValues: LegoSelectedValue[]): any {
     let result: any = {};
     for (let selectedValue of selectedValues) {
-      const sanitizedValueId = LegoMetricsCalculator.sanitizedEntryName(
+      const categoryName = LegoMetricsCalculator.extractCategoryName(
         selectedValue
       );
 
-      let totalSumForSelectedValueEntry: number =
-        result[sanitizedValueId] || 0;
+      let totalSumForCategory: number = result[categoryName] || 0;
 
-      const currentSumForSelectedValueEntry = LegoMetricsCalculator.sumForSelectedValueEntries(
+      const currentSumForCategory = LegoMetricsCalculator.extractSumForCategory(
         selectedValue.entries
       );
 
-      result[sanitizedValueId] = Number(totalSumForSelectedValueEntry) +
-        Number(currentSumForSelectedValueEntry);
+      result[categoryName] =
+        Number(totalSumForCategory) + Number(currentSumForCategory);
     }
     return result;
   }
@@ -128,18 +122,20 @@ export class LegoMetricsCalculator {
     return currentPeriod;
   }
 
-  private static sumForSelectedValueEntries(
+  private static extractSumForCategory(
     userEntries: LegoSelectedValueEntry[]
   ): number {
     return userEntries
-      .map((entry: LegoSelectedValueEntry) => entry.value)
+      .map(
+        (selectedValueEntry: LegoSelectedValueEntry) => selectedValueEntry.value
+      )
       .reduce(
         (accumulator: number, currentValue: number) =>
           Number(accumulator) + Number(currentValue)
       );
   }
 
-  private static sanitizedEntryName(selectedValue): string {
+  private static extractCategoryName(selectedValue): string {
     return selectedValue.id.includes('lego-select-option-')
       ? selectedValue.id.substr('lego-select-option-'.length)
       : selectedValue.id;
