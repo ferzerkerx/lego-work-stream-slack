@@ -3,14 +3,19 @@ import { LegoSelectedValue } from './LegoSelectedValue';
 import { DateUtils } from '../DateUtils';
 import { LegoSelectedValueEntry } from './LegoSelectedValueEntry';
 
-export interface MetricEntry {
+export class MetricEntry {
   keys: Array<string>;
   entries: Array<DateEntry>;
 }
 
-export interface DateEntry {
-  date: Date;
-  metricValues: Map<string, number>;
+export class DateEntry {
+  date: string;
+  values?: any;
+
+  constructor(date: string) {
+    this.date = date;
+    this.values = {};
+  }
 }
 
 export class LegoMetricsCalculator {
@@ -25,7 +30,7 @@ export class LegoMetricsCalculator {
     );
 
     let keys = new Set<string>();
-    let datesEntries = new Map<string, any>();
+    let datesEntries = new Map<string, DateEntry>();
 
     let currentIndex = 0;
     for (let message of messages) {
@@ -39,7 +44,8 @@ export class LegoMetricsCalculator {
       const dateKey: string = DateUtils.toPrettyDate(
         dateInPeriodForMessage.toDateString()
       );
-      let dateEntry: DateEntry = datesEntries[dateKey] || { date: dateKey };
+      let dateEntry: DateEntry =
+        datesEntries.get(dateKey) || new DateEntry(dateKey);
 
       for (let selectedValue of selectedValues) {
         const sanitizedValueId = LegoMetricsCalculator.sanitizedEntryName(
@@ -47,7 +53,7 @@ export class LegoMetricsCalculator {
         );
 
         let totalSumForSelectedValueEntry: number =
-          dateEntry[sanitizedValueId] || 0;
+          dateEntry.values[sanitizedValueId] || 0;
 
         const currentSumForSelectedValueEntry = LegoMetricsCalculator.sumForSelectedValueEntries(
           selectedValue.entries
@@ -58,14 +64,14 @@ export class LegoMetricsCalculator {
           Number(currentSumForSelectedValueEntry);
 
         keys.add(sanitizedValueId);
-        dateEntry[sanitizedValueId] = newTotal;
+        dateEntry.values[sanitizedValueId]  = newTotal;
       }
 
-      datesEntries[dateKey] = dateEntry;
+      datesEntries.set(dateKey, dateEntry);
     }
 
-    const entries: Array<DateEntry> = Object.keys(datesEntries).map(
-      key => datesEntries[key]
+    const entries: Array<DateEntry> = Array.from(datesEntries.keys()).map(key =>
+      datesEntries.get(key)
     );
     return {
       keys: Array.from(keys),

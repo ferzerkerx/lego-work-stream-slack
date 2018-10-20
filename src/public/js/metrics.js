@@ -35,16 +35,18 @@ function renderMetrics(evt) {
 
     const categories = jsonResponse.keys;
 
-    const datesToDisplay = jsonResponse.entries.map(entry => entry.date);
+    const entries = jsonResponse.entries;
 
-    const totalCountsPerDates = jsonResponse.entries.map(entry => {
-      return d3.sum(categories.map(key => entry[key]));
+    const datesToDisplay = entries.map(entry => entry.date);
+
+    const totalCountsPerDates = entries.map(entry => {
+      return d3.sum(categories.map(key => entry.values[key]));
     });
 
-    const orderOfDates = d3.range(jsonResponse.entries.length);
+    const orderOfDates = d3.range(entries.length);
 
-    const sumsPerDateAndCategory = jsonResponse.entries.map(entry =>
-      Array.from(categories, category => entry[category] || 0)
+    const sumsPerDateAndCategory = entries.map(entry =>
+      Array.from(categories, category => entry.values[category] || 0)
     );
 
     const data = Object.assign(

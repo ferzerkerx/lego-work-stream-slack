@@ -73,7 +73,6 @@ describe('LegoMetricsCalculator', () => {
       startDate: new Date('2018-10-10'),
       endDate: new Date('2018-10-11'),
       frequencyInDays: 1,
-      isPercentage: false,
     };
 
     const entry: any = LegoMetricsCalculator.calculate(
@@ -88,7 +87,6 @@ describe('LegoMetricsCalculator', () => {
       startDate: new Date('2018-10-08'),
       endDate: new Date('2018-10-12'),
       frequencyInDays: 3,
-      isPercentage: false,
     };
 
     const entry: any = LegoMetricsCalculator.calculate(
