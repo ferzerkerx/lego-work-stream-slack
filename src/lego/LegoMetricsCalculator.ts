@@ -16,6 +16,23 @@ export class DateEntry {
     this.date = date;
     this.values = {};
   }
+
+  add(valuesToAdd:any) : DateEntry  {
+
+    let result = new DateEntry(this.date);
+
+    let values:any = {...this.values};
+    Object.keys(valuesToAdd)
+      .forEach(value=> {
+
+        let currentValue = values[value] || 0;
+          currentValue = currentValue + valuesToAdd[value];
+          values[value] = currentValue;
+      });
+
+    result.values = {...values};
+    return result;
+  }
 }
 
 export class LegoMetricsCalculator {
@@ -44,12 +61,13 @@ export class LegoMetricsCalculator {
       let dateEntry: DateEntry =
         datesEntries.get(dateKey) || new DateEntry(dateKey);
 
-      this.updateDateEntry(dateEntry, selectedValues);
+      const valuesForEntry = this.valuesForEntry(selectedValues);
+      const mergedDateEntry = dateEntry.add(valuesForEntry);
 
-      Object.keys(dateEntry.values)
+      Object.keys(valuesForEntry)
         .forEach(value=> categories.add(value));
 
-      datesEntries.set(dateKey, dateEntry);
+      datesEntries.set(dateKey, mergedDateEntry);
     }
 
     return {
@@ -58,28 +76,27 @@ export class LegoMetricsCalculator {
     };
   }
 
-  private static updateDateEntry(
-    dateEntry: DateEntry,
+  private static valuesForEntry(
     selectedValues: LegoSelectedValue[]
-  ): void {
+  ): any {
+
+    let result: any = {};
     for (let selectedValue of selectedValues) {
       const sanitizedValueId = LegoMetricsCalculator.sanitizedEntryName(
         selectedValue
       );
 
       let totalSumForSelectedValueEntry: number =
-        dateEntry.values[sanitizedValueId] || 0;
+        result[sanitizedValueId] || 0;
 
       const currentSumForSelectedValueEntry = LegoMetricsCalculator.sumForSelectedValueEntries(
         selectedValue.entries
       );
 
-      const newTotal: number =
-        Number(totalSumForSelectedValueEntry) +
+      result[sanitizedValueId] = Number(totalSumForSelectedValueEntry) +
         Number(currentSumForSelectedValueEntry);
-
-      dateEntry.values[sanitizedValueId] = newTotal;
     }
+    return result;
   }
 
   private static keyForMessageDate(
