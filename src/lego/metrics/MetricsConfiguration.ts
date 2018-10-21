@@ -3,6 +3,6 @@ class MetricsConfiguration {
   endDate: Date;
   frequencyInDays: number;
   isPercentage?: boolean = false;
-  teams?: Array<string>;
+  teams?: string[];
   format?: string = 'json';
 }

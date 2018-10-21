@@ -1,5 +1,5 @@
 import { SlackMessage } from 'botkit';
-import { DateUtils } from '../DateUtils';
+import { DateUtils } from '../utils/DateUtils';
 
 export class LegoMessageFactory {
   static createMessage(

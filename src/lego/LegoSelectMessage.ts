@@ -1,5 +1,5 @@
 import { LegoSelectedValue } from './LegoSelectedValue';
-import { DateUtils } from '../DateUtils';
+import { DateUtils } from '../utils/DateUtils';
 
 export class LegoSelectMessage {
   id: string;

@@ -41,7 +41,7 @@ export class DateUtils {
     startDate: Date,
     endDate?: Date,
     interval: number = 1
-  ): Array<Date> {
+  ): Date[] {
     const theDates = [startDate];
     if (endDate) {
       if (endDate < startDate) {

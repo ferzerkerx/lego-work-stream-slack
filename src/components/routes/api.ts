@@ -1,8 +1,9 @@
 import { Express, Request, Response } from 'express';
 import { SlackController } from 'botkit';
 import { LegoMetricsService } from '../../lego/metrics/LegoMetricsService';
-import { DateUtils } from '../../DateUtils';
+import { DateUtils } from '../../utils/DateUtils';
 import { Metrics } from '../../lego/metrics/Metrics';
+import { CsvUtils } from '../../utils/CsvUtils';
 
 const api = (webserver: Express, controller: SlackController): void => {
   webserver.get('/api/metrics', (req: Request, res: Response) => {
@@ -13,26 +14,12 @@ const api = (webserver: Express, controller: SlackController): void => {
       config
     ).then((entry: Metrics) => {
       if (config.format === 'csv') {
-        const data = [
-          ['ID', 'Name', 'Age', 'Gender'],
-          [1, 'Taro Yamada', 25, 'Male'],
-          [2, 'Hanako Yamada', 24, 'Female'],
-          [3, 'John Doe', 30, 'Male'],
-          [4, 'Jane Doe', 30, 'Female'],
-        ];
-
         res.setHeader('Content-Type', 'text/csv');
-        data.forEach(function(item) {
-          res.write(
-            item
-              .map(function(field) {
-                return '"' + field.toString().replace(/\"/g, '""') + '"';
-              })
-              .toString() + '\r\n'
-          );
-        });
-
-        res.end();
+        res.setHeader(
+          'Content-Disposition',
+          'attachment; filename="metrics.csv"'
+        );
+        res.send(CsvUtils.toCsv(entry.csvData()));
       } else {
         res.send(JSON.stringify(entry));
       }
@@ -48,7 +35,7 @@ class MetricsConfigurationFactory {
     const frequencyInDays: number = this.numberParam(req, 'frequency') || 15;
     const isPercentage: boolean =
       this.booleanParam(req, 'isPercentage') || false;
-    const teams: Array<string> = this.arrayParam(req, 'teams') || [];
+    const teams: string[] = this.arrayParam(req, 'teams') || [];
     const format: string = this.stringParam(req, 'format') || 'json';
 
     return {

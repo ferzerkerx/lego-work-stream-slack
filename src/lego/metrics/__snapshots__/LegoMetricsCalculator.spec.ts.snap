@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`LegoMetricsCalculator calculate 1`] = `
-Object {
+Metrics {
   "categories": Array [
     "someKey",
     "someOtherKey",
@@ -26,7 +26,7 @@ Object {
 `;
 
 exports[`LegoMetricsCalculator calculate with periods 1`] = `
-Object {
+Metrics {
   "categories": Array [
     "someKey",
     "someOtherKey",
@@ -44,7 +44,7 @@ Object {
 `;
 
 exports[`LegoMetricsCalculator calculate with periods and percentage 1`] = `
-Object {
+Metrics {
   "categories": Array [
     "someKey",
     "someOtherKey",

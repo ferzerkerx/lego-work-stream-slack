@@ -1,6 +1,6 @@
 import { LegoSelectMessage } from '../LegoSelectMessage';
 import { LegoSelectedValue } from '../LegoSelectedValue';
-import { DateUtils } from '../../DateUtils';
+import { DateUtils } from '../../utils/DateUtils';
 import { LegoSelectedValueEntry } from '../LegoSelectedValueEntry';
 import { DateMetrics } from './DateMetrics';
 import { Metrics } from './Metrics';
@@ -27,10 +27,10 @@ export class LegoMetricsCalculator {
     if (config.isPercentage) {
       dateMetrics = this.toPercentage(dateMetrics);
     }
-    return {
-      categories: Array.from(rawMetrics.categories),
-      entries: Array.from(dateMetrics.values()),
-    };
+    return new Metrics(
+      Array.from(rawMetrics.categories),
+      Array.from(dateMetrics.values())
+    );
   }
 
   private static toPercentage(
@@ -156,7 +156,7 @@ export class LegoMetricsCalculator {
   }
 
   private static dateInPeriodForMessage(
-    datePeriods: Array<Date>,
+    datePeriods: Date[],
     messageDate
   ): Date {
     let currentIndex: number = 0;
