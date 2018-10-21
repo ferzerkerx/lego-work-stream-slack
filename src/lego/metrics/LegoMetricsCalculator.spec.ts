@@ -1,5 +1,6 @@
 import { LegoSelectMessage } from '../LegoSelectMessage';
 import { LegoMetricsCalculator } from './LegoMetricsCalculator';
+import { Metrics } from './Metrics';
 
 function givenLegoMessages(): LegoSelectMessage[] {
   return [
@@ -75,11 +76,11 @@ describe('LegoMetricsCalculator', () => {
       frequencyInDays: 1,
     };
 
-    const entry: any = LegoMetricsCalculator.calculate(
+    const metrics: Metrics = LegoMetricsCalculator.calculate(
       givenLegoMessages(),
       config
     );
-    expect(entry).toMatchSnapshot();
+    expect(metrics).toMatchSnapshot();
   });
 
   test('calculate with periods', () => {
@@ -89,11 +90,11 @@ describe('LegoMetricsCalculator', () => {
       frequencyInDays: 3,
     };
 
-    const entry: any = LegoMetricsCalculator.calculate(
+    const metrics: Metrics = LegoMetricsCalculator.calculate(
       givenLegoMessages(),
       config
     );
-    expect(entry).toMatchSnapshot();
+    expect(metrics).toMatchSnapshot();
   });
 
   test('calculate with periods and percentage', () => {
@@ -104,10 +105,24 @@ describe('LegoMetricsCalculator', () => {
       isPercentage: true,
     };
 
-    const entry: any = LegoMetricsCalculator.calculate(
+    const metrics: Metrics = LegoMetricsCalculator.calculate(
       givenLegoMessages(),
       config
     );
-    expect(entry).toMatchSnapshot();
+    expect(metrics).toMatchSnapshot();
+  });
+
+  test('metrics csv data', () => {
+    let config: MetricsConfiguration = {
+      startDate: new Date('2018-10-10'),
+      endDate: new Date('2018-10-11'),
+      frequencyInDays: 1,
+    };
+
+    const metrics: Metrics = LegoMetricsCalculator.calculate(
+      givenLegoMessages(),
+      config
+    );
+    expect(metrics.csvData()).toMatchSnapshot();
   });
 });

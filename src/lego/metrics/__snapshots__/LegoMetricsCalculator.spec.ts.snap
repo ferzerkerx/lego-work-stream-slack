@@ -60,3 +60,23 @@ Metrics {
   ],
 }
 `;
+
+exports[`LegoMetricsCalculator metrics csv data 1`] = `
+Array [
+  Array [
+    "date",
+    "someKey",
+    "someOtherKey",
+  ],
+  Array [
+    "2018-10-10",
+    "16",
+    "9",
+  ],
+  Array [
+    "2018-10-11",
+    "3",
+    "13",
+  ],
+]
+`;
