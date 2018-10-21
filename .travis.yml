@@ -15,14 +15,10 @@ cache:
   - "node_modules"
 
 install:
-- "npm install"
+- "yarn install"
 - "npm install -g snyk"
 
 script:
-- "npm run test"
-- "npm run build"
+- "yarn test"
 - "sonar-scanner"
-- "snyk test"
-
-after_success:
-- snyk monitor
+- "snyk monitor"
