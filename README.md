@@ -4,9 +4,14 @@ Track your workstream using slack and visualize it
 >inspired by [lego-workstream-visualisation](https://code.joejag.com/2018/lego-workstream-visualisation.html)
 
 
-Screenshots
+### Screenshots
+![alt tag](https://raw.githubusercontent.com/ferzerkerx/lego-work-stream-slack/master/screenshots/lego3.png)
 
-###Installation:
+![alt tag](https://raw.githubusercontent.com/ferzerkerx/lego-work-stream-slack/master/screenshots/lego1.png)
+
+![alt tag](https://raw.githubusercontent.com/ferzerkerx/lego-work-stream-slack/master/screenshots/lego2.png)
+
+### Installation:
 - Create a slack app
     - Bot needs to have permissions for:
         - Interactive messages
@@ -31,4 +36,4 @@ MONGODB_URI=<your MONGODB_URI>
 - Search metrics
 - Download CSV report
 
->http://<your-server>:<your-port>/metrics.html
+http://<your-server>:<your-port>/metrics.html
