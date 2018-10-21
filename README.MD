@@ -1,7 +1,8 @@
-# Lego workstream SlackBot
+## Lego workstream SlackBot
 
+Track your workstream using slack and visualize it 
+>inspired by [lego-workstream-visualisation](https://code.joejag.com/2018/lego-workstream-visualisation.html)
 
-Track your workstream using slack and visualize it
 
 Screenshots
 
@@ -16,8 +17,8 @@ Screenshots
 clientId=<your slack clientID>
 clientSecret=<your slack clientSecret>
 API_TOKEN=<your slack API TOKEN>
-PORT=
-MONGODB_URI= 
+PORT=<your desired port>
+MONGODB_URI=<your MONGODB_URI>
 ```
 - yarn install
 - yarn start
@@ -26,7 +27,8 @@ MONGODB_URI=
         - @yourbotname help
         - Adjust settings
       
-### Metric
-    - 
+### Metrics
+- Search metrics
+- Download CSV report
 
-inspired by [lego-workstream-visualisation](https://code.joejag.com/2018/lego-workstream-visualisation.html)
+>http://<your-server>:<your-port>/metrics.html
