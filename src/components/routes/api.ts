@@ -12,7 +12,30 @@ const api = (webserver: Express, controller: SlackController): void => {
       controller.storage,
       config
     ).then((entry: Metrics) => {
-      res.send(JSON.stringify(entry));
+      if (config.format === 'csv') {
+        const data = [
+          ['ID', 'Name', 'Age', 'Gender'],
+          [1, 'Taro Yamada', 25, 'Male'],
+          [2, 'Hanako Yamada', 24, 'Female'],
+          [3, 'John Doe', 30, 'Male'],
+          [4, 'Jane Doe', 30, 'Female'],
+        ];
+
+        res.setHeader('Content-Type', 'text/csv');
+        data.forEach(function(item) {
+          res.write(
+            item
+              .map(function(field) {
+                return '"' + field.toString().replace(/\"/g, '""') + '"';
+              })
+              .toString() + '\r\n'
+          );
+        });
+
+        res.end();
+      } else {
+        res.send(JSON.stringify(entry));
+      }
     });
   });
 };
@@ -25,7 +48,8 @@ class MetricsConfigurationFactory {
     const frequencyInDays: number = this.numberParam(req, 'frequency') || 15;
     const isPercentage: boolean =
       this.booleanParam(req, 'isPercentage') || false;
-    const teams: [] = this.arrayParam(req, 'teams') || [];
+    const teams: Array<string> = this.arrayParam(req, 'teams') || [];
+    const format: string = this.stringParam(req, 'format') || 'json';
 
     return {
       startDate: starDate,
@@ -33,11 +57,12 @@ class MetricsConfigurationFactory {
       frequencyInDays: frequencyInDays,
       isPercentage: isPercentage,
       teams: teams,
+      format: format,
     };
   }
 
   static dateParam(req: Request, paramName: string) {
-    const paramValue = req.query[paramName];
+    const paramValue: string = req.query[paramName];
     if (!paramValue) {
       return null;
     }
@@ -45,7 +70,7 @@ class MetricsConfigurationFactory {
   }
 
   static numberParam(req: Request, paramName: string) {
-    const paramValue = req.query[paramName];
+    const paramValue: string = req.query[paramName];
     if (!paramValue) {
       return null;
     }
@@ -56,13 +81,21 @@ class MetricsConfigurationFactory {
     return result;
   }
 
+  static stringParam(req: Request, paramName: string) {
+    const paramValue: string = req.query[paramName];
+    if (!paramValue || paramValue === '') {
+      return null;
+    }
+    return paramValue;
+  }
+
   static booleanParam(req: Request, paramName: string) {
-    const paramValue = req.query[paramName];
+    const paramValue: string = req.query[paramName];
     return paramValue == 'true';
   }
 
   static arrayParam(req: Request, paramName: string) {
-    const paramValue = req.query[paramName];
+    const paramValue: string = req.query[paramName];
     if (!paramValue || paramValue.length == 0) {
       return null;
     }

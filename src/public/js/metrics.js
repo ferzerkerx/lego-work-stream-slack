@@ -48,7 +48,7 @@ const metrics = (() => {
         config.endDate
       }&frequency=${config.frequency}&isPercentage=${
         config.isPercentage
-      }&teams=${config.teams.join(',')}`;
+      }&teams=${config.teams.join(',')}&format=${config.format}`;
     }
   }
 
@@ -267,23 +267,50 @@ const metrics = (() => {
     }
   }
 
-  const requestMetrics = evt => {
+  const metricRequest = () => {
+    const form = findForm();
+    const config = MetricsService.createConfiguration(form);
+    const url = MetricsService.createUrl(config);
+    return { config, url };
+  };
+
+  const renderWithRequest = (config, url) => {
+    return d3.json(url).then(jsonResponse => {
+      new Renderer(jsonResponse, config).render();
+      return jsonResponse;
+    });
+  };
+
+  const renderMetrics = evt => {
     evt.preventDefault();
 
+    const { config, url } = metricRequest();
+    renderWithRequest(config, url);
+  };
+
+  const findForm = () => {
     const form = document.forms[0];
     if (!form) {
       throw Error('Could not initialize component.');
     }
-    const config = MetricsService.createConfiguration(form);
+    return form;
+  };
 
-    const url = MetricsService.createUrl(config);
-
-    d3.json(url).then(jsonResponse =>
-      new Renderer(jsonResponse, config).render()
-    );
+  const createCsv = () => {
+    const { config, url } = metricRequest();
+    renderWithRequest(config, url).then(jsonResponse => {
+      const { entries } = jsonResponse;
+      if (!entries || entries.length === 0) {
+        console.log('No results');
+        return;
+      }
+      config.format = 'csv';
+      window.location.href = MetricsService.createUrl(config);
+    });
   };
 
   return {
-    render: requestMetrics,
+    render: renderMetrics,
+    download: createCsv,
   };
 })();

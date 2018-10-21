@@ -4,4 +4,5 @@ class MetricsConfiguration {
   frequencyInDays: number;
   isPercentage?: boolean = false;
   teams?: Array<string>;
+  format?: string = 'json';
 }
