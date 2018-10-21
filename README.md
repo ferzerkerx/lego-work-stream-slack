@@ -40,4 +40,4 @@ MONGODB_URI=<your MONGODB_URI>
 - Search metrics
 - Download CSV report
 
-http://your-server/metrics.html
+```http://<your-server>:<your-port>/metrics.html```
