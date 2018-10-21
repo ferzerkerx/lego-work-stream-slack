@@ -10,5 +10,13 @@
 }
 
 #graph-container {
-    padding-top: 4em;
+    padding-top: 7em;
+}
+
+.form-group {
+    color: white;
+}
+
+#inputForm{
+    font-size: .875rem
 }
