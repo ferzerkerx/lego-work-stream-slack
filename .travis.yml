@@ -21,4 +21,6 @@ install:
 script:
 - "yarn test"
 - "sonar-scanner"
+
+after_success:
 - "snyk monitor"
