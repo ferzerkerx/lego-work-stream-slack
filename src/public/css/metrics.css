@@ -20,3 +20,8 @@
 #inputForm{
     font-size: .875rem
 }
+
+
+.hidden {
+    display: none;
+}

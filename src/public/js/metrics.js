@@ -207,6 +207,7 @@ const metrics = (() => {
       this.jsonResponse = jsonResponse;
       this.config = config;
       this.svg = d3.select('#graphic');
+      this.defaultSvg = d3.select('#graphicDefault');
       this.tooltip = d3.select('#tooltip');
 
       if (!this.svg || !this.tooltip) {
@@ -250,8 +251,12 @@ const metrics = (() => {
     }
 
     render() {
-      const { height, margin, width, tooltip, svg, config } = this;
+      const { height, margin, width, tooltip, svg, config, defaultSvg } = this;
       svg.selectAll('*').remove();
+      if (this.jsonResponse.entries.length === 0) {
+        svg.html(defaultSvg.html());
+        return;
+      }
       const data = this.dataForStackedGraphic();
 
       const context = {
@@ -301,7 +306,6 @@ const metrics = (() => {
     renderWithRequest(config, url).then(jsonResponse => {
       const { entries } = jsonResponse;
       if (!entries || entries.length === 0) {
-        console.log('No results');
         return;
       }
       config.format = 'csv';

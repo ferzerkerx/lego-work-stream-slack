@@ -63,7 +63,8 @@
             <li class="nav-item">
                 <button class="btn btn-info btn-sm" onclick="metrics.render(event)"><i class="fas fa-lg fa-search"></i>
                 </button>
-                <button class="btn btn-info btn-sm" onclick="metrics.download()"><i class="fas fa-lg fa-file-download"></i>
+                <button class="btn btn-success btn-sm" onclick="metrics.download()"><i
+                        class="fas fa-lg fa-file-download"></i>
                 </button>
             </li>
         </ul>
@@ -73,9 +74,14 @@
 <main role="main" class="container">
     <div id="graph-container">
         <svg id="graphic" width="1024" height="768">
-            <text x="45%" y="30%">Select criteria to search...</text>
-            <image xlink:href="chart.png" x="45%" y="31%" height="200px" width="200px"></image>
+            <use transform="scale(1)" xlink:href="#graphicDefault"></use>
         </svg>
+        <div class="hidden">
+            <svg id="graphicDefault" width="1024" height="768">
+                <text x="45%" y="30%">No results with the selected criteria...</text>
+                <image xlink:href="chart.png" x="45%" y="31%" height="200px" width="200px"></image>
+            </svg>
+        </div>
     </div>
     <div id="tooltip"></div>
 </main>
