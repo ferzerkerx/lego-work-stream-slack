@@ -1,4 +1,4 @@
-const metrics = (() => {
+const metrics = (configSelectors => {
   class Utils {
     static addDays(dateString) {
       const referenceDate = new Date(dateString);
@@ -206,11 +206,11 @@ const metrics = (() => {
     constructor(jsonResponse, config) {
       this.jsonResponse = jsonResponse;
       this.config = config;
-      this.svg = d3.select('#graphic');
-      this.defaultSvg = d3.select('#graphicDefault');
-      this.tooltip = d3.select('#tooltip');
+      this.svg = d3.select(configSelectors.svgSelector);
+      this.defaultSvg = d3.select(configSelectors.defaultSvgSelector);
+      this.tooltip = d3.select(configSelectors.tooltipSelector);
 
-      if (!this.svg || !this.tooltip) {
+      if (!this.svg || !this.tooltip || !this.defaultSvg) {
         throw Error('Could not initialize component.');
       }
       this.margin = { top: 10, right: 10, bottom: 20, left: 40 };
@@ -250,11 +250,16 @@ const metrics = (() => {
       );
     }
 
+    _setNoResultsContent(svg) {
+      const { defaultSvg } = this;
+      svg.html(defaultSvg.html());
+    }
+
     render() {
-      const { height, margin, width, tooltip, svg, config, defaultSvg } = this;
+      const { height, margin, width, tooltip, svg, config } = this;
       svg.selectAll('*').remove();
       if (this.jsonResponse.entries.length === 0) {
-        svg.html(defaultSvg.html());
+        this._setNoResultsContent(svg);
         return;
       }
       const data = this.dataForStackedGraphic();
@@ -317,4 +322,8 @@ const metrics = (() => {
     render: renderMetrics,
     download: createCsv,
   };
-})();
+})({
+  svgSelector: '#graphic',
+  defaultSvgSelector: '#graphicDefault',
+  tooltipSelector: '#tooltip',
+});
