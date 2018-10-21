@@ -68,18 +68,19 @@ function givenLegoMessages(): LegoSelectMessage[] {
   ];
 }
 
+function metricsWithDailyFrequency(): Metrics {
+  let config: MetricsConfiguration = {
+    startDate: new Date('2018-10-10'),
+    endDate: new Date('2018-10-11'),
+    frequencyInDays: 1,
+  };
+
+  return LegoMetricsCalculator.calculate(givenLegoMessages(), config);
+}
+
 describe('LegoMetricsCalculator', () => {
   test('calculate', () => {
-    let config: MetricsConfiguration = {
-      startDate: new Date('2018-10-10'),
-      endDate: new Date('2018-10-11'),
-      frequencyInDays: 1,
-    };
-
-    const metrics: Metrics = LegoMetricsCalculator.calculate(
-      givenLegoMessages(),
-      config
-    );
+    const metrics = metricsWithDailyFrequency();
     expect(metrics).toMatchSnapshot();
   });
 
@@ -113,16 +114,7 @@ describe('LegoMetricsCalculator', () => {
   });
 
   test('metrics csv data', () => {
-    let config: MetricsConfiguration = {
-      startDate: new Date('2018-10-10'),
-      endDate: new Date('2018-10-11'),
-      frequencyInDays: 1,
-    };
-
-    const metrics: Metrics = LegoMetricsCalculator.calculate(
-      givenLegoMessages(),
-      config
-    );
+    const metrics = metricsWithDailyFrequency();
     expect(metrics.csvData()).toMatchSnapshot();
   });
 });

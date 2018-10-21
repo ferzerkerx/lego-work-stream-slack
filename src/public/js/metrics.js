@@ -277,6 +277,14 @@ const metrics = (configSelectors => {
     }
   }
 
+  const findForm = () => {
+    const form = document.forms[0];
+    if (!form) {
+      throw Error('Could not initialize component.');
+    }
+    return form;
+  };
+
   const metricRequest = () => {
     const form = findForm();
     const config = MetricsService.createConfiguration(form);
@@ -296,14 +304,6 @@ const metrics = (configSelectors => {
 
     const { config, url } = metricRequest();
     renderWithRequest(config, url);
-  };
-
-  const findForm = () => {
-    const form = document.forms[0];
-    if (!form) {
-      throw Error('Could not initialize component.');
-    }
-    return form;
   };
 
   const createCsv = () => {
