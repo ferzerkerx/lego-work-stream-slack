@@ -1,6 +1,10 @@
 import * as path from 'path';
 import * as Botkit from 'botkit';
-import { SlackConfiguration, SlackController, SlackSpawnConfiguration } from 'botkit';
+import {
+  SlackConfiguration,
+  SlackController,
+  SlackSpawnConfiguration,
+} from 'botkit';
 import * as fs from 'fs';
 import { Express } from 'express';
 

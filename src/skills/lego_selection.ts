@@ -1,5 +1,8 @@
 import { SlackBot, SlackController, SlackMessage } from 'botkit';
-import { LegoMessageConfig, LegoMessageFactory } from '../lego/LegoMessageFactory';
+import {
+  LegoMessageConfig,
+  LegoMessageFactory,
+} from '../lego/LegoMessageFactory';
 
 const legoSelectionHandler = (controller: SlackController): void => {
   controller.hears(
@@ -8,6 +11,7 @@ const legoSelectionHandler = (controller: SlackController): void => {
     (bot: SlackBot, originalMessage: SlackMessage) => {
       // @ts-ignore
       const storage: Storage<LegoMessageConfig> =
+        // @ts-ignore
         controller.storage.team_configurations;
 
       LegoMessageFactory.createMessage(
