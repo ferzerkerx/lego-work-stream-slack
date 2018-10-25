@@ -1,6 +1,6 @@
 import { SlackBot, SlackController, SlackMessage } from 'botkit';
 import {
-  LegoMessageConfig,
+  TeamChannelConfiguration,
   LegoMessageFactory,
 } from '../lego/LegoMessageFactory';
 
@@ -10,17 +10,18 @@ const legoSelectionHandler = (controller: SlackController): void => {
     'direct_mention',
     (bot: SlackBot, originalMessage: SlackMessage) => {
       // @ts-ignore
-      const storage: Storage<LegoMessageConfig> =
-        // @ts-ignore
-        controller.storage.team_configurations;
+      controller.storage.team_configurations
+        .find({ channelName: originalMessage.channel })
+        .then((configurations: TeamChannelConfiguration[]) => {
+          if (configurations && configurations.length > 0) {
+            const replyMessage = LegoMessageFactory.createMessage(
+              configurations[0],
+              new Date()
+            );
 
-      LegoMessageFactory.createMessage(
-        storage,
-        originalMessage.channel,
-        new Date()
-      ).then(replyMessage => {
-        bot.reply(originalMessage, replyMessage);
-      });
+            bot.reply(originalMessage, replyMessage);
+          }
+        });
     }
   );
 };

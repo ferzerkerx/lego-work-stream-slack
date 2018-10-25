@@ -1,9 +1,8 @@
-import { SlackMessage, Storage } from 'botkit';
+import { SlackMessage } from 'botkit';
 import { DateUtils } from '../utils/DateUtils';
-import { ErrorUtil } from '../utils/ErrorUtil';
 
 export class LegoMessageFactory {
-  static defaultConfiguration(): LegoMessageConfig {
+  static defaultConfiguration(): TeamChannelConfiguration {
     return {
       actionDescriptors: [
         { name: 'green', text: 'Green' },
@@ -17,46 +16,28 @@ export class LegoMessageFactory {
   }
 
   static createMessage(
-    storage: Storage<LegoMessageConfig>,
-    channelName: string,
+    config: TeamChannelConfiguration,
     date: Date = new Date()
-  ): Promise<SlackMessage> {
-    const conditions: any = [{ channelName: channelName }];
-
-    const query = {
-      $and: conditions,
+  ): SlackMessage {
+    return {
+      text: `Please select your legos for today: ${DateUtils.toPrettyDate(
+        date.toDateString()
+      )}`,
+      attachments: [
+        {
+          text: 'Choose your legos!',
+          fallback: 'Unable to set lego stats',
+          callback_id: 'lego_stats',
+          color: '#3AA3E3',
+          attachment_type: 'default',
+          actions: this._createActions(config),
+        },
+      ],
+      channel: config.channelName,
     };
-
-    // @ts-ignore
-    return storage.team_configurations
-      .find(query)
-      .then(storedConfig => {
-        let config: LegoMessageConfig =
-          storedConfig && storedConfig.length > 0
-            ? storedConfig[0]
-            : this.defaultConfiguration();
-
-        return {
-          text: `Please select your legos for today: ${DateUtils.toPrettyDate(
-            date.toDateString()
-          )}`,
-          attachments: [
-            {
-              text: 'Choose your legos!',
-              fallback: 'Unable to set lego stats',
-              callback_id: 'lego_stats',
-              color: '#3AA3E3',
-              attachment_type: 'default',
-              actions: this._createActions(config),
-              channelName: channelName,
-            },
-          ],
-        };
-      })
-      .catch(e => ErrorUtil.defaultErrorHandling(e));
   }
 
-  private static _createActions(config: LegoMessageConfig): Array<any> {
+  private static _createActions(config: TeamChannelConfiguration): Array<any> {
     let options: Array<any> = [];
     for (let i: number = config.min; i <= config.max; i++) {
       options.push({
@@ -82,7 +63,7 @@ export class LegoMessageFactory {
   }
 }
 
-export class LegoMessageConfig {
+export class TeamChannelConfiguration {
   actionDescriptors: LegoMessageActionDescriptor[] = [];
   channelName?: string;
   date?: Date = new Date();

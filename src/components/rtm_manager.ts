@@ -1,6 +1,14 @@
 import * as debug from 'debug';
-import { SlackBot, SlackController, SlackSpawnConfiguration } from 'botkit';
-import { LegoMessageFactory } from '../lego/LegoMessageFactory';
+import {
+  SlackBot,
+  SlackController,
+  SlackMessage,
+  SlackSpawnConfiguration,
+} from 'botkit';
+import {
+  TeamChannelConfiguration,
+  LegoMessageFactory,
+} from '../lego/LegoMessageFactory';
 import { ErrorUtil } from '../utils/ErrorUtil';
 
 const log = debug('botkit:rtm_manager');
@@ -21,14 +29,23 @@ function saveTeamIfNeeded(bot, controller: SlackController): void {
   });
 }
 
-function sendScheduleMessage(bot, controller) {
-  const channelName = 'CCYMFJ8E5'; //TODO get this from job
-  LegoMessageFactory.createMessage(controller.storage, channelName).then(
-    message => {
-      message.channel = channelName;
-      bot.say(message);
-    }
-  );
+function sendScheduleMessage(bot, controller): void {
+  controller.storage.team_configurations
+    .all()
+    .then((configurations: TeamChannelConfiguration[]) => {
+      if (configurations && configurations.length > 0) {
+        for (let configuration of configurations) {
+          if (configuration) {
+            //TODO check if configuration should be sent for this team against time in config
+            const message: SlackMessage = LegoMessageFactory.createMessage(
+              configuration,
+              new Date()
+            );
+            bot.say(message);
+          }
+        }
+      }
+    });
 }
 
 const MINUTE_IN_MILLIS = 1000 * 60;
@@ -51,7 +68,7 @@ const createRtmManager = (controller: SlackController): any => {
 
             setInterval(() => {
               sendScheduleMessage(bot, controller);
-            }, MINUTE_IN_MILLIS * 0.5); //TODO change this check?
+            }, MINUTE_IN_MILLIS * 15);
           }
         });
       }
