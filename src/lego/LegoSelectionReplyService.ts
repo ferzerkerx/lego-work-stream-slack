@@ -2,6 +2,7 @@ import { SlackAttachment, SlackMessage, Storage } from 'botkit';
 import { LegoSelectMessage } from './LegoSelectMessage';
 import { LegoSelectionService } from './LegoSelectionService';
 import { LegoSelectedValue } from './LegoSelectedValue';
+import { ErrorUtil } from '../utils/ErrorUtil';
 
 export class LegoSelectionReplyService {
   static createReply(
@@ -35,7 +36,7 @@ export class LegoSelectionReplyService {
           return this._createReply(message, legoMessage);
         });
       })
-      .catch(e => this.defaultErrorHandling(e));
+      .catch(e => ErrorUtil.defaultErrorHandling(e));
   }
 
   private static getMessageId(message): string {
@@ -89,9 +90,5 @@ export class LegoSelectionReplyService {
       }
     }
     return messageStr;
-  }
-
-  private static defaultErrorHandling(err: Error): void {
-    console.error(err);
   }
 }

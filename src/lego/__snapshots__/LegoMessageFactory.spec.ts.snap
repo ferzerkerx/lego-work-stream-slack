@@ -180,6 +180,7 @@ Object {
       ],
       "attachment_type": "default",
       "callback_id": "lego_stats",
+      "channelName": "someChannel",
       "color": "#3AA3E3",
       "fallback": "Unable to set lego stats",
       "text": "Choose your legos!",

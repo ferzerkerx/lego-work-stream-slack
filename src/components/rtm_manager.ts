@@ -1,5 +1,7 @@
 import * as debug from 'debug';
 import { SlackBot, SlackController, SlackSpawnConfiguration } from 'botkit';
+import { LegoMessageFactory } from '../lego/LegoMessageFactory';
+import { ErrorUtil } from '../utils/ErrorUtil';
 
 const log = debug('botkit:rtm_manager');
 
@@ -14,10 +16,22 @@ function saveTeamIfNeeded(bot, controller: SlackController): void {
   };
   controller.storage.teams.save(team, (err: Error) => {
     if (err) {
-      console.error(err);
+      ErrorUtil.defaultErrorHandling(err);
     }
   });
 }
+
+function sendScheduleMessage(bot, controller) {
+  const channelName = 'CCYMFJ8E5'; //TODO get this from job
+  LegoMessageFactory.createMessage(controller.storage, channelName).then(
+    message => {
+      message.channel = channelName;
+      bot.say(message);
+    }
+  );
+}
+
+const MINUTE_IN_MILLIS = 1000 * 60;
 
 const createRtmManager = (controller: SlackController): any => {
   const managed_bots = {};
@@ -34,6 +48,10 @@ const createRtmManager = (controller: SlackController): any => {
             managed_bots[bot.config.token] = bot.rtm;
             log('Start RTM: Success');
             saveTeamIfNeeded(bot, controller);
+
+            setInterval(() => {
+              sendScheduleMessage(bot, controller);
+            }, MINUTE_IN_MILLIS * 0.5); //TODO change this check?
           }
         });
       }

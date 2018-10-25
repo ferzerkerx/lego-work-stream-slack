@@ -1,10 +1,6 @@
 import * as path from 'path';
 import * as Botkit from 'botkit';
-import {
-  SlackConfiguration,
-  SlackController,
-  SlackSpawnConfiguration,
-} from 'botkit';
+import { SlackConfiguration, SlackController, SlackSpawnConfiguration } from 'botkit';
 import * as fs from 'fs';
 import { Express } from 'express';
 
@@ -25,7 +21,7 @@ function slackBotConfiguration(): SlackConfiguration {
     console.log('Using MongoDB as storage');
     botConfig.storage = require('botkit-storage-mongo')({
       mongoUri: process.env.MONGODB_URI,
-      tables: ['lego_messages'],
+      tables: ['lego_messages', 'team_configurations'],
     });
   } else {
     botConfig.json_file_store = __dirname + '/.data/db/';
