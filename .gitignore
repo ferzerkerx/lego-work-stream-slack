@@ -1,7 +1,6 @@
 .db
-node_modules
-components/routes/_*
+**/node_modules/*
 .sass-cache/*
 .idea/*
-dist/*
-coverage/*
+**/dist/*
+**/coverage/*

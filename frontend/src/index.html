@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
           integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
 
-    <link rel="stylesheet" type="text/css" href="css/metrics.css">
+    <link rel="stylesheet" type="text/css" href="app.css">
 
     <title>Workstream</title>
 </head>
@@ -61,9 +61,9 @@
                 </form>
             </li>
             <li class="nav-item">
-                <button class="btn btn-info btn-sm" onclick="metrics.render(event)"><i class="fas fa-lg fa-search"></i>
+                <button id="searchButton" class="btn btn-info btn-sm"><i class="fas fa-lg fa-search"></i>
                 </button>
-                <button class="btn btn-success btn-sm" onclick="metrics.download()"><i
+                <button id="downloadButton" class="btn btn-success btn-sm" ><i
                         class="fas fa-lg fa-file-download"></i>
                 </button>
             </li>
@@ -92,8 +92,5 @@
         <div class="text-muted">by ferzerkerx</div>
     </div>
 </footer>
-
-<script src="https://d3js.org/d3.v5.js"></script>
-<script src="js/metrics.js"></script>
 </body>
 </html>

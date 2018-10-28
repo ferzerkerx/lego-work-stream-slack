@@ -2,7 +2,6 @@
   "name": "lego-work-stream-slack",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "start": "node dist/",
     "compile": "tsc",
@@ -10,7 +9,7 @@
     "test": "jest --coverage",
     "tsc": "tsc",
     "prettier": "prettier --write \"src/**/*.[tj]s\"",
-    "postinstall": "yarn compile && copyfiles -f src/public/** dist/public && copyfiles -f src/public/js/** dist/public/js && copyfiles -f src/public/css/** dist/public/css"
+    "postinstall": "yarn compile"
   },
   "prettier": {
     "singleQuote": true,
@@ -33,7 +32,6 @@
     "@types/express": "^4.16.0",
     "@types/jest": "^23.3.3",
     "@types/node": "7.0.22",
-    "copyfiles": "^2.1.0",
     "jest": "^23.6.0",
     "nodemon": "1.11.0",
     "prettier": "^1.14.3",
