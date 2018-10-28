@@ -3,12 +3,10 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "install": "(cd backend && yarn install) && (cd frontend && yarn install)",
+    "install": "(cd backend && yarn install && yarn compile) && (cd frontend && yarn install)",
     "build": "(cd backend && yarn compile) && (cd frontend && yarn build) && copyfiles -f frontend/dist/* backend/dist/public",
     "test": "(cd backend && yarn test)",
-    "start": "(cd backend && yarn start)",
-    "tsc" : "(cd backend && yarn tsc)",
-    "postinstall": "yarn build"
+    "start": "(cd backend && yarn start)"
   },
   "dependencies": {},
   "author": "ferzerkerx",
