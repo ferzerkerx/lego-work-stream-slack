@@ -7,7 +7,7 @@
     "build": "(cd backend && yarn compile) && (cd frontend && yarn build) && copyfiles -f frontend/dist/* backend/dist/public",
     "test": "(cd backend && yarn test)",
     "start": "(cd backend && yarn start)",
-    "postinstall": "npm compile --prefix backend"
+    "postinstall": "npm run compile --prefix backend"
   },
   "dependencies": {},
   "author": "ferzerkerx",
