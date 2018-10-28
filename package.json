@@ -6,7 +6,8 @@
     "install": "(cd backend && yarn install && yarn compile) && (cd frontend && yarn install)",
     "build": "(cd backend && yarn compile) && (cd frontend && yarn build) && copyfiles -f frontend/dist/* backend/dist/public",
     "test": "(cd backend && yarn test)",
-    "start": "(cd backend && yarn start)"
+    "start": "(cd backend && yarn start)",
+    "postinstall": "yarn build --prefix backend"
   },
   "dependencies": {},
   "author": "ferzerkerx",
