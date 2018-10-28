@@ -16,12 +16,12 @@ cache:
   - "frontend/node_modules"
 
 install:
-- "yarn install"
+- "bash install.sh"
 - "npm install -g snyk"
 
 script:
-- "bash install"
+- "bash build.sh"
 - "sonar-scanner"
 
 after_success:
-- "snyk monitor"
+- "bash after.sh"
