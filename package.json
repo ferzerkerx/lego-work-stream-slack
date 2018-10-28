@@ -13,5 +13,9 @@
   "license": "MIT",
   "devDependencies": {
     "copyfiles": "^2.1.0"
+  },
+  "engines": {
+    "node": "8.12.0",
+    "yarn": "1.3.2"
   }
 }
