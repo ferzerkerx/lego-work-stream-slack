@@ -1,6 +1,6 @@
 FROM node:8.12.0-alpine
 
-EXPOSE 3000
+EXPOSE $PORT
 
 RUN apk add --no-cache --update bash
 
