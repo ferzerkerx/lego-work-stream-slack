@@ -8,7 +8,8 @@
     "dev": "tsc & nodemon dist",
     "test": "jest --coverage",
     "tsc": "tsc",
-    "prettier": "prettier --write \"src/**/*.[tj]s\""
+    "prettier": "prettier --write \"src/**/*.[tj]s\"",
+    "postinstall": "yarn compile"
   },
   "prettier": {
     "singleQuote": true,
