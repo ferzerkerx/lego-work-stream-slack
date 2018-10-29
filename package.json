@@ -6,19 +6,13 @@
     "install": "(cd backend && yarn install) && (cd frontend && yarn install)",
     "build": "(cd backend && yarn compile) && (cd frontend && yarn build) && copyfiles -f frontend/dist/* backend/dist/public",
     "test": "(cd backend && yarn test)",
-    "start": "(cd backend && yarn start)",
-    "tsc":"tsc"
+    "start": "(cd backend && yarn start)"
   },
   "dependencies": {},
   "author": "ferzerkerx",
   "license": "MIT",
   "devDependencies": {
-    "copyfiles": "^2.1.0",
-    "typescript": "^3.1.1",
-    "@types/dotenv": "^4.0.3",
-    "@types/express": "^4.16.0",
-    "@types/jest": "^23.3.3",
-    "@types/node": "7.0.22"
+    "copyfiles": "^2.1.0"
   },
   "engines": {
     "node": "^8.9.0",
