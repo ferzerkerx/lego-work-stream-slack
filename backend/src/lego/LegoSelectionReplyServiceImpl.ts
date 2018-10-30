@@ -1,19 +1,23 @@
-import { SlackAttachment, SlackMessage, Storage } from 'botkit';
+import { SlackAttachment, SlackMessage } from 'botkit';
 import { LegoSelectMessage } from './LegoSelectMessage';
 import { LegoSelectionService } from './LegoSelectionService';
 import { LegoSelectedValue } from './LegoSelectedValue';
 import { ErrorUtil } from '../utils/ErrorUtil';
+import { LegoSelectionReplyService, LegoSelectMessageRepository } from './Types';
 
-export class LegoSelectionReplyService {
-  static createReply(
-    message,
-    storage: Storage<LegoSelectMessage>
-  ): Promise<SlackMessage> {
-    let fullMessageId: string = this.getMessageId(message);
+export class LegoSelectionReplyServiceImpl
+  implements LegoSelectionReplyService {
+  constructor(
+    private legoSelectMessageRepository: LegoSelectMessageRepository
+  ) {}
 
-    // @ts-ignore
-    return storage.lego_messages
-      .get(fullMessageId)
+  createReply(message): Promise<SlackMessage | void> {
+    let fullMessageId: string = LegoSelectionReplyServiceImpl.getMessageId(
+      message
+    );
+
+    return this.legoSelectMessageRepository
+      .find(fullMessageId)
       .then((storedLegoMessage: LegoSelectMessage) => {
         const legoMessage = LegoSelectionService.createLegoSelectMessage({
           legoMessage: storedLegoMessage,
@@ -31,9 +35,11 @@ export class LegoSelectionReplyService {
           },
         });
 
-        // @ts-ignore
-        return storage.lego_messages.save(legoMessage).then(() => {
-          return this._createReply(message, legoMessage);
+        return this.legoSelectMessageRepository.save(legoMessage).then(() => {
+          return LegoSelectionReplyServiceImpl._createReply(
+            message,
+            legoMessage
+          );
         });
       })
       .catch(e => ErrorUtil.defaultErrorHandling(e));

@@ -1,17 +1,13 @@
 import * as path from 'path';
 import * as Botkit from 'botkit';
-import {
-  SlackConfiguration,
-  SlackController,
-  SlackSpawnConfiguration,
-  Storage,
-} from 'botkit';
+import { SlackConfiguration, SlackController, SlackSpawnConfiguration, Storage } from 'botkit';
 import * as fs from 'fs';
 import { Express } from 'express';
 import { BotkitLegoSelectMessageRepository } from './lego/metrics/BotkitLegoSelectMessageRepository';
 import { LegoSelectMessage } from './lego/LegoSelectMessage';
 import { Container } from './Container';
-import { LegoMetricsService } from './lego/metrics/LegoMetricsService';
+import { LegoMetricsServiceImpl } from './lego/metrics/LegoMetricsService';
+import { LegoSelectionReplyServiceImpl } from './lego/LegoSelectionReplyServiceImpl';
 
 if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
   process.exit(1);
@@ -67,7 +63,11 @@ function configureDependencies() {
   );
   Container.register(
     'legoMetricsService',
-    new LegoMetricsService(botkitLegoSelectMessageRepository)
+    new LegoMetricsServiceImpl(botkitLegoSelectMessageRepository)
+  );
+  Container.register(
+    'legoSelectionReplyService',
+    new LegoSelectionReplyServiceImpl(botkitLegoSelectMessageRepository)
   );
 }
 

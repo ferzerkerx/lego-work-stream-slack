@@ -22,9 +22,21 @@ export class BotkitLegoSelectMessageRepository
       $and: conditions,
     };
 
-    // @ts-ignore
-    return this.storage.lego_messages
+    return this.table()
       .find(query)
       .catch(e => ErrorUtil.defaultErrorHandling(e));
+  }
+
+  find(messageId: string): Promise<LegoSelectMessage> {
+    return this.table().get(messageId);
+  }
+
+  save(legoMessage: LegoSelectMessage): Promise<LegoSelectMessage> {
+    return this.table().save(legoMessage);
+  }
+
+  private table() {
+    // @ts-ignore
+    return this.storage.lego_messages;
   }
 }

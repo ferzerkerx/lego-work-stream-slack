@@ -1,5 +1,5 @@
-import { LegoSelectionReplyService } from './LegoSelectionReplyService';
 import { LegoSelectedValue } from './LegoSelectedValue';
+import { LegoSelectionReplyServiceImpl } from './LegoSelectionReplyServiceImpl';
 
 describe('LegoSelectionReplyService', () => {
   test('formatMessage properly', () => {
@@ -38,7 +38,7 @@ describe('LegoSelectionReplyService', () => {
       awesomeActionName: { text: 'CoolName' },
     };
 
-    const legoSelectMessage: string = LegoSelectionReplyService.formatSelectedValues(
+    const legoSelectMessage: string = LegoSelectionReplyServiceImpl.formatSelectedValues(
       selectedValues,
       actionMappings
     );
