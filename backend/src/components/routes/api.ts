@@ -1,10 +1,10 @@
 import { Express, Request, Response } from 'express';
 import { SlackController } from 'botkit';
-import { DateUtils } from '../../utils/DateUtils';
 import { Metrics } from '../../lego/metrics/Metrics';
 import { CsvUtils } from '../../utils/CsvUtils';
 import { Container } from '../../Container';
 import { LegoMetricsService } from '../../lego/Types';
+import { MetricsConfigurationFactory } from '../../lego/metrics/MetricsConfigurationFactory';
 
 function getLegoMetricsService(): LegoMetricsService {
   return Container.resolve<LegoMetricsService>('legoMetricsService');
@@ -29,68 +29,5 @@ const api = (webserver: Express, controller: SlackController): void => {
       });
   });
 };
-
-class MetricsConfigurationFactory {
-  static of(req: Request): MetricsConfiguration {
-    const starDate: Date = this.dateParam(req, 'startDate') || DateUtils.now();
-    const endDate: Date =
-      this.dateParam(req, 'endDate') || DateUtils.add(starDate, 1);
-    const frequencyInDays: number = this.numberParam(req, 'frequency') || 15;
-    const isPercentage: boolean =
-      this.booleanParam(req, 'isPercentage') || false;
-    const teams: string[] = this.arrayParam(req, 'teams') || [];
-    const format: string = this.stringParam(req, 'format') || 'json';
-
-    return {
-      startDate: starDate,
-      endDate: endDate,
-      frequencyInDays: frequencyInDays,
-      isPercentage: isPercentage,
-      teams: teams,
-      format: format,
-    };
-  }
-
-  static dateParam(req: Request, paramName: string) {
-    const paramValue: string = req.query[paramName];
-    if (!paramValue) {
-      return null;
-    }
-    return DateUtils.parseDate(paramValue);
-  }
-
-  static numberParam(req: Request, paramName: string) {
-    const paramValue: string = req.query[paramName];
-    if (!paramValue) {
-      return null;
-    }
-    const result = Number(req.query[paramName]);
-    if (isNaN(result)) {
-      return null;
-    }
-    return result;
-  }
-
-  static stringParam(req: Request, paramName: string) {
-    const paramValue: string = req.query[paramName];
-    if (!paramValue || paramValue === '') {
-      return null;
-    }
-    return paramValue;
-  }
-
-  static booleanParam(req: Request, paramName: string) {
-    const paramValue: string = req.query[paramName];
-    return paramValue == 'true';
-  }
-
-  static arrayParam(req: Request, paramName: string) {
-    const paramValue: string = req.query[paramName];
-    if (!paramValue || paramValue.length == 0) {
-      return null;
-    }
-    return paramValue.split(',');
-  }
-}
 
 module.exports = api;
