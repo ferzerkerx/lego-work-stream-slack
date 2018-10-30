@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Utils addDays 1`] = `2018-10-01T22:00:00.000Z`;
+
+exports[`Utils toArray 1`] = `
+Array [
+  "1",
+  "2",
+  "3",
+]
+`;
+
+exports[`Utils toDateString 1`] = `"2018-10-01"`;
+
+exports[`Utils toNumber 1`] = `2`;

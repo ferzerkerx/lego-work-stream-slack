@@ -5,7 +5,7 @@
   "scripts": {
     "install": "(cd backend && yarn install) && (cd frontend && yarn install)",
     "build": "(cd backend && yarn compile) && (cd frontend && yarn build) && copyfiles -f frontend/dist/* backend/dist/public",
-    "test": "(cd backend && yarn test)",
+    "test": "(cd backend && yarn test) && (cd frontend && yarn test)",
     "start": "(cd backend && yarn start)",
     "prettier": "(cd backend && yarn prettier) && (cd frontend && yarn prettier)"
   },
