@@ -1,6 +1,6 @@
 import { Request } from 'express';
-import { DateUtils } from './utils/DateUtils';
-import { RequestUtils } from './utils/RequestUtils';
+import { RequestUtils } from '../../utils/RequestUtils';
+import { DateUtils } from '../../utils/DateUtils';
 
 export class MetricsConfigurationFactory {
   static of(req: Request): MetricsConfiguration {
