@@ -1,5 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`LegoSelectionReplyService createReply 1`] = `
+Object {
+  "attachments": Array [
+    Object {
+      "actions": Array [
+        Object {
+          "name": "someActionName",
+          "text": "someActionText",
+        },
+      ],
+      "callback_id": "lego_stats",
+    },
+    Object {
+      "text": "someActionText: <@someUserId>:8
+",
+    },
+  ],
+  "ts": 12345,
+}
+`;
+
 exports[`LegoSelectionReplyService formatMessage properly 1`] = `
 "theActualName: <@someuserId>:8
 someOtherActionName: <@someuserId>:6
