@@ -4,15 +4,15 @@ import { LegoMetricsService } from '../../lego/metrics/LegoMetricsService';
 import { DateUtils } from '../../utils/DateUtils';
 import { Metrics } from '../../lego/metrics/Metrics';
 import { CsvUtils } from '../../utils/CsvUtils';
+import { Container } from '../../Container';
 
 const api = (webserver: Express, controller: SlackController): void => {
   webserver.get('/api/metrics', (req: Request, res: Response) => {
     const config: MetricsConfiguration = MetricsConfigurationFactory.of(req);
-    LegoMetricsService.metricsForConfig(
-      // @ts-ignore
-      controller.storage,
-      config
-    ).then((entry: Metrics) => {
+    const legoMetricsService: LegoMetricsService = Container.resolve<
+      LegoMetricsService
+    >('legoMetricsService');
+    legoMetricsService.metricsForConfig(config).then((entry: Metrics) => {
       if (config.format === 'csv') {
         res.setHeader('Content-Type', 'text/csv');
         res.setHeader(

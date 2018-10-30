@@ -4,9 +4,14 @@ import {
   SlackConfiguration,
   SlackController,
   SlackSpawnConfiguration,
+  Storage,
 } from 'botkit';
 import * as fs from 'fs';
 import { Express } from 'express';
+import { BotkitLegoSelectMessageRepository } from './lego/metrics/BotkitLegoSelectMessageRepository';
+import { LegoSelectMessage } from './lego/LegoSelectMessage';
+import { Container } from './Container';
+import { LegoMetricsService } from './lego/metrics/LegoMetricsService';
 
 if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
   process.exit(1);
@@ -49,6 +54,23 @@ controller.startTicking();
 
 controller.createWebhookEndpoints(webserver);
 
+function configureDependencies() {
+  // @ts-ignore
+  const storage: Storage<LegoSelectMessage> = controller.storage;
+
+  const botkitLegoSelectMessageRepository = new BotkitLegoSelectMessageRepository(
+    storage
+  );
+  Container.register(
+    'legoSelectMessageRepository',
+    botkitLegoSelectMessageRepository
+  );
+  Container.register(
+    'legoMetricsService',
+    new LegoMetricsService(botkitLegoSelectMessageRepository)
+  );
+}
+
 if (!process.env.clientId || !process.env.clientSecret) {
   webserver.get('/', (req, res) => {
     res.send('active');
@@ -70,4 +92,6 @@ if (!process.env.clientId || !process.env.clientSecret) {
 
   // @ts-ignore
   controller.trigger('rtm:start', [spawnConfig]);
+
+  configureDependencies();
 }

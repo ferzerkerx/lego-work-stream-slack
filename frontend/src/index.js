@@ -1,4 +1,4 @@
-import { MetricsApplication } from './MetricsApplication';
+import { MetricsApplication } from './application/MetricsApplication';
 
 const metricsApplication = new MetricsApplication({
   svgSelector: '#graphic',
