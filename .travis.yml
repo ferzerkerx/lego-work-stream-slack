@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- "lts/v8.9.0"
+- "lts/Carbon"
 
 addons:
   sonarcloud:
