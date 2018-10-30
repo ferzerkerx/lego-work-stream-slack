@@ -9,7 +9,7 @@
     "start": "webpack-dev-server --open --mode=development",
     "webpack": "webpack --mode=development",
     "prettier": "prettier --single-quote --write './src/**/*.js'",
-    "test": "NODE_ENV=testing jest"
+    "test": "NODE_ENV=testing jest --coverage"
   },
   "prettier": {
     "singleQuote": true,
