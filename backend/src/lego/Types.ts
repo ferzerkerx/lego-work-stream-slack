@@ -1,6 +1,15 @@
 import { LegoSelectMessage } from './LegoSelectMessage';
 import { Metrics } from './metrics/Metrics';
 import { SlackMessage } from 'botkit';
+import { TeamChannelConfiguration } from './LegoMessageFactory';
+
+export interface TeamChannelConfigurationRepository {
+  find(channelName: string): Promise<TeamChannelConfiguration>;
+
+  save(
+    teamConfiguration: TeamChannelConfiguration
+  ): Promise<TeamChannelConfiguration>;
+}
 
 export interface LegoSelectMessageRepository {
   findMessagesBy(config: MetricsConfiguration): Promise<LegoSelectMessage[]>;

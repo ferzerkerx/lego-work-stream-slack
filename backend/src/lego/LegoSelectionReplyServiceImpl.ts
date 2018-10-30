@@ -3,7 +3,10 @@ import { LegoSelectMessage } from './LegoSelectMessage';
 import { LegoSelectionService } from './LegoSelectionService';
 import { LegoSelectedValue } from './LegoSelectedValue';
 import { ErrorUtil } from '../utils/ErrorUtil';
-import { LegoSelectionReplyService, LegoSelectMessageRepository } from './Types';
+import {
+  LegoSelectionReplyService,
+  LegoSelectMessageRepository,
+} from './Types';
 
 export class LegoSelectionReplyServiceImpl
   implements LegoSelectionReplyService {

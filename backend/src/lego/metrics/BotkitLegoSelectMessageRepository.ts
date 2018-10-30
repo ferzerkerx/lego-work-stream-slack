@@ -22,21 +22,20 @@ export class BotkitLegoSelectMessageRepository
       $and: conditions,
     };
 
-    return this.table()
+    return this.wrapped()
       .find(query)
       .catch(e => ErrorUtil.defaultErrorHandling(e));
   }
 
-  find(messageId: string): Promise<LegoSelectMessage> {
-    return this.table().get(messageId);
+  public find(messageId: string): Promise<LegoSelectMessage> {
+    return this.wrapped().get(messageId);
   }
 
-  save(legoMessage: LegoSelectMessage): Promise<LegoSelectMessage> {
-    return this.table().save(legoMessage);
+  public save(legoMessage: LegoSelectMessage): Promise<LegoSelectMessage> {
+    return this.wrapped().save(legoMessage);
   }
 
-  private table() {
-    // @ts-ignore
-    return this.storage.lego_messages;
+  private wrapped(): any {
+    return this.storage;
   }
 }

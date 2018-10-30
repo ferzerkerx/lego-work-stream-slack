@@ -1,13 +1,17 @@
 import * as path from 'path';
 import * as Botkit from 'botkit';
-import { SlackConfiguration, SlackController, SlackSpawnConfiguration, Storage } from 'botkit';
+import {
+  SlackConfiguration,
+  SlackController,
+  SlackSpawnConfiguration,
+} from 'botkit';
 import * as fs from 'fs';
 import { Express } from 'express';
 import { BotkitLegoSelectMessageRepository } from './lego/metrics/BotkitLegoSelectMessageRepository';
-import { LegoSelectMessage } from './lego/LegoSelectMessage';
 import { Container } from './Container';
 import { LegoMetricsServiceImpl } from './lego/metrics/LegoMetricsService';
 import { LegoSelectionReplyServiceImpl } from './lego/LegoSelectionReplyServiceImpl';
+import { BotkitTeamChannelConfigurationRepository } from './lego/BotkitTeamChannelConfigurationRepository';
 
 if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
   process.exit(1);
@@ -51,12 +55,12 @@ controller.startTicking();
 controller.createWebhookEndpoints(webserver);
 
 function configureDependencies() {
-  // @ts-ignore
-  const storage: Storage<LegoSelectMessage> = controller.storage;
+  const storage: any = controller.storage;
 
   const botkitLegoSelectMessageRepository = new BotkitLegoSelectMessageRepository(
-    storage
+    storage.lego_messages
   );
+
   Container.register(
     'legoSelectMessageRepository',
     botkitLegoSelectMessageRepository
@@ -68,6 +72,15 @@ function configureDependencies() {
   Container.register(
     'legoSelectionReplyService',
     new LegoSelectionReplyServiceImpl(botkitLegoSelectMessageRepository)
+  );
+
+  const botkitTeamChannelConfigurationRepository = new BotkitTeamChannelConfigurationRepository(
+    storage.team_configurations
+  );
+
+  Container.register(
+    'teamChannelConfigurationRepository',
+    botkitTeamChannelConfigurationRepository
   );
 }
 

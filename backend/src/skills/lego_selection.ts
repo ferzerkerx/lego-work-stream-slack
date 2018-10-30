@@ -1,24 +1,30 @@
 import { SlackBot, SlackController, SlackMessage } from 'botkit';
 import {
-  TeamChannelConfiguration,
   LegoMessageFactory,
+  TeamChannelConfiguration,
 } from '../lego/LegoMessageFactory';
+import { Container } from '../Container';
+import { TeamChannelConfigurationRepository } from '../lego/Types';
+
+function getTeamChannelConfigurationRepository() {
+  return Container.resolve<TeamChannelConfigurationRepository>(
+    'teamChannelConfigurationRepository'
+  );
+}
 
 const legoSelectionHandler = (controller: SlackController): void => {
   controller.hears(
     'lego',
     'direct_mention',
     (bot: SlackBot, originalMessage: SlackMessage) => {
-      // @ts-ignore
-      controller.storage.team_configurations
-        .find({ channelName: originalMessage.channel })
-        .then((configurations: TeamChannelConfiguration[]) => {
-          if (configurations && configurations.length > 0) {
+      getTeamChannelConfigurationRepository()
+        .find(originalMessage.channel)
+        .then((configuration: TeamChannelConfiguration) => {
+          if (configuration) {
             const replyMessage = LegoMessageFactory.createMessage(
-              configurations[0],
+              configuration,
               new Date()
             );
-
             bot.reply(originalMessage, replyMessage);
           }
         });
