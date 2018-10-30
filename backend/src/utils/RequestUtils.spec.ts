@@ -64,4 +64,18 @@ describe('RequestUtils', () => {
     const value = RequestUtils.arrayParam(req, 'someOtherName');
     expect(value).toBeNull();
   });
+
+  test('booleanParam', () => {
+    const paramName = 'booleanParam';
+    const req = fakeRequest(paramName, 'true');
+    const value = RequestUtils.arrayParam(req, paramName);
+    expect(value).toMatchSnapshot();
+  });
+
+  test('invalid booleanParam', () => {
+    const paramName = 'booleanParam';
+    const req = fakeRequest(paramName, 'someValue');
+    const value = RequestUtils.arrayParam(req, 'someOtherName');
+    expect(value).toBeFalsy();
+  });
 });
