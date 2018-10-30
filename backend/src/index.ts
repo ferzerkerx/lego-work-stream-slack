@@ -14,6 +14,7 @@ import { LegoSelectionReplyServiceImpl } from './lego/LegoSelectionReplyServiceI
 import { BotkitTeamChannelConfigurationRepository } from './lego/BotkitTeamChannelConfigurationRepository';
 
 if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
+  console.error('missing environment variables');
   process.exit(1);
 }
 
@@ -38,23 +39,7 @@ function slackBotConfiguration(): SlackConfiguration {
   return botConfig;
 }
 
-const spawnConfig: SlackSpawnConfiguration = {
-  token: process.env.API_TOKEN,
-};
-
-const botConfig: SlackConfiguration = slackBotConfiguration();
-
-const controller: SlackController = Botkit.slackbot(botConfig);
-
-const webserver: Express = require(`${__dirname}/components/express_webserver.js`)(
-  controller
-);
-
-controller.startTicking();
-
-controller.createWebhookEndpoints(webserver);
-
-function configureDependencies() {
+function configureDependencies(controller) {
   const storage: any = controller.storage;
 
   const botkitLegoSelectMessageRepository = new BotkitLegoSelectMessageRepository(
@@ -84,14 +69,23 @@ function configureDependencies() {
   );
 }
 
-if (!process.env.clientId || !process.env.clientSecret) {
-  webserver.get('/', (req, res) => {
-    res.send('active');
-  });
-  console.log(
-    'WARNING: This application is not fully configured to work with Slack'
+function startApplication() {
+  const spawnConfig: SlackSpawnConfiguration = {
+    token: process.env.API_TOKEN,
+  };
+
+  const botConfig: SlackConfiguration = slackBotConfiguration();
+
+  const controller: SlackController = Botkit.slackbot(botConfig);
+
+  const webserver: Express = require(`${__dirname}/components/express_webserver.js`)(
+    controller
   );
-} else {
+
+  controller.startTicking();
+
+  controller.createWebhookEndpoints(webserver);
+
   webserver.get('/', (req, res) => {
     res.send('active');
   });
@@ -106,5 +100,7 @@ if (!process.env.clientId || !process.env.clientSecret) {
   // @ts-ignore
   controller.trigger('rtm:start', [spawnConfig]);
 
-  configureDependencies();
+  configureDependencies(controller);
 }
+
+startApplication();

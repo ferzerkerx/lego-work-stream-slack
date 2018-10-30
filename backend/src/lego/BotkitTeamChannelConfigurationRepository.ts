@@ -7,12 +7,14 @@ export class BotkitTeamChannelConfigurationRepository
   constructor(private storage: Storage<TeamChannelConfiguration>) {}
 
   public find(channelName: string): Promise<TeamChannelConfiguration> {
-    return this.wrapped().find({ channelName: channelName }).then(configurations => {
-      if (configurations && configurations.length > 0) {
-        return configurations[0];
-      }
-      return null;
-    });
+    return this.wrapped()
+      .find({ channelName: channelName })
+      .then(configurations => {
+        if (configurations && configurations.length > 0) {
+          return configurations[0];
+        }
+        return null;
+      });
   }
 
   save(
