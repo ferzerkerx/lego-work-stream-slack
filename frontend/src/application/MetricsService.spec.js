@@ -11,7 +11,6 @@ const fakeForm = () => {
 };
 
 describe('MetricsService', () => {
-
   test('createConfiguration', () => {
     const configuration = MetricsService.createConfiguration(fakeForm());
     expect(configuration).toMatchSnapshot();
@@ -19,9 +18,8 @@ describe('MetricsService', () => {
 
   test('createUrl', () => {
     const configuration = MetricsService.createConfiguration(fakeForm());
-    configuration.format = 'json'
+    configuration.format = 'json';
     const url = MetricsService.createUrl(configuration);
     expect(url).toMatchSnapshot();
   });
-
 });

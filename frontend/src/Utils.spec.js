@@ -1,7 +1,6 @@
 import { Utils } from './application/Utils';
 
 describe('Utils', () => {
-
   test('toNumber', () => {
     const value = Utils.toNumber('02');
     expect(value).toMatchSnapshot();
