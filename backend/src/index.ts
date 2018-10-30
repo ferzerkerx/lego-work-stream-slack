@@ -12,6 +12,7 @@ import { Container } from './Container';
 import { LegoMetricsServiceImpl } from './lego/metrics/LegoMetricsService';
 import { LegoSelectionReplyServiceImpl } from './lego/LegoSelectionReplyServiceImpl';
 import { BotkitTeamChannelConfigurationRepository } from './lego/BotkitTeamChannelConfigurationRepository';
+import { LegoSchedulerImpl } from './lego/LegoScheduler';
 
 if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
   console.error('missing environment variables');
@@ -66,6 +67,11 @@ function configureDependencies(controller) {
   Container.register(
     'teamChannelConfigurationRepository',
     botkitTeamChannelConfigurationRepository
+  );
+
+  Container.register(
+    'legoScheduler',
+    new LegoSchedulerImpl(botkitTeamChannelConfigurationRepository)
   );
 }
 

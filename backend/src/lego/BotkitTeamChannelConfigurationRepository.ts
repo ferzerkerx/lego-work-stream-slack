@@ -23,6 +23,10 @@ export class BotkitTeamChannelConfigurationRepository
     return this.wrapped().save(teamConfiguration);
   }
 
+  findAll(): Promise<TeamChannelConfiguration[]> {
+    return this.wrapped().all();
+  }
+
   private wrapped(): any {
     return this.storage;
   }
