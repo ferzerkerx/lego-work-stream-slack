@@ -2,7 +2,7 @@ import { Request } from 'express';
 import { DateUtils } from './DateUtils';
 
 export class RequestUtils {
-  static dateParam(req: Request, paramName: string) {
+  static dateParam(req: Request, paramName: string): Date {
     const paramValue: string = req.query[paramName];
     if (!paramValue) {
       return null;
@@ -10,7 +10,7 @@ export class RequestUtils {
     return DateUtils.parseDate(paramValue);
   }
 
-  static numberParam(req: Request, paramName: string) {
+  static numberParam(req: Request, paramName: string): number {
     const paramValue: string = req.query[paramName];
     if (!paramValue) {
       return null;
@@ -22,7 +22,7 @@ export class RequestUtils {
     return result;
   }
 
-  static stringParam(req: Request, paramName: string) {
+  static stringParam(req: Request, paramName: string): string {
     const paramValue: string = req.query[paramName];
     if (!paramValue || paramValue === '') {
       return null;
@@ -30,12 +30,12 @@ export class RequestUtils {
     return paramValue;
   }
 
-  static booleanParam(req: Request, paramName: string) {
+  static booleanParam(req: Request, paramName: string): boolean {
     const paramValue: string = req.query[paramName];
     return paramValue == 'true';
   }
 
-  static arrayParam(req: Request, paramName: string) {
+  static arrayParam(req: Request, paramName: string): Array<string> {
     const paramValue: string = req.query[paramName];
     if (!paramValue || paramValue.length == 0) {
       return null;

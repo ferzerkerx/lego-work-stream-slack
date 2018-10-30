@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RequestUtils arrayParam 1`] = `
+Array [
+  "value1",
+  " value2",
+]
+`;
+
+exports[`RequestUtils dateParam 1`] = `2018-10-10T00:00:00.000Z`;
+
+exports[`RequestUtils numberParam 1`] = `2`;
+
+exports[`RequestUtils stringParam 1`] = `"someValue"`;
