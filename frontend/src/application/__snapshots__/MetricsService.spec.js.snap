@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MetricsService createConfiguration 1`] = `
+Object {
+  "endDate": "2018-10-01",
+  "frequency": 10,
+  "isPercentage": true,
+  "startDate": "2018-10-01",
+  "teams": Array [
+    "team1",
+    "team2",
+  ],
+}
+`;
+
+exports[`MetricsService createUrl 1`] = `"/api/metrics?startDate=2018-10-01&endDate=2018-10-01&frequency=10&isPercentage=true&teams=team1,team2&format=json"`;
