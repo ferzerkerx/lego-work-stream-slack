@@ -7,11 +7,7 @@ Array [
 ]
 `;
 
-exports[`RequestUtils booleanParam 1`] = `
-Array [
-  "true",
-]
-`;
+exports[`RequestUtils booleanParam 1`] = `true`;
 
 exports[`RequestUtils dateParam 1`] = `2018-10-10T00:00:00.000Z`;
 
