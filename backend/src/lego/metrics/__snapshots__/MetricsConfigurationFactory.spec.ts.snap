@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LegoMetricsCalculator calculate with periods 1`] = `
+Object {
+  "endDate": 2018-10-12T00:00:00.000Z,
+  "format": "csv",
+  "frequencyInDays": 15,
+  "isPercentage": false,
+  "startDate": 2018-10-08T00:00:00.000Z,
+  "teams": Array [
+    "team1",
+    "team2",
+  ],
+}
+`;
