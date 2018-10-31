@@ -21,6 +21,7 @@
     "botkit": "^0.6.15",
     "botkit-storage-mongo": "^1.0.7",
     "cookie-parser": "^1.4.3",
+    "cron-parser": "^2.6.0",
     "debug": "^2.3.3",
     "express": "^4.14.0",
     "node-env-file": "^0.1.8",

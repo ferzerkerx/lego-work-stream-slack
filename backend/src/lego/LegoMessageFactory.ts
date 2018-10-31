@@ -69,6 +69,7 @@ export class TeamChannelConfiguration {
   date?: Date = new Date();
   min?: number = 0;
   max?: number = 8;
+  cronExpression?: string;
 }
 
 export class LegoMessageActionDescriptor {

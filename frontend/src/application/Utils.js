@@ -1,7 +1,7 @@
 class Utils {
   static addDays(dateString) {
     const referenceDate = new Date(dateString);
-    const date = new Date(new Date().setDate(referenceDate.getDate() + 1));
+    const date = new Date(new Date().setUTCDate(referenceDate.getUTCDate() + 1));
     date.setUTCHours(0);
     date.setUTCMinutes(0);
     date.setUTCSeconds(0);

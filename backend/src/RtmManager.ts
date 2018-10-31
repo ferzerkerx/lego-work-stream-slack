@@ -1,6 +1,6 @@
 import * as debug from 'debug';
 
-const log = debug('botkit:rtm_manager');
+const log = debug('RtmManager');
 
 export class RtmManager {
   private managed_bots: any = {};

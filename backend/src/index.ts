@@ -12,7 +12,7 @@ import { Container } from './Container';
 import { LegoMetricsServiceImpl } from './lego/metrics/LegoMetricsService';
 import { LegoSelectionReplyServiceImpl } from './lego/LegoSelectionReplyServiceImpl';
 import { BotkitTeamChannelConfigurationRepository } from './lego/BotkitTeamChannelConfigurationRepository';
-import { LegoSchedulerImpl } from './lego/LegoScheduler';
+import { LegoSchedulerImpl } from './lego/LegoSchedulerImpl';
 
 if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
   console.error('missing environment variables');
@@ -96,7 +96,7 @@ function startApplication() {
     res.send('active');
   });
 
-  require(`${__dirname}/components/rtm_manager.js`)(controller);
+  require(`${__dirname}/components/rtm_manager_factory.js`)(controller);
 
   const normalizedPath = path.join(__dirname, 'skills');
   fs.readdirSync(normalizedPath).forEach(file => {
