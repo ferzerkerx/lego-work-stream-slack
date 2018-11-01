@@ -7,6 +7,7 @@ import {
 } from './Types';
 import { TeamChannelConfiguration } from './LegoMessageFactory';
 import { SlackBot } from 'botkit';
+import { ErrorUtil } from '../utils/ErrorUtil';
 
 export class TeamChannelConfigurationServiceImpl
   implements TeamChannelConfigurationService {
@@ -19,6 +20,10 @@ export class TeamChannelConfigurationServiceImpl
     const configuration = TeamChannelConfigurationServiceImpl.parseConfig(
       configStr
     );
+
+    if (!configuration) {
+      return Promise.reject('Invalid condifuration');
+    }
 
     return this.teamChannelConfigurationRepository
       .save(configuration)
@@ -33,9 +38,36 @@ export class TeamChannelConfigurationServiceImpl
   }
 
   static parseConfig(configStr: string): TeamChannelConfiguration {
-    const configuration: TeamChannelConfiguration = JSON.parse(configStr);
-    //TODO validate and throw error
+    try {
+      const configuration: TeamChannelConfiguration = JSON.parse(configStr);
+      if (this.isValid(configuration)) {
+        return configuration;
+      }
+    } catch (e) {
+      ErrorUtil.defaultErrorHandling(e);
+    }
+    return null;
+  }
 
-    return configuration;
+  static isEmpty(str: string | Array<any>) {
+    return !str || str.length === 0;
+  }
+
+  static isValid(configuration: TeamChannelConfiguration): boolean {
+    if (this.isEmpty(configuration.channelName)) {
+      return false;
+    }
+
+    if (this.isEmpty(configuration.actionDescriptors)) {
+      return false;
+    }
+
+    for (let descriptor of configuration.actionDescriptors) {
+      if (this.isEmpty(descriptor.name) || this.isEmpty(descriptor.text)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

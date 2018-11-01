@@ -19,7 +19,6 @@ const createRtmManager = (controller: SlackController): any => {
     });
   });
 
-  //
   controller.on('rtm_close', bot => {
     manager.remove(bot);
   });

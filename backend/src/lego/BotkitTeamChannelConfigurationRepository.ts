@@ -24,7 +24,7 @@ export class BotkitTeamChannelConfigurationRepository
     return this.wrapped().save(teamConfiguration);
   }
 
-  //TODO update?
+  //TODO update method
 
   findAll(): Promise<TeamChannelConfiguration[]> {
     return this.wrapped().all();
