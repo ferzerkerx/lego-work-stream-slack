@@ -8,8 +8,6 @@ import {
 import { ServiceLocator } from './ServiceLocator';
 
 export class LegoApplicationEventListener implements ApplicationEventListener {
-  constructor() {}
-
   onEvent(event: AppEvent): void {
     if (event.name === AppEventTypes.STARTED) {
       LegoApplicationEventListener.onCommunicationChannelEstablished(
@@ -18,7 +16,10 @@ export class LegoApplicationEventListener implements ApplicationEventListener {
       );
     }
     if (event.name === AppEventTypes.TEAM_CHANNEL_CONFIG_UPDATED) {
-      //TODO refresh config team for scheduler
+      ServiceLocator.getLegoScheduler().schedule(
+        event.data.configuration,
+        event.data.bot
+      );
     }
   }
 

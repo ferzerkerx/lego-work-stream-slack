@@ -31,6 +31,11 @@ export interface LegoSelectionReplyService {
 
 export interface LegoScheduler {
   start(bot: SlackBot);
+  schedule(configuration, bot: SlackBot): void;
+}
+
+export interface TeamChannelConfigurationService {
+  update(configStr: string, bot: SlackBot): Promise<TeamChannelConfiguration>;
 }
 
 export class AppEvent {

@@ -4,6 +4,7 @@ import {
   LegoScheduler,
   LegoSelectionReplyService,
   TeamChannelConfigurationRepository,
+  TeamChannelConfigurationService,
 } from './lego/Types';
 import { EventDispatcher } from './EventDispatcher';
 
@@ -23,6 +24,11 @@ export class ServiceLocator {
   public static getTeamChannelConfigurationRepository(): TeamChannelConfigurationRepository {
     return Container.resolve<TeamChannelConfigurationRepository>(
       'teamChannelConfigurationRepository'
+    );
+  }
+  public static getTeamChannelConfigurationService(): TeamChannelConfigurationService {
+    return Container.resolve<TeamChannelConfigurationService>(
+      'teamChannelConfigurationService'
     );
   }
 

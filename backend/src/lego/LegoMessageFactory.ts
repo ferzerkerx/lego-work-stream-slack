@@ -2,8 +2,9 @@ import { SlackMessage } from 'botkit';
 import { DateUtils } from '../utils/DateUtils';
 
 export class LegoMessageFactory {
-  static defaultConfiguration(): TeamChannelConfiguration {
+  static defaultConfiguration(channelName: string): TeamChannelConfiguration {
     return {
+      channelName: channelName,
       actionDescriptors: [
         { name: 'green', text: 'Green' },
         { name: 'red', text: 'Red' },
@@ -65,7 +66,7 @@ export class LegoMessageFactory {
 
 export class TeamChannelConfiguration {
   actionDescriptors: LegoMessageActionDescriptor[] = [];
-  channelName?: string;
+  channelName: string;
   date?: Date = new Date();
   min?: number = 0;
   max?: number = 8;

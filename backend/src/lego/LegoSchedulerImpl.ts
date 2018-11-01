@@ -38,6 +38,7 @@ export class LegoSchedulerImpl implements LegoScheduler {
         }
       });
   }
+  public schedule(configuration, bot: SlackBot): void {}
 
   private scheduleForConfig(
     dateTimesByChannel: any,

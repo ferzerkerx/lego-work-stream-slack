@@ -15,6 +15,7 @@ import { BotkitTeamChannelConfigurationRepository } from './lego/BotkitTeamChann
 import { LegoSchedulerImpl } from './lego/LegoSchedulerImpl';
 import { EventDispatcher } from './EventDispatcher';
 import { LegoApplicationEventListener } from './LegoApplicationEventListener';
+import { TeamChannelConfigurationServiceImpl } from './lego/TeamChannelConfigurationServiceImpl';
 
 if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
   console.error('missing environment variables');
@@ -81,6 +82,15 @@ function wireDependencies(controller) {
   eventDispatcher.register(listener);
 
   Container.register('eventDispatcher', eventDispatcher);
+
+  const teamChannelConfigurationService = new TeamChannelConfigurationServiceImpl(
+    botkitTeamChannelConfigurationRepository,
+    eventDispatcher
+  );
+  Container.register(
+    'teamChannelConfigurationService',
+    teamChannelConfigurationService
+  );
 }
 
 function startApplication() {

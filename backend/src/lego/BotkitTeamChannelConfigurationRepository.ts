@@ -20,8 +20,11 @@ export class BotkitTeamChannelConfigurationRepository
   save(
     teamConfiguration: TeamChannelConfiguration
   ): Promise<TeamChannelConfiguration> {
+    teamConfiguration.date = new Date();
     return this.wrapped().save(teamConfiguration);
   }
+
+  //TODO update?
 
   findAll(): Promise<TeamChannelConfiguration[]> {
     return this.wrapped().all();

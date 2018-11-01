@@ -9,9 +9,9 @@ const OnChannelJoinHandler = (controller: SlackController): void => {
       'Hello, Thanks for inviting me! I will be helping you to gather some metrics for the team. Try me just mention help';
     bot.reply(message, helloMessage);
 
-    const defaultConfiguration = LegoMessageFactory.defaultConfiguration();
-
-    defaultConfiguration.channelName = message.channel;
+    const defaultConfiguration = LegoMessageFactory.defaultConfiguration(
+      message.channel
+    );
 
     ServiceLocator.getTeamChannelConfigurationRepository()
       .save(defaultConfiguration)
