@@ -1,6 +1,7 @@
 import { SlackBot, SlackController, SlackSpawnConfiguration } from 'botkit';
-import { ApplicationEventListener } from '../ApplicationEventListener';
 import { RtmManager } from '../RtmManager';
+import { AppEvent, AppEventTypes } from '../lego/Types';
+import { ServiceLocator } from '../ServiceLocator';
 
 const createRtmManager = (controller: SlackController): any => {
   const manager = new RtmManager();
@@ -10,10 +11,11 @@ const createRtmManager = (controller: SlackController): any => {
     const bot: SlackBot = controller.spawn(config);
 
     manager.start(bot).then(() => {
-      ApplicationEventListener.onCommunicationChannelEstablished(
-        bot,
-        controller
-      );
+      const appEvent: AppEvent = {
+        name: AppEventTypes.STARTED,
+        data: { bot: bot, controller: controller },
+      };
+      ServiceLocator.getEventDispatcher().emitEvent(appEvent);
     });
   });
 
@@ -24,4 +26,5 @@ const createRtmManager = (controller: SlackController): any => {
 
   return manager;
 };
+
 module.exports = createRtmManager;

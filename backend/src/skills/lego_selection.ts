@@ -3,21 +3,14 @@ import {
   LegoMessageFactory,
   TeamChannelConfiguration,
 } from '../lego/LegoMessageFactory';
-import { Container } from '../Container';
-import { TeamChannelConfigurationRepository } from '../lego/Types';
-
-function getTeamChannelConfigurationRepository() {
-  return Container.resolve<TeamChannelConfigurationRepository>(
-    'teamChannelConfigurationRepository'
-  );
-}
+import { ServiceLocator } from '../ServiceLocator';
 
 const legoSelectionHandler = (controller: SlackController): void => {
   controller.hears(
     'lego',
     'direct_mention',
     (bot: SlackBot, originalMessage: SlackMessage) => {
-      getTeamChannelConfigurationRepository()
+      ServiceLocator.getTeamChannelConfigurationRepository()
         .find(originalMessage.channel)
         .then((configuration: TeamChannelConfiguration) => {
           if (configuration) {

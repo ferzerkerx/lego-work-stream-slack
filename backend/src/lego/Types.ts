@@ -32,3 +32,21 @@ export interface LegoSelectionReplyService {
 export interface LegoScheduler {
   start(bot: SlackBot);
 }
+
+export class AppEvent {
+  name: string;
+  data: any;
+}
+
+export class AppEventTypes {
+  static STARTED: string = 'STARTED';
+  static TEAM_CHANNEL_CONFIG_UPDATED: string = 'TEAM_CHANNEL_CONFIG_UPDATED';
+}
+
+export interface ApplicationEventListener {
+  onEvent(event: AppEvent): void;
+}
+
+export interface ApplicationEventEmitter {
+  emitEvent(event: AppEvent): void;
+}

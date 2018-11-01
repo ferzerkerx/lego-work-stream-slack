@@ -1,14 +1,7 @@
 import { SlackBot, SlackController, SlackMessage } from 'botkit';
 import { ErrorUtil } from '../utils/ErrorUtil';
 import { LegoMessageFactory } from '../lego/LegoMessageFactory';
-import { Container } from '../Container';
-import { TeamChannelConfigurationRepository } from '../lego/Types';
-
-function getTeamChannelConfigurationRepository() {
-  return Container.resolve<TeamChannelConfigurationRepository>(
-    'teamChannelConfigurationRepository'
-  );
-}
+import { ServiceLocator } from '../ServiceLocator';
 
 const OnChannelJoinHandler = (controller: SlackController): void => {
   controller.on('bot_channel_join', (bot: SlackBot, message: SlackMessage) => {
@@ -20,8 +13,11 @@ const OnChannelJoinHandler = (controller: SlackController): void => {
 
     defaultConfiguration.channelName = message.channel;
 
-    getTeamChannelConfigurationRepository()
+    ServiceLocator.getTeamChannelConfigurationRepository()
       .save(defaultConfiguration)
+      .then(() => {
+        //send event
+      })
       .catch(error => ErrorUtil.defaultErrorHandling(error));
   });
 };

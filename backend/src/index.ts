@@ -13,6 +13,8 @@ import { LegoMetricsServiceImpl } from './lego/metrics/LegoMetricsService';
 import { LegoSelectionReplyServiceImpl } from './lego/LegoSelectionReplyServiceImpl';
 import { BotkitTeamChannelConfigurationRepository } from './lego/BotkitTeamChannelConfigurationRepository';
 import { LegoSchedulerImpl } from './lego/LegoSchedulerImpl';
+import { EventDispatcher } from './EventDispatcher';
+import { LegoApplicationEventListener } from './LegoApplicationEventListener';
 
 if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
   console.error('missing environment variables');
@@ -40,7 +42,7 @@ function slackBotConfiguration(): SlackConfiguration {
   return botConfig;
 }
 
-function configureDependencies(controller) {
+function wireDependencies(controller) {
   const storage: any = controller.storage;
 
   const botkitLegoSelectMessageRepository = new BotkitLegoSelectMessageRepository(
@@ -73,6 +75,12 @@ function configureDependencies(controller) {
     'legoScheduler',
     new LegoSchedulerImpl(botkitTeamChannelConfigurationRepository)
   );
+
+  const eventDispatcher = new EventDispatcher();
+  const listener = new LegoApplicationEventListener();
+  eventDispatcher.register(listener);
+
+  Container.register('eventDispatcher', eventDispatcher);
 }
 
 function startApplication() {
@@ -106,7 +114,7 @@ function startApplication() {
   // @ts-ignore
   controller.trigger('rtm:start', [spawnConfig]);
 
-  configureDependencies(controller);
+  wireDependencies(controller);
 }
 
 startApplication();

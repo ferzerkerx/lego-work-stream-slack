@@ -1,9 +1,27 @@
 import { SlackBot, SlackController } from 'botkit';
 import { ErrorUtil } from './utils/ErrorUtil';
-import { Container } from './Container';
-import { LegoScheduler } from './lego/Types';
+import {
+  AppEvent,
+  AppEventTypes,
+  ApplicationEventListener,
+} from './lego/Types';
+import { ServiceLocator } from './ServiceLocator';
 
-export class ApplicationEventListener {
+export class LegoApplicationEventListener implements ApplicationEventListener {
+  constructor() {}
+
+  onEvent(event: AppEvent): void {
+    if (event.name === AppEventTypes.STARTED) {
+      LegoApplicationEventListener.onCommunicationChannelEstablished(
+        event.data.bot,
+        event.data.controller
+      );
+    }
+    if (event.name === AppEventTypes.TEAM_CHANNEL_CONFIG_UPDATED) {
+      //TODO refresh config team for scheduler
+    }
+  }
+
   static _saveTeamIfNeeded(
     bot: SlackBot,
     controller: SlackController
@@ -35,10 +53,6 @@ export class ApplicationEventListener {
     this._saveTeamIfNeeded(bot, controller).catch(error =>
       ErrorUtil.defaultErrorHandling(error)
     );
-    this.getLegoScheduler().start(bot);
-  }
-
-  private static getLegoScheduler() {
-    return Container.resolve<LegoScheduler>('legoScheduler');
+    ServiceLocator.getLegoScheduler().start(bot);
   }
 }

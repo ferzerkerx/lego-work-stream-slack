@@ -2,18 +2,13 @@ import { Express, Request, Response } from 'express';
 import { SlackController } from 'botkit';
 import { Metrics } from '../../lego/metrics/Metrics';
 import { CsvUtils } from '../../utils/CsvUtils';
-import { Container } from '../../Container';
-import { LegoMetricsService } from '../../lego/Types';
 import { MetricsConfigurationFactory } from '../../lego/metrics/MetricsConfigurationFactory';
-
-function getLegoMetricsService(): LegoMetricsService {
-  return Container.resolve<LegoMetricsService>('legoMetricsService');
-}
+import { ServiceLocator } from '../../ServiceLocator';
 
 const api = (webserver: Express, controller: SlackController): void => {
   webserver.get('/api/metrics', (req: Request, res: Response) => {
     const config: MetricsConfiguration = MetricsConfigurationFactory.of(req);
-    getLegoMetricsService()
+    ServiceLocator.getLegoMetricsService()
       .metricsForConfig(config)
       .then((entry: Metrics) => {
         if (config.format === 'csv') {
