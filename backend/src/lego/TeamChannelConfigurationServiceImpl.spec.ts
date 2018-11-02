@@ -4,7 +4,7 @@ function expectInvalidConfiguration(jsonConfig) {
   const configStr: string = JSON.stringify(jsonConfig);
 
   const configuration = TeamChannelConfigurationServiceImpl.parseConfig(
-    configStr,
+    configStr
   );
   expect(configuration).toBeNull();
 }
@@ -38,7 +38,7 @@ describe('TeamChannelConfigurationServiceImpl', () => {
 
   test('parseConfig invalid max', () => {
     const jsonConfig = {
-      actionDescriptors: [],
+      actionDescriptors: [{ name: 'green', text: 'Green' }],
       min: 0,
       max: -19.6,
     };
@@ -48,7 +48,7 @@ describe('TeamChannelConfigurationServiceImpl', () => {
 
   test('parseConfig invalid min', () => {
     const jsonConfig = {
-      actionDescriptors: [],
+      actionDescriptors: [{ name: 'green', text: 'Green' }],
       min: -19.6,
       max: 19,
     };
@@ -58,7 +58,7 @@ describe('TeamChannelConfigurationServiceImpl', () => {
 
   test('parseConfig invalid range', () => {
     const jsonConfig = {
-      actionDescriptors: [],
+      actionDescriptors: [{ name: 'green', text: 'Green' }],
       min: 20,
       max: 19,
     };
