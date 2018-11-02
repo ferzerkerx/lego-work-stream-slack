@@ -1,12 +1,16 @@
 import { SlackBot, SlackController, SlackMessage } from 'botkit';
 import { ServiceLocator } from '../ServiceLocator';
 
-function replyMessage(replyText: string, channelName) {
-  return {
-    text: replyText,
+function reply(
+  bot: SlackBot,
+  originalMessage: SlackMessage,
+  text: string
+): void {
+  bot.reply(originalMessage, {
+    text,
     attachments: [],
-    channel: channelName,
-  };
+    channel: originalMessage.channel,
+  });
 }
 
 const teamConfigurationHandler = (controller: SlackController): void => {
@@ -21,19 +25,10 @@ const teamConfigurationHandler = (controller: SlackController): void => {
       ServiceLocator.getTeamChannelConfigurationService()
         .update(configStr, bot, originalMessage.channel)
         .then(() => {
-          bot.reply(
-            originalMessage,
-            replyMessage(
-              'updated configuration successfully',
-              originalMessage.channel
-            )
-          );
+          reply(bot, originalMessage, 'updated configuration successfully');
         })
         .catch(e => {
-          bot.reply(
-            originalMessage,
-            replyMessage('Invalid configuration', originalMessage.channel)
-          );
+          reply(bot, originalMessage, 'Invalid configuration');
         });
     }
   );

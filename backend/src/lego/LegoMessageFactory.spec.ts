@@ -1,6 +1,6 @@
 import {
-  TeamChannelConfiguration,
   LegoMessageFactory,
+  TeamChannelConfiguration,
 } from './LegoMessageFactory';
 
 describe('LegoMessageFactory', () => {
