@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TeamChannelConfigurationServiceImpl parseConfig valid 1`] = `
+Object {
+  "actionDescriptors": Array [
+    Object {
+      "name": "green",
+      "text": "Green",
+    },
+    Object {
+      "name": "red",
+      "text": "Red",
+    },
+    Object {
+      "name": "orange",
+      "text": "Orange",
+    },
+    Object {
+      "name": "black",
+      "text": "Black",
+    },
+  ],
+  "max": 8,
+  "min": 0,
+}
+`;

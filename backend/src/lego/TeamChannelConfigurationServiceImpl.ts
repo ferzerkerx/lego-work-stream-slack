@@ -71,6 +71,18 @@ export class TeamChannelConfigurationServiceImpl
       }
     }
 
+    if (!isFinite(configuration.max) || configuration.max < 0) {
+      return false;
+    }
+
+    if (!isFinite(configuration.min) || configuration.min < 0) {
+      return false;
+    }
+
+    if (configuration.max < configuration.min) {
+      return false;
+    }
+
     return true;
   }
 }
