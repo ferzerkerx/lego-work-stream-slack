@@ -5,6 +5,10 @@ const summary: any = [
     command: 'lego',
     description: 'Helps channel tracking the time spent on tasks.',
   },
+  {
+    command: 'setConfig',
+    description: 'Will update channel configuration for legos',
+  },
   { command: 'help', description: 'Prints this menu.' },
   { command: 'uptime', description: 'Internal bot statistics.' },
 ];
