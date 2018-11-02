@@ -18,9 +18,7 @@ describe('TeamChannelConfigurationServiceImpl', () => {
 
   test('parseConfig invalid actionDescriptors', () => {
     const jsonConfig = {
-      actionDescriptors: [{ name: '', text: '' }],
-      min: 0,
-      max: 8,
+      actionDescriptors: [{ name: '', text: '' }]
     };
 
     expectInvalidConfiguration(jsonConfig);
