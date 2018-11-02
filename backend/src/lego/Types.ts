@@ -35,7 +35,11 @@ export interface LegoScheduler {
 }
 
 export interface TeamChannelConfigurationService {
-  update(configStr: string, bot: SlackBot): Promise<TeamChannelConfiguration>;
+  update(
+    configStr: string,
+    bot: SlackBot,
+    channelId: string
+  ): Promise<TeamChannelConfiguration>;
 }
 
 export class AppEvent {

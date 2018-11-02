@@ -19,7 +19,7 @@ const teamConfigurationHandler = (controller: SlackController): void => {
       );
 
       ServiceLocator.getTeamChannelConfigurationService()
-        .update(configStr, bot)
+        .update(configStr, bot, originalMessage.channel)
         .then(() => {
           bot.reply(
             originalMessage,

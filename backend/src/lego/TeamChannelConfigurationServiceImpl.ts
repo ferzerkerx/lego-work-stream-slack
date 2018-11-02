@@ -16,14 +16,21 @@ export class TeamChannelConfigurationServiceImpl
     private applicationEventEmitter: ApplicationEventEmitter
   ) {}
 
-  update(configStr: string, bot: SlackBot): Promise<TeamChannelConfiguration> {
+  update(
+    configStr: string,
+    bot: SlackBot,
+    channelId: string
+  ): Promise<TeamChannelConfiguration> {
     const configuration = TeamChannelConfigurationServiceImpl.parseConfig(
       configStr
     );
 
     if (!configuration) {
-      return Promise.reject('Invalid condifuration');
+      return Promise.reject('Invalid configuration');
     }
+
+    configuration.id = channelId;
+    configuration.channelName = channelId;
 
     return this.teamChannelConfigurationRepository
       .save(configuration)
@@ -54,10 +61,6 @@ export class TeamChannelConfigurationServiceImpl
   }
 
   static isValid(configuration: TeamChannelConfiguration): boolean {
-    if (this.isEmpty(configuration.channelName)) {
-      return false;
-    }
-
     if (this.isEmpty(configuration.actionDescriptors)) {
       return false;
     }

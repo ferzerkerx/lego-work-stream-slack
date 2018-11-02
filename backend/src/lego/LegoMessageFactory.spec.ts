@@ -15,6 +15,7 @@ describe('LegoMessageFactory', () => {
       min: 0,
       max: 8,
       channelName: 'someChannel',
+      id: 'someChannel',
     };
 
     const message = LegoMessageFactory.createMessage(

@@ -4,6 +4,7 @@ import { DateUtils } from '../utils/DateUtils';
 export class LegoMessageFactory {
   static defaultConfiguration(channelName: string): TeamChannelConfiguration {
     return {
+      id: channelName,
       channelName: channelName,
       actionDescriptors: [
         { name: 'green', text: 'Green' },
@@ -65,6 +66,7 @@ export class LegoMessageFactory {
 }
 
 export class TeamChannelConfiguration {
+  id: string;
   actionDescriptors: LegoMessageActionDescriptor[] = [];
   channelName: string;
   date?: Date = new Date();

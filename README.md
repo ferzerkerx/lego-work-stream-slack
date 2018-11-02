@@ -41,3 +41,18 @@ MONGODB_URI=<your MONGODB_URI>
 - Download CSV report
 
 ```http://<your-server>:<your-port>/metrics.html```
+
+
+##### To update the configuration:
+```
+@testbot setConfig{
+  "actionDescriptors": [
+    { "name": "green", "text": "Green" },
+    { "name": "red", "text": "Red" },
+    { "name": "orange", "text": "Orange" },
+    { "name": "black", "text":"Black" }
+  ],
+  "min": 0,
+  "max": 8}
+
+```
