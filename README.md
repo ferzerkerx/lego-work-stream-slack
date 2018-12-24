@@ -1,7 +1,7 @@
 ## Lego Workstream SlackBot 
 
 [![Build Status](https://travis-ci.org/ferzerkerx/lego-work-stream-slack.svg?branch=master)](https://travis-ci.org/ferzerkerx/lego-work-stream-slack)
-![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=lego-work-stream-slack&metric=alert_status)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=lego-work-stream-slack&metric=alert_status)](https://sonarcloud.io/dashboard?id=lego-work-stream-slack)
 
 
 Track your workstream using slack and visualize it 
