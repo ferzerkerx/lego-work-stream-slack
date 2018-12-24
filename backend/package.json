@@ -29,7 +29,8 @@
     "request": "^2.79.0"
   },
   "resolutions": {
-    "**/event-stream": "^4.0.1"
+    "**/event-stream": "^4.0.1",
+    "**/base64url": "^3.0.0"
   },
   "devDependencies": {
     "@types/dotenv": "^4.0.3",
