@@ -13,7 +13,7 @@
   "author": "ferzerkerx",
   "license": "MIT",
   "devDependencies": {
-    "copyfiles": "^2.1.1"
+    "copyfiles": "^2.2.0"
   },
   "engines": {
     "node": "^8.9.0",
